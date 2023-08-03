@@ -1,0 +1,193 @@
+.wrapper {
+    padding: 0 20px;
+}
+.title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.6rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    .title-icon {
+        margin-right: 5px;
+    }
+}
+.body {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+.delivery-section,
+.checkout-section {
+    flex: 1;
+    padding: 20px 24px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+}
+
+.checkout-section {
+    margin-left: 25px;
+}
+.body-title {
+    font-size: 2rem;
+    color: var(--primary-color);
+    font-weight: 700;
+    border-bottom: 3px solid var(--primary-color);
+    margin-bottom: 15px;
+    width: max-content;
+}
+.item-name {
+    font-weight: 600;
+}
+.item-topping {
+    font-size: 1.4rem;
+}
+.item-price {
+    font-size: 1.4rem;
+}
+.item-price-final {
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+.cart-list-wrapper {
+    .cart-list {
+        max-height: 160px;
+        overflow-y: auto;
+        background-color: #f4f4f4;
+        padding: 5px 0px;
+    }
+    .cart-item {
+        padding: 5px 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+}
+
+.delivery-wrapper {
+    margin-top: 20px;
+    .info {
+        padding: 12px 5px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .info-body {
+            display: flex;
+            align-items: center;
+        }
+
+        .info-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            flex-shrink: 0;
+            margin-right: 10px;
+        }
+        .info-title {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        .info-detail {
+            font-size: 1.4rem;
+        }
+    }
+    .info-actions {
+        flex-shrink: 0;
+        margin-left: 15px;
+        color: var(--primary-color);
+        &:hover {
+            opacity: 0.8;
+            cursor: pointer;
+        }
+    }
+    .delivery-company-item {
+        display: flex;
+        align-items: center;
+        padding: 0 5px;
+
+        label {
+            margin-left: 10px;
+            display: flex;
+            align-items: center;
+            &:hover {
+                opacity: 0.8;
+                cursor: pointer;
+            }
+        }
+        .delivery-company-img {
+            margin-left: 8px;
+            width: 40px;
+            height: 18px;
+            object-fit: cover;
+        }
+    }
+}
+.payment-wrapper {
+    .payment-item {
+        padding: 5px;
+        display: flex;
+        align-items: center;
+        label {
+            margin-left: 10px;
+            display: flex;
+            align-items: center;
+            &:hover {
+                opacity: 0.8;
+                cursor: pointer;
+            }
+        }
+        .payment-img {
+            margin-left: 8px;
+            height: 20px;
+            object-fit: cover;
+        }
+    }
+}
+
+.checkout-wrapper {
+    margin-top: 20px;
+    .total {
+        margin-top: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .policy-wrapper {
+        display: flex;
+        align-items: center;
+        margin: 20px 0 10px;
+    }
+    .policy-check {
+        margin-right: 10px;
+    }
+    .policy-title {
+        font-size: 1.4rem;
+        line-height: 1.2;
+        span {
+            color: var(--primary-color);
+            text-decoration: underline;
+            font-style: italic;
+        }
+    }
+    .checkout-btn {
+        text-transform: uppercase;
+        margin: 20px 0 10px;
+        width: 100%;
+        height: 45px;
+    }
+}
+
+.wrapper ::-webkit-scrollbar {
+    border-radius: 0;
+    width: 4px;
+}
+.wrapper ::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+.wrapper ::-webkit-scrollbar-track {
+    border-radius: 0;
+    background-color: rgba(82, 82, 82, 0.08);
+}

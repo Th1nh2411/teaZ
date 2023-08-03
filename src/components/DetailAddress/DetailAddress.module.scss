@@ -1,0 +1,209 @@
+.detail-wrapper {
+    width: 750px;
+    height: 580px;
+}
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin: 10px 0 2px;
+}
+.header-logo {
+    width: 80px;
+}
+.header-title {
+    text-transform: uppercase;
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+.close-icon {
+    padding: 20px;
+    position: absolute;
+    right: 14px;
+    top: 0px;
+    font-size: 4.2rem;
+    color: #ccc;
+    transition: 0.1s ease-in-out all;
+    &:hover {
+        color: #333;
+        cursor: pointer;
+    }
+}
+// Search location
+.search {
+    margin: 0px 20px;
+    position: relative;
+    height: var(--search-height);
+    background-color: rgb(236, 239, 241);
+    border-radius: var(--search-border-radius);
+    padding: 0 0 0 16px;
+    border: 1.5px solid transparent;
+    display: flex;
+    input {
+        color: rgb(90, 90, 90);
+        padding-right: 40px;
+        flex: 1;
+        font-size: 1.6rem;
+        background-color: transparent;
+        height: 100%;
+        font-weight: 600;
+        caret-color: var(--primary-color);
+    }
+    input:not(:placeholder-shown) ~ .search-btn {
+        color: var(--secondary-color);
+    }
+
+    &:focus-within {
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+}
+.search-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 15px;
+    height: 100%;
+    font-size: 2.2rem;
+    color: rgb(127 127 127);
+    background-color: rgb(236, 239, 241);
+}
+.clear {
+    cursor: pointer;
+}
+
+.clear,
+.loading {
+    background-color: transparent;
+    font-size: 1.4rem;
+    display: flex;
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--secondary-color);
+}
+.loading {
+    animation: spinner 1s linear infinite;
+}
+
+// Search result
+.search-result {
+    padding: 10px;
+}
+.search-item {
+    margin: 0 10px;
+    padding: 20px 10px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    transition: 0.1s ease-in-out all;
+    &:hover {
+        background-color: var(--hover-color);
+        cursor: pointer;
+    }
+}
+.search-item + .search-item {
+    border-top: 1px solid #cccccc93;
+}
+.location-icon {
+    font-size: 4rem;
+    color: var(--primary-color);
+    flex-shrink: 0;
+    margin-right: 10px;
+}
+.address-title {
+    color: var(--primary-color);
+    font-weight: 700;
+}
+.address-detail {
+    font-size: 1.4rem;
+}
+.chosen-address {
+    padding: 10px 25px 0;
+    font-size: 1.4rem;
+    span {
+        font-weight: 700;
+    }
+}
+.current-address {
+    padding: 10px 20px 15px;
+    display: flex;
+    align-items: center;
+    color: var(--primary-color);
+    &:hover {
+        opacity: 0.8;
+        cursor: pointer;
+    }
+    .icon {
+        font-size: 2.4rem;
+        margin-right: 5px;
+    }
+}
+
+// Shop List
+.divider {
+    height: 8px;
+    background: rgb(236, 239, 241);
+    border: transparent;
+}
+.shop-result {
+    padding: 15px 20px;
+}
+.shop-title {
+    color: var(--primary-color);
+    margin: 5px 0 15px;
+    font-size: 2.2rem;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .icon {
+        margin-left: 5px;
+    }
+}
+.shop-item {
+    display: flex;
+    gap: 25px;
+    padding: 30px;
+    border-radius: 5px;
+    transition: 0.1s ease-in-out all;
+}
+.shop-item.active {
+    background-color: var(--hover-color);
+}
+.shop-item + .shop-item {
+    border-top: 1px solid #cccccc93;
+    margin-top: 5px;
+}
+
+.shop-img {
+    flex-shrink: 0;
+    border-radius: 10px;
+    width: 50%;
+    object-fit: cover;
+}
+.shop-info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.shop-address {
+    color: var(--primary-color);
+    font-weight: 700;
+    font-size: 1.8rem;
+}
+.shop-desc {
+    color: #444;
+    span {
+        text-decoration: underline;
+        color: #333;
+    }
+}
+.shop-desc.close {
+    color: #d82d2d;
+}
+.shop-desc.open {
+    color: green;
+}

@@ -1,0 +1,26 @@
+.wrapper {
+    background: var(--radial-gradient-bg-2);
+    width: 100%;
+    display: flex;
+}
+.inner {
+    padding: 40px var(--default-layout-horizontal-spacer);
+    margin: auto;
+    width: var(--default-layout-width);
+    max-width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.company-info {
+    color: white;
+    font-size: 1.3rem;
+}
+.highlight {
+    font-weight: 700;
+    margin-right: 5px;
+}
+.company-tick {
+}
+.tick-img {
+}
