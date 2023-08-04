@@ -25,12 +25,12 @@ function Cart({ data = {}, onCloseModal = () => {}, onDelItem = () => {} }) {
     const [state, dispatch] = useContext(StoreContext);
 
     const handleClickCheckout = async () => {
-        navigate(config.routes.checkout, { state: { cart: data } });
+        navigate(config.routes.checkout);
         onCloseModal();
     };
     const handleCheckoutOldInvoice = () => {
         navigate(config.routes.payment, {
-            state: { ...state.currentInvoice.invoice, cartInvoice: state.currentInvoice.cart },
+            state: { ...state.currentInvoice.invoice, cartInvoice: state.currentInvoice.products },
         });
         onCloseModal();
     };
@@ -47,14 +47,14 @@ function Cart({ data = {}, onCloseModal = () => {}, onDelItem = () => {} }) {
                         <HiShoppingBag className={cx('icon')} />
                         <div className={cx('title')}>
                             Giỏ hàng của bạn (
-                            {data ? data.cart.reduce((total, current) => current.quantityProduct + total, 0) : 0} món)
+                            {data ? data.products.reduce((total, current) => current.quantity + total, 0) : 0} món)
                         </div>
                     </div>
                     <AiOutlineClose onClick={onCloseModal} className={cx('close-icon')} />
                 </div>
                 <div className={cx('body')}>
-                    {data && data.cart && data.cart.length !== 0 ? (
-                        data.cart.map((item, index) => <CartItem onDelItem={onDelItem} data={item} key={index} />)
+                    {data && data.products && data.products.length !== 0 ? (
+                        data.products.map((item, index) => <CartItem onDelItem={onDelItem} data={item} key={index} />)
                     ) : (
                         <div className={cx('empty-cart-wrapper')}>
                             <Image src={images.emptyCart} className={cx('empty-cart-img')} />
@@ -81,19 +81,17 @@ function Cart({ data = {}, onCloseModal = () => {}, onDelItem = () => {} }) {
                             <div className={cx('total-num')}>{data && priceFormat(data.total)}đ</div>
                         </div>
                     )}
-                    {data && data.cart.length !== 0 ? (
+                    {data && data.products.length !== 0 ? (
                         <Button
                             onClick={handleClickCheckout}
                             disable={!!state.currentInvoice.invoice}
                             primary
                             className={cx('checkout-btn')}
                         >
-                            {' '}
                             Thanh toán
                         </Button>
                     ) : (
                         <Button onClick={() => onCloseModal()} primary className={cx('checkout-btn')}>
-                            {' '}
                             Quay lại
                         </Button>
                     )}

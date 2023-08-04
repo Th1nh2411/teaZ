@@ -31,13 +31,13 @@ function CartItem({ data = {}, onDelItem = () => {} }) {
                 </div>
                 <div className={cx('item-info')}>
                     <div className={cx('item-name')}>
-                        {data.name} ({data.size ? 'L' : 'M'}) x{data.quantityProduct}
+                        {data.name} ({data.size ? 'L' : 'M'}) x{data.quantity}
                     </div>
                     <div className={cx('item-topping')}>
                         {data.listTopping.length !== 0 && <span>Topping :</span>}{' '}
                         {data.listTopping.map((topping) => topping.name).join(', ')}
                     </div>
-                    <div className={cx('item-price')}>{priceFormat(data.totalProducts)}đ</div>
+                    <div className={cx('item-price')}>{priceFormat(data.totalProduct)}đ</div>
                     {/* <div className={cx('item-price')}></div> */}
                 </div>
             </div>

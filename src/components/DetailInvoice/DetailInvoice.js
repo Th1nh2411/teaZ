@@ -26,7 +26,7 @@ function DetailInvoice({ idInvoice, onCloseModal = () => {} }) {
             const results = await invoiceService.getDetailInvoice(idInvoice, token);
             if (results) {
                 setInvoiceInfo(results.invoice);
-                setInvoiceCart(results.cart);
+                setInvoiceCart(results.products);
             }
             setLoading(false);
         }
@@ -60,7 +60,7 @@ function DetailInvoice({ idInvoice, onCloseModal = () => {} }) {
                                         {/* <Image src={item.image} className={cx('cart-item-img')} /> */}
                                         <div className={cx('cart-item-info')}>
                                             <div className={cx('cart-item-name')}>
-                                                {item.name}({item.size ? 'L' : 'M'}) x{item.quantityProduct}
+                                                {item.name}({item.size ? 'L' : 'M'}) x{item.quantity}
                                             </div>
                                             {item.listTopping.length !== 0 && (
                                                 <div className={cx('cart-item-topping')}>
@@ -69,6 +69,7 @@ function DetailInvoice({ idInvoice, onCloseModal = () => {} }) {
                                                 </div>
                                             )}
                                         </div>
+                                        <h5 className={cx('cart-item-price')}>{priceFormat(item.totalProduct)}đ</h5>
                                     </div>
                                 ))}
                         </div>

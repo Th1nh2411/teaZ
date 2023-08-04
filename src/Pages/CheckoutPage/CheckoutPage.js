@@ -44,21 +44,32 @@ const payments = [
 function CheckoutPage() {
     const [checkPolicy, setCheckPolicy] = useState(false);
     const [idShipping_company, setIdShippingCompany] = useState(1);
+    const [listCompany, setListCompany] = useState([]);
     const [payment, setPayment] = useState(1);
     const [shippingFee, setShippingFee] = useState(15);
     const [state, dispatch] = useContext(StoreContext);
     const localStorageManager = LocalStorageManager.getInstance();
     const navigate = useNavigate();
     const getShippingFee = async () => {
-        const results = await invoiceService.getShippingFee(state.distance);
+        const results = await invoiceService.getShippingFee(state.distance, idShipping_company);
         if (results && results.total > 15) {
-            setShippingFee(parseInt(results.total));
+            setShippingFee(Number(results.total));
+        } else {
+            setShippingFee(15);
         }
     };
     useEffect(() => {
         getShippingFee();
-    }, [state.distance]);
-
+    }, [state.distance, idShipping_company]);
+    const getShippingCompany = async () => {
+        const results = await invoiceService.getShippingCompany();
+        if (results && results.isSuccess) {
+            setListCompany(results.shipping_company);
+        }
+    };
+    useEffect(() => {
+        getShippingCompany();
+    }, []);
     const handleCheckBoxPolicy = (e) => {
         if (e.target.checked) {
             setCheckPolicy(true);
@@ -72,11 +83,22 @@ function CheckoutPage() {
             const results = await invoiceService.createInvoice(idShipping_company, shippingFee, state.idShop, token);
             if (results.isSuccess) {
                 dispatch(actions.setCart(false));
-                dispatch(actions.setCurrentInvoice({ cart: [] }));
-                const getNewInvoice = state.getCurrentInvoice();
+                // dispatch(actions.setCurrentInvoice({ cart: [] }));
+                const getNewInvoice = await state.getCurrentInvoice();
+                dispatch(actions.setToast({ show: true, title: 'Đặt hàng', content: 'Đặt hàng thành công' }));
+                navigate(config.routes.payment);
+            } else if (results.runOut) {
+                dispatch(
+                    actions.setToast({
+                        show: true,
+                        title: 'Đặt hàng',
+                        content: 'Giỏ hàng có món đã hết hàng. Vui lòng thay đổi giỏ hàng của bạn',
+                        type: 'info',
+                    }),
+                );
+                navigate(config.routes.home);
             }
         }
-        navigate(config.routes.payment);
     };
     return (
         <div className={cx('wrapper')}>
@@ -89,17 +111,17 @@ function CheckoutPage() {
                         <div className={cx('body-title')}>Các món đã chọn</div>
                         <div className={cx('cart-list')}>
                             {state.cartData &&
-                                state.cartData.cart.map((item, index) => (
+                                state.cartData.products.map((item, index) => (
                                     <div key={index} className={cx('cart-item')}>
                                         <div>
                                             <div className={cx('item-name')}>
-                                                {item.name}({item.size ? 'L' : 'M'}) x{item.quantityProduct}
+                                                {item.name}({item.size ? 'L' : 'M'}) x{item.quantity}
                                             </div>
                                             <div className={cx('item-topping')}>
                                                 {item.listTopping.map((item) => item.name).join(', ')}
                                             </div>
                                         </div>
-                                        <div className={cx('item-price')}>{priceFormat(item.totalProducts)}đ</div>
+                                        <div className={cx('item-price')}>{priceFormat(item.totalProduct)}đ</div>
                                     </div>
                                 ))}
                         </div>
@@ -128,42 +150,21 @@ function CheckoutPage() {
                             <AiOutlineRight className={cx('info-actions')} />
                         </div>
                         <div className={cx('info')}>
-                            <label htmlFor={'com-1'} className={cx('delivery-company-item')}>
-                                <Form.Check
-                                    value={1}
-                                    checked={idShipping_company === 1}
-                                    type="radio"
-                                    isValid
-                                    id={'com-1'}
-                                    onChange={(e) => setIdShippingCompany(Number(e.target.value))}
-                                ></Form.Check>
-                                <label htmlFor={'com-1'}>
-                                    Giao hàng{' '}
-                                    <Image
-                                        src={'https://thicao.com/wp-content/uploads/2019/07/logo-moi-cua-grab.jpg'}
-                                        className={cx('delivery-company-img')}
-                                    />
+                            {listCompany.map((item, index) => (
+                                <label htmlFor={`com-${index}`} className={cx('delivery-company-item')}>
+                                    <Form.Check
+                                        value={item.idShipping_company}
+                                        checked={idShipping_company === item.idShipping_company}
+                                        type="radio"
+                                        isValid
+                                        id={`com-${index}`}
+                                        onChange={(e) => setIdShippingCompany(Number(e.target.value))}
+                                    ></Form.Check>
+                                    <label htmlFor={`com-${index}`}>
+                                        Giao hàng <Image src={item.image} className={cx('delivery-company-img')} />
+                                    </label>
                                 </label>
-                            </label>
-                            <label htmlFor={'com-2'} className={cx('delivery-company-item')}>
-                                <Form.Check
-                                    value={2}
-                                    checked={idShipping_company === 2}
-                                    type="radio"
-                                    isValid
-                                    id={'com-2'}
-                                    onChange={(e) => setIdShippingCompany(Number(e.target.value))}
-                                ></Form.Check>
-                                <label htmlFor={'com-2'}>
-                                    Giao hàng{' '}
-                                    <Image
-                                        src={
-                                            'https://images.squarespace-cdn.com/content/v1/5f9bdbe0209d9a7ee6ea8797/1612706541953-M447AAUK2JK58U0K8B4N/now+food+logo.jpeg'
-                                        }
-                                        className={cx('delivery-company-img')}
-                                    />
-                                </label>
-                            </label>
+                            ))}
                         </div>
                     </div>
                 </div>

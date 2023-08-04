@@ -34,32 +34,36 @@ function CheckoutPage() {
     const localStorageManager = LocalStorageManager.getInstance();
     const navigate = useNavigate();
 
-    const { invoice, cart } = state.currentInvoice;
+    const { invoice, products } = state.currentInvoice;
 
     const confirmPaymentInvoice = async () => {
         const token = localStorageManager.getItem('token');
         if (token) {
             const results = await invoiceService.confirmInvoice(invoice.idInvoice, invoice.total, token);
         }
-        dispatch(actions.setToast({ show: true, title: 'Đặt hàng', content: 'Đặt hàng thành công' }));
-        const getNewInvoice = state.getCurrentInvoice();
-        navigate(config.routes.home);
+        dispatch(actions.setToast({ show: true, title: 'Đặt hàng', content: 'Thanh toán thành công' }));
+        const getNewInvoice = await state.getCurrentInvoice();
     };
 
     useEffect(() => {
-        if (!cart) {
-            dispatch(actions.setToast({ show: true, title: 'Giao hàng', content: 'Giao hàng thành công' }));
+        if (!products) {
+            dispatch(actions.setToast({ show: true, title: 'Giao hàng', content: 'Đơn hàng đã được giao' }));
             navigate(config.routes.home);
         }
-    }, [cart]);
+    }, [products]);
     const handleCancelInvoice = async () => {
         const token = localStorageManager.getItem('token');
         if (token) {
             const results = await invoiceService.cancelCurrentInvoice(token);
+            if (results && results.isCancel) {
+                dispatch(actions.setToast({ show: true, title: 'Hủy đơn', content: results.message }));
+                dispatch(actions.setCurrentInvoice({ invoice: null }));
+                navigate(config.routes.home);
+            } else {
+                dispatch(actions.setToast({ show: true, title: 'Hủy đơn', content: results.message, type: 'info' }));
+                setShowConfirmCancelInvoice(false);
+            }
         }
-        dispatch(actions.setToast({ show: true, title: 'Hủy đơn', content: 'Hủy đơn thành công' }));
-        dispatch(actions.setCurrentInvoice({ invoice: null }));
-        navigate(config.routes.home);
     };
     const orderTime = useMemo(
         () => (invoice && invoice.date ? dayjs(invoice.date).format('HH:mm DD/MM/YYYY') : 'Vừa lên đơn'),
@@ -87,12 +91,12 @@ function CheckoutPage() {
                         <div className={cx('cart-list-wrapper')}>
                             <div className={cx('body-title')}>Các món đã chọn</div>
                             <div className={cx('cart-list')}>
-                                {cart &&
-                                    cart.map((item, index) => (
+                                {products &&
+                                    products.map((item, index) => (
                                         <div key={index} className={cx('cart-item')}>
                                             <div>
                                                 <div className={cx('item-name')}>
-                                                    {item.name}({item.size ? 'L' : 'M'}) x{item.quantityProduct}
+                                                    {item.name}({item.size ? 'L' : 'M'}) x{item.quantity}
                                                 </div>
                                                 <div className={cx('item-topping')}>
                                                     {item.listTopping.map((item) => item.name).join(', ')}
@@ -171,6 +175,7 @@ function CheckoutPage() {
                                         onClick={() => setShowConfirmCancelInvoice(true)}
                                         className={cx('actions-back')}
                                     >
+                                        <RiRefund2Line className={cx('refund-icon')} />
                                         Hủy đơn
                                     </div>
                                     <div onClick={() => confirmPaymentInvoice()} className={cx('actions-paid')}>
@@ -187,9 +192,18 @@ function CheckoutPage() {
                                     }
                                     className={cx('qr-img')}
                                 />
-                                <div className={cx('qr-scan-subtitle')}>
+                                {/* <div className={cx('qr-scan-subtitle')}>
                                     <RiRefund2Line className={cx('icon')} />
                                     Liên hệ hotline <b>099669966</b> để có thể hủy đơn hàng đang giao
+                                </div> */}
+                                <div className={cx('actions-wrapper')}>
+                                    <div
+                                        onClick={() => setShowConfirmCancelInvoice(true)}
+                                        className={cx('actions-back')}
+                                    >
+                                        <RiRefund2Line className={cx('refund-icon')} />
+                                        Hủy đơn hàng
+                                    </div>
                                 </div>
                             </>
                         )}

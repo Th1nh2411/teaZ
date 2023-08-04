@@ -1,5 +1,18 @@
 import * as httpRequest from '../utils/httpRequest';
 
+export const getShippingCompany = async () => {
+    // const config = {
+
+    // };
+
+    try {
+        const res = await httpRequest.get(`order/getListCompanies`);
+        return res;
+    } catch (error) {
+        console.log(error);
+        return error.response && error.response.data;
+    }
+};
 export const getShippingFee = async (distance, idShipping_company = 1) => {
     const config = {
         params: {
@@ -59,7 +72,7 @@ export const cancelCurrentInvoice = async (token) => {
         headers: { access_token: token },
     };
     try {
-        const res = await httpRequest.del(`order/cancelInvoice`, config);
+        const res = await httpRequest.del(`order/cancelInvoice`, {}, config);
         return res;
     } catch (error) {
         console.log(error);

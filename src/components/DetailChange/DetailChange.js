@@ -30,7 +30,7 @@ function DetailChange({ data, onCloseModal = () => {} }) {
                 Một số sản phẩm hết hàng hoặc thay đổi giá, khuyến mãi khi đổi cửa hàng. Vui lòng kiểm tra lại.
             </div>
             <div className={cx('list-recipe-change')}>
-                {data.mess.map((item, index) => (
+                {data.runOutRecipe.map((item, index) => (
                     <div key={index} className={cx('recipe-change')}>
                         <Image className={cx('recipe-img')} src={item.image} />
                         <div className={cx('recipe-name')}>{item.name}</div>

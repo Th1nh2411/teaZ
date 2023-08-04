@@ -1,6 +1,6 @@
 import * as httpRequest from '../utils/httpRequest';
 
-export const getCartItem = async (idShop = 2, token) => {
+export const getCartItem = async (token) => {
     const config = {
         headers: { access_token: token },
     };
@@ -20,7 +20,6 @@ export const addItemToCart = async (idRecipe = 1, quantityProduct = 1, sizeProdu
     };
     const body = {
         idRecipe,
-        quantity: idRecipe.split(',').fill(1).join(','),
         quantityProduct,
         sizeProduct,
     };
@@ -38,7 +37,6 @@ export const editCartItem = async (idProduct, idRecipe = 1, quantityProduct = 1,
     };
     const body = {
         idRecipe,
-        quantity: idRecipe.split(',').fill(1).join(','),
         quantityProduct,
         sizeProduct,
     };

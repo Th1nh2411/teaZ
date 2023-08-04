@@ -21,7 +21,7 @@ const sizeOrders = [
 function DetailItem({ data = {}, onCloseModal = () => {}, editing = false }) {
     const detailItem = data.Recipe || data;
     const [toppings, setToppings] = useState([]);
-    const [num, setNum] = useState(data.quantityProduct || 1);
+    const [num, setNum] = useState(data.quantity || 1);
     const [size, setSize] = useState(data.size || 0);
     const [checkedToppings, setCheckedToppings] = useState(
         data.listTopping ? data.listTopping.map((item) => item.idRecipe) : [],
@@ -29,9 +29,9 @@ function DetailItem({ data = {}, onCloseModal = () => {}, editing = false }) {
     const localStorageManager = LocalStorageManager.getInstance();
     const [state, dispatch] = useContext(StoreContext);
     const getToppingList = async (e) => {
-        const results = await shopService.getToppingList(detailItem.idRecipe || detailItem.idProduct[1], state.idShop);
+        const results = await shopService.getToppingList();
         if (results) {
-            setToppings(results.listTopping);
+            setToppings(results.menu);
         }
     };
     useEffect(() => {

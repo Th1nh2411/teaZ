@@ -52,7 +52,7 @@ function DefaultLayout({ children }) {
         if (token && state.userInfo) {
             const results = await cartService.getCartItem(token);
             if (results) {
-                dispatch(actions.setCart(results.products));
+                dispatch(actions.setCart(results));
             }
         }
     };
@@ -107,7 +107,7 @@ function DefaultLayout({ children }) {
         }
     };
     const cartQuantity = useMemo(
-        () => state.cartData && state.cartData.cart.reduce((total, current) => current.quantityProduct + total, 0),
+        () => state.cartData && state.cartData.products.reduce((total, current) => current.quantity + total, 0),
         [state.cartData],
     );
     return (
