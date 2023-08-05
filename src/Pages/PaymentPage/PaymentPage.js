@@ -18,6 +18,7 @@ import { IoLocationSharp } from 'react-icons/io5';
 import { AiOutlineRight } from 'react-icons/ai';
 import { BsFillPhoneFill } from 'react-icons/bs';
 import { RiRefund2Line } from 'react-icons/ri';
+import images from '../../assets/images';
 const cx = classNames.bind(styles);
 
 function CheckoutPage() {
@@ -183,15 +184,10 @@ function CheckoutPage() {
                                     </div>
                                 </div>
                             </>
-                        ) : (
+                        ) : invoice.status === 1 ? (
                             <>
-                                <div className={cx('qr-scan-title')}>Đơn hàng đang được giao</div>
-                                <Image
-                                    src={
-                                        'https://order.phuclong.com.vn/_next/static/images/delivery-686d7142750173aa8bc5f1d11ea195e4.png'
-                                    }
-                                    className={cx('qr-img')}
-                                />
+                                <div className={cx('qr-scan-title')}>Đơn hàng đang được chế biến</div>
+                                <Image src={images.barista} className={cx('qr-img')} />
                                 {/* <div className={cx('qr-scan-subtitle')}>
                                     <RiRefund2Line className={cx('icon')} />
                                     Liên hệ hotline <b>099669966</b> để có thể hủy đơn hàng đang giao
@@ -205,6 +201,16 @@ function CheckoutPage() {
                                         Hủy đơn hàng
                                     </div>
                                 </div>
+                            </>
+                        ) : (
+                            <>
+                                <div className={cx('qr-scan-title')}>Đơn hàng đang được giao đến</div>
+                                <Image
+                                    src={
+                                        'https://order.phuclong.com.vn/_next/static/images/delivery-686d7142750173aa8bc5f1d11ea195e4.png'
+                                    }
+                                    className={cx('qr-img')}
+                                />
                             </>
                         )}
                     </div>

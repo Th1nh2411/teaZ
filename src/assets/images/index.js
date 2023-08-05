@@ -15,5 +15,6 @@ const images = {
     drinkEx2: require('./drinkEx2.png'),
     tick: require('./tick.png'),
     emptyCart: require('./emptyCart.png'),
+    barista: require('./barista.png'),
 };
 export default images;
