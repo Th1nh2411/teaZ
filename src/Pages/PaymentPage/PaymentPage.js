@@ -184,9 +184,9 @@ function CheckoutPage() {
                                     </div>
                                 </div>
                             </>
-                        ) : invoice.status === 1 ? (
+                        ) : invoice && invoice.status === 1 ? (
                             <>
-                                <div className={cx('qr-scan-title')}>Đơn hàng đang được chế biến</div>
+                                <div className={cx('qr-scan-title')}>Đơn hàng đang chờ xác nhận</div>
                                 <Image src={images.barista} className={cx('qr-img')} />
                                 {/* <div className={cx('qr-scan-subtitle')}>
                                     <RiRefund2Line className={cx('icon')} />
