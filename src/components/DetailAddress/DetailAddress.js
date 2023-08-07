@@ -91,7 +91,10 @@ function DetailAddress({ data = {}, onCloseModal = () => {}, onChangeLocation = 
             }}
         >
             <div className={cx('header')}>
-                <Image src={images.logo3} className={cx('header-logo')} />
+                <Image
+                    src="https://order.phuclong.com.vn/_next/static/images/delivery-686d7142750173aa8bc5f1d11ea195e4.png"
+                    className={cx('header-logo')}
+                />
                 <div className={cx('header-title')}>Giao hàng</div>
                 <AiOutlineClose
                     onClick={() => {

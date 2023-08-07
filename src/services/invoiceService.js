@@ -29,11 +29,11 @@ export const getShippingFee = async (distance, idShipping_company = 1) => {
         return error.response && error.response.data;
     }
 };
-export const createInvoice = async (idShipping_company = 1, shippingFee, idShop, token) => {
+export const createInvoice = async (idShipping_company = 1, shippingFee, token) => {
     const config = {
         headers: { access_token: token },
     };
-    const body = { idShipping_company, shippingFee, idShop };
+    const body = { idShipping_company, shippingFee };
     try {
         const res = await httpRequest.post(`order/createInvoice`, body, config);
         return res;

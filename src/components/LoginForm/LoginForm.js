@@ -61,7 +61,7 @@ function LoginForm({ onCloseModal = () => {} }) {
                 onCloseModal();
             }}
         >
-            <Image src={images.logo2} className={cx('logo')} />
+            {/* <Image src={images.logo} className={cx('logo')} /> */}
             <div className={cx('title')}>
                 {form === 'login' ? 'Đăng nhập' : form === 'register' ? 'Đăng ký' : 'Quên mật khẩu'}{' '}
             </div>

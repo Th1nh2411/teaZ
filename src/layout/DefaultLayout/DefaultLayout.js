@@ -46,19 +46,19 @@ function DefaultLayout({ children }) {
         });
     };
 
-    const getCartData = async () => {
-        const token = localStorageManager.getItem('token');
+    // const getCartData = async () => {
+    //     const token = localStorageManager.getItem('token');
 
-        if (token && state.userInfo) {
-            const results = await cartService.getCartItem(token);
-            if (results) {
-                dispatch(actions.setCart(results));
-            }
-        }
-    };
-    useEffect(() => {
-        getCartData();
-    }, [state.idShop, state.userInfo]);
+    //     if (token && state.userInfo) {
+    //         const results = await cartService.getCartItem(token);
+    //         if (results) {
+    //             dispatch(actions.setCart(results));
+    //         }
+    //     }
+    // };
+    // useEffect(() => {
+    //     getCartData();
+    // }, [state.userInfo, state.currentInvoice]);
     console.log(state);
     const getLocation = () => {
         navigator.geolocation.getCurrentPosition((position) => {
@@ -135,16 +135,22 @@ function DefaultLayout({ children }) {
                 </div>
             )}
             {showCart && (
-                <Cart data={state.cartData} onCloseModal={() => setShowCart(false)} onDelItem={() => getCartData()} />
+                <Cart
+                    data={state.cartData}
+                    onCloseModal={() => setShowCart(false)}
+                    onDelItem={async () => {
+                        const cart = await state.getCurrentCart();
+                    }}
+                />
             )}
             {state.detailItem.show && (
                 <DetailItem
                     data={state.detailItem.data}
-                    onCloseModal={(editing) => {
+                    onCloseModal={async (editing) => {
                         dispatch(actions.setDetailItem({ show: false, data: {} }));
                         if (editing) {
-                            setTimeout(() => {
-                                getCartData();
+                            setTimeout(async () => {
+                                await state.getCurrentCart();
                             }, [1500]);
                         }
                     }}

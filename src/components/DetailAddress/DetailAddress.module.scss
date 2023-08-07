@@ -10,7 +10,9 @@
     margin: 10px 0 2px;
 }
 .header-logo {
-    width: 80px;
+    margin-right: 8px;
+    height: 40px;
+    object-fit: contain;
 }
 .header-title {
     text-transform: uppercase;
@@ -181,6 +183,7 @@
 .shop-img {
     flex-shrink: 0;
     border-radius: 10px;
+    max-height: 220px;
     width: 50%;
     object-fit: cover;
 }

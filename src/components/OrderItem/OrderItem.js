@@ -9,7 +9,8 @@ const cx = classNames.bind(styles);
 
 function OrderItem({ data = {} }) {
     return (
-        <div className={cx('order-item')}>
+        <div className={cx('order-item', { disable: !data.isActive })}>
+            <h3 className={cx('disable-title')}>Ngưng bán</h3>
             <div>
                 <div className={cx('order-img-wrapper')}>
                     <Image src={data.image} className={cx('order-img')} />

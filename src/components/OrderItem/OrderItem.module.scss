@@ -1,6 +1,7 @@
 .order-item {
     margin-top: 15px;
     display: flex;
+    position: relative;
     flex-direction: column;
     justify-content: space-between;
     background-color: white;
@@ -15,12 +16,29 @@
         transform: translateY(-5px);
     }
 }
-
+.order-item.disable {
+    opacity: 0.4;
+    pointer-events: none;
+}
+.disable-title {
+    display: none;
+}
+.order-item.disable .disable-title {
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: rotate(-5deg) translate(-50%, -50%);
+    z-index: 10;
+    text-align: center;
+    padding: 8px;
+    font-weight: 700;
+    border: 2px solid red;
+    color: red;
+    opacity: 1;
+}
 .order-img-wrapper {
     position: relative;
-    padding: 45px;
-    border-radius: 8px;
-    background-color: #c1e4d2;
 }
 .order-img {
     width: 100%;

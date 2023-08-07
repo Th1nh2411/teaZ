@@ -18,7 +18,7 @@ const sizeOrders = [
     { price: 10, name: 'Lớn ' },
 ];
 
-function DetailItem({ data = {}, onCloseModal = () => {}, editing = false }) {
+function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false }) {
     const detailItem = data.Recipe || data;
     const [toppings, setToppings] = useState([]);
     const [num, setNum] = useState(data.quantity || 1);
@@ -64,9 +64,9 @@ function DetailItem({ data = {}, onCloseModal = () => {}, editing = false }) {
         const recipesID = [detailItem.idProduct[1], ...checkedToppings].join(',');
         const token = localStorageManager.getItem('token');
         const results = await cartService.editCartItem(detailItem.idProduct, recipesID, num, size, token);
-        onCloseModal(true);
+        await onCloseModal(true);
     };
-    const handleAddItemCart = () => {
+    const handleAddItemCart = async () => {
         const token = localStorageManager.getItem('token');
 
         if (token) {
@@ -95,10 +95,10 @@ function DetailItem({ data = {}, onCloseModal = () => {}, editing = false }) {
             flyingItem.style.left = `${cart.offsetLeft}px`;
             flyingItem.style.transform = 'scale(0)';
 
-            onCloseModal(true);
-            setTimeout(() => {
+            await onCloseModal(true);
+            setTimeout(async () => {
                 flyingItem.remove();
-                storeItems();
+                await storeItems();
             }, speed * 1.5);
         } else {
             dispatch(actions.setShowLogin(true));

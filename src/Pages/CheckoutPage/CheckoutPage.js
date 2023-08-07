@@ -80,7 +80,7 @@ function CheckoutPage() {
     const handleClickCheckout = async () => {
         const token = localStorageManager.getItem('token');
         if (token) {
-            const results = await invoiceService.createInvoice(idShipping_company, shippingFee, state.idShop, token);
+            const results = await invoiceService.createInvoice(idShipping_company, shippingFee, token);
             if (results.isSuccess) {
                 dispatch(actions.setCart(false));
                 // dispatch(actions.setCurrentInvoice({ cart: [] }));
@@ -151,7 +151,7 @@ function CheckoutPage() {
                         </div>
                         <div className={cx('info')}>
                             {listCompany.map((item, index) => (
-                                <label htmlFor={`com-${index}`} className={cx('delivery-company-item')}>
+                                <label key={index} htmlFor={`com-${index}`} className={cx('delivery-company-item')}>
                                     <Form.Check
                                         value={item.idShipping_company}
                                         checked={idShipping_company === item.idShipping_company}

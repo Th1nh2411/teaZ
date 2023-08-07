@@ -10,13 +10,12 @@ function Header() {
         <footer className={cx('wrapper')}>
             <div className={cx('inner')}>
                 <div className={cx('company-info')}>
-                    <div className={cx('text')}>© Công ty CP Phúc Long Heritage 2023</div>
+                    <div className={cx('text')}>© Công ty CP Panda Heritage 2023</div>
                     <div className={cx('text')}>
                         <span className={cx('highlight')}>Mã số DN:</span>0316 871719 do sở KHĐT TPHCM cấp lần đầu ngày
                         21/05/2021
                     </div>
                     <div className={cx('text')}>
-                        {' '}
                         <span className={cx('highlight')}>Địa chỉ:</span>
                         Phòng 702, Tầng 7, Tòa nhà Central Plaza, số 17 Lê Duẩn, phường Bến Nghé, quận 1, Hồ Chí Minh.
                     </div>
@@ -26,7 +25,7 @@ function Header() {
                     </div>
                     <div className={cx('text')}>
                         <span className={cx('highlight')}>Email:</span>
-                        sales@phuclong.masangroup.com, info2@phuclong.masangroup.com
+                        sales@Panda.masangroup.com, info2@Panda.masangroup.com
                     </div>
                 </div>
                 <div className={cx('company-tick')}>

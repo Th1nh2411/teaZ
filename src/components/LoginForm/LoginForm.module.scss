@@ -5,6 +5,10 @@
     align-items: center;
     position: relative;
 }
+.logo {
+    height: 80px;
+    object-fit: contain;
+}
 .toggle-form {
     margin: 4px 0;
     font-size: 1.4rem;
@@ -25,7 +29,7 @@
 .logo {
 }
 .title {
-    font-size: 2rem;
+    font-size: 2.6rem;
     font-weight: 800;
     margin: 10px 0;
     text-transform: capitalize;

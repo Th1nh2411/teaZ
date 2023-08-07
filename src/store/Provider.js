@@ -4,6 +4,7 @@ import reducer from './reducer';
 import { actions } from '.';
 import LocalStorageManager from '../utils/LocalStorageManager';
 import * as invoiceService from '../services/invoiceService';
+import * as cartService from '../services/cartService';
 
 function Provider({ children }) {
     const localStorageManager = LocalStorageManager.getInstance();
@@ -16,6 +17,16 @@ function Provider({ children }) {
             }
         }
     };
+    const getCurrentCart = async () => {
+        const token = localStorageManager.getItem('token');
+        console.log('hehe');
+        if (token) {
+            const results = await cartService.getCartItem(token);
+            if (results) {
+                dispatch(actions.setCart(results));
+            }
+        }
+    };
     const initState = {
         userInfo: null,
         distance: 0,
@@ -25,6 +36,7 @@ function Provider({ children }) {
         cartData: null,
         currentInvoice: { invoice: null },
         toast: { show: false, content: '', title: '' },
+        getCurrentCart,
         getCurrentInvoice,
     };
     const [state, dispatch] = useReducer(reducer, initState);
@@ -32,6 +44,9 @@ function Provider({ children }) {
     useEffect(() => {
         getCurrentInvoice();
     }, []);
+    useEffect(() => {
+        getCurrentCart();
+    }, [state.userInfo]);
     useEffect(() => {
         if (state.currentInvoice.invoice && state.currentInvoice.invoice.status !== 0) {
             var getCurrentInvoiceInterval = setInterval(() => {

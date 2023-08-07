@@ -11,9 +11,9 @@ import { StoreContext, actions } from '../../store';
 const cx = classNames.bind(styles);
 
 const orderTypes = [
-    { img: images.drink, name: 'Thức uống' },
+    { img: images.drink, name: 'Trà sữa' },
     { img: images.coffee, name: 'Cà phê' },
-    { img: images.tea, name: 'Trà' },
+    { img: images.tea, name: 'Trà trái cây' },
     { img: images.bakery, name: 'Bakery' },
 ];
 
@@ -68,7 +68,9 @@ function Home() {
                                 key={index}
                                 md="3"
                                 onClick={() => {
-                                    dispatch(actions.setDetailItem({ show: true, data: item }));
+                                    if (item.isActive) {
+                                        dispatch(actions.setDetailItem({ show: true, data: item }));
+                                    }
                                 }}
                             >
                                 <OrderItem data={item} key={index} />

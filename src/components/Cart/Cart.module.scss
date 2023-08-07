@@ -118,6 +118,7 @@
 // Cart Item
 
 .item-wrapper {
+    position: relative;
     padding: 15px 25px;
     border-bottom: 1px solid #cccccc44;
     display: flex;
@@ -178,6 +179,26 @@
     .action-del {
         color: #de1212;
     }
+}
+.item-wrapper.disable {
+    opacity: 0.4;
+}
+.item-wrapper .disable-title {
+    display: none;
+}
+.item-wrapper.disable .disable-title {
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: rotate(-5deg) translate(-50%, -50%);
+    z-index: 10;
+    text-align: center;
+    padding: 8px;
+    font-weight: 700;
+    border: 2px solid red;
+    color: red;
+    opacity: 1;
 }
 .wrapper ::-webkit-scrollbar {
     border-radius: 0;
