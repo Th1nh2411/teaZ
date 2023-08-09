@@ -19,7 +19,6 @@ function Provider({ children }) {
     };
     const getCurrentCart = async () => {
         const token = localStorageManager.getItem('token');
-        console.log('hehe');
         if (token) {
             const results = await cartService.getCartItem(token);
             if (results) {
