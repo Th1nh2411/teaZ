@@ -72,9 +72,23 @@ function Cart({ data = {}, onCloseModal = () => {}, onDelItem = () => {} }) {
                                     : 'Bạn có đơn hàng chưa thanh toán'}
                                 <RiFileWarningLine className={cx('warning-icon')} />
                             </div>
-                            <div onClick={handleCheckoutOldInvoice} className={cx('warning-actions')}>
-                                Chi tiết
+                            {state.currentInvoice && state.currentInvoice.invoice && (
+                                <div onClick={handleCheckoutOldInvoice} className={cx('warning-actions')}>
+                                    Chi tiết
+                                </div>
+                            )}
+                        </div>
+                    ) : !data.shopStatus ? (
+                        <div className={cx('warning-wrapper')}>
+                            <div className={cx('warning-title')}>
+                                Quán chưa mở cửa
+                                <RiFileWarningLine className={cx('warning-icon')} />
                             </div>
+                            {state.currentInvoice && state.currentInvoice.invoice && (
+                                <div onClick={handleCheckoutOldInvoice} className={cx('warning-actions')}>
+                                    Chi tiết
+                                </div>
+                            )}
                         </div>
                     ) : (
                         <div className={cx('total')}>
@@ -85,7 +99,7 @@ function Cart({ data = {}, onCloseModal = () => {}, onDelItem = () => {} }) {
                     {data.products && data.products.length !== 0 ? (
                         <Button
                             onClick={handleClickCheckout}
-                            disable={!!state.currentInvoice.invoice}
+                            disable={!!state.currentInvoice.invoice || !data.shopStatus}
                             primary
                             className={cx('checkout-btn')}
                         >

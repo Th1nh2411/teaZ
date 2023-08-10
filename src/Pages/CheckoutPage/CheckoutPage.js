@@ -82,7 +82,7 @@ function CheckoutPage() {
         if (token) {
             const results = await invoiceService.createInvoice(idShipping_company, shippingFee, token);
             if (results.isSuccess) {
-                dispatch(actions.setCart(false));
+                dispatch(actions.setCart({ ...state.cartData, products: [], total: 0 }));
                 // dispatch(actions.setCurrentInvoice({ cart: [] }));
                 const getNewInvoice = await state.getCurrentInvoice();
                 dispatch(actions.setToast({ show: true, title: 'Đặt hàng', content: 'Đặt hàng thành công' }));
