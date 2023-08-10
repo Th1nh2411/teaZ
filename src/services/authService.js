@@ -16,6 +16,21 @@ export const login = async (username, password) => {
         return error.response && error.response.data;
     }
 };
+export const refreshToken = async (username) => {
+    // const config = {
+    //     headers: { access_token: token },
+    // };
+    const body = {
+        username,
+    };
+    try {
+        const res = await httpRequest.post('account/refreshToken', body);
+        return res;
+    } catch (error) {
+        console.log(error);
+        return error.response && error.response.data;
+    }
+};
 export const register = async (phone, password, name, mail) => {
     // const config = {
     //     headers: { access_token: token },
@@ -65,7 +80,7 @@ export const confirmOTP = async (username, verifyID) => {
         return error.response && error.response.data;
     }
 };
-export const changePassword = async (username, password, repeatPassword) => {
+export const changePasswordForgot = async (username, password, repeatPassword) => {
     // const config = {
     //     headers: { access_token: token },
     // };
@@ -89,6 +104,19 @@ export const editProfile = async (body, token) => {
 
     try {
         const res = await httpRequest.patch('user/editUserInfo', body, config);
+        return res;
+    } catch (error) {
+        console.log(error);
+        return error.response && error.response.data;
+    }
+};
+export const changePassword = async (body, token) => {
+    const config = {
+        headers: { access_token: token },
+    };
+
+    try {
+        const res = await httpRequest.put('account/changepassword', body, config);
         return res;
     } catch (error) {
         console.log(error);

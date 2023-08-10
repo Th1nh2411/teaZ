@@ -34,7 +34,13 @@ function ProfileForm({ data, onCloseModal = () => {} }) {
                         title: 'Thành công',
                     }),
                 );
-                onCloseModal(true);
+                const results2 = await authService.refreshToken(mail);
+                if (results2 && results2.isSuccess) {
+                    localStorageManage.setItem('token', results2.token);
+                    localStorageManage.setItem('userInfo', results2.userInfo);
+                    dispatch(actions.setUserInfo(results2.userInfo));
+                }
+                onCloseModal();
             } else {
                 dispatch(
                     actions.setToast({

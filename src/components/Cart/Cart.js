@@ -47,7 +47,8 @@ function Cart({ data = {}, onCloseModal = () => {}, onDelItem = () => {} }) {
                         <HiShoppingBag className={cx('icon')} />
                         <div className={cx('title')}>
                             Giỏ hàng của bạn (
-                            {data ? data.products.reduce((total, current) => current.quantity + total, 0) : 0} món)
+                            {data.products ? data.products.reduce((total, current) => current.quantity + total, 0) : 0}{' '}
+                            món)
                         </div>
                     </div>
                     <AiOutlineClose onClick={onCloseModal} className={cx('close-icon')} />
@@ -78,10 +79,10 @@ function Cart({ data = {}, onCloseModal = () => {}, onDelItem = () => {} }) {
                     ) : (
                         <div className={cx('total')}>
                             <div className={cx('total-title')}>Tổng tiền tạm tính:</div>
-                            <div className={cx('total-num')}>{data && priceFormat(data.total)}đ</div>
+                            <div className={cx('total-num')}>{data.total && priceFormat(data.total)}đ</div>
                         </div>
                     )}
-                    {data && data.products.length !== 0 ? (
+                    {data.products && data.products.length !== 0 ? (
                         <Button
                             onClick={handleClickCheckout}
                             disable={!!state.currentInvoice.invoice}

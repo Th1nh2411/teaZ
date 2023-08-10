@@ -42,6 +42,7 @@ function LoginForm({ onCloseModal = () => {} }) {
                 onCloseModal();
             } else {
                 setLoginStatus('Số điện thoại hoặc mật khẩu chưa đúng');
+                setPassword('');
             }
         };
         postLogin();

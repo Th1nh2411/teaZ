@@ -32,7 +32,7 @@ function HistoryPage() {
         setLoading(true);
         if (token) {
             const results = await invoiceService.getAllInvoice(token);
-            if (results) {
+            if (results && results.isSuccess) {
                 setListInvoice(results.invoices);
             }
         }

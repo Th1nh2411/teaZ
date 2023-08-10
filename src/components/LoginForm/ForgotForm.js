@@ -72,7 +72,7 @@ function ForgotForm({ onClickChangeForm = () => {} }) {
         }
     };
     const changePassword = async () => {
-        const results = await authService.changePassword(username, password, confirmPassword);
+        const results = await authService.changePasswordForgot(username, password, confirmPassword);
         if (results && results.isSuccess) {
             dispatch(
                 actions.setToast({

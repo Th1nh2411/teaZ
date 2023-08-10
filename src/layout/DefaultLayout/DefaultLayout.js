@@ -107,7 +107,10 @@ function DefaultLayout({ children }) {
         }
     };
     const cartQuantity = useMemo(
-        () => state.cartData && state.cartData.products.reduce((total, current) => current.quantity + total, 0),
+        () =>
+            state.cartData &&
+            state.cartData.products &&
+            state.cartData.products.reduce((total, current) => current.quantity + total, 0),
         [state.cartData],
     );
     return (
