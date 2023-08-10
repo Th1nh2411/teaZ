@@ -29,9 +29,9 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
     const localStorageManager = LocalStorageManager.getInstance();
     const [state, dispatch] = useContext(StoreContext);
     const getToppingList = async (e) => {
-        const results = await shopService.getToppingList();
+        const results = await shopService.getToppingList(data.idRecipe);
         if (results) {
-            setToppings(results.menu);
+            setToppings(results.listTopping);
         }
     };
     useEffect(() => {

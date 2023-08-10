@@ -30,14 +30,14 @@ export const getItemFromShop = async (idShop, idType) => {
         return error.response && error.response.data;
     }
 };
-export const getToppingList = async () => {
+export const getToppingList = async (idRecipe) => {
     const config = {
         params: {
-            idType: 5,
+            idRecipe,
         },
     };
     try {
-        const res = await httpRequest.get(`shop/type`, config);
+        const res = await httpRequest.get(`order/topping`, config);
         return res;
     } catch (error) {
         console.log(error);
