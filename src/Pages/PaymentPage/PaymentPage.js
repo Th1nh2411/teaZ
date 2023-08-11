@@ -7,7 +7,7 @@ import { priceFormat } from '../../utils/format';
 import Image from '../../components/Image';
 import Modal from '../../components/Modal';
 import Button from '../../components/Button';
-import { QRIcon } from '../../components/Icons/Icons';
+import { BillIcon, QRIcon } from '../../components/Icons/Icons';
 import * as invoiceService from '../../services/invoiceService';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { StoreContext, actions } from '../../store';
@@ -85,7 +85,12 @@ function CheckoutPage() {
             )}
             <div className={cx('wrapper')}>
                 <div className={cx('title')}>
-                    <Image src={payment.logo} className={cx('title-icon')} /> Cổng thanh toán {payment.name}
+                    {invoice && invoice.status === 0 ? (
+                        <Image src={payment.logo} className={cx('title-icon')} />
+                    ) : (
+                        <BillIcon className={cx('title-icon')} />
+                    )}
+                    {invoice && invoice.status === 0 ? 'Cổng thanh toán ' + payment.name : 'Đơn hàng hiện tại'}
                 </div>
                 <div className={cx('body')}>
                     <div className={cx('delivery-section')}>
