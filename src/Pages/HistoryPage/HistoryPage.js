@@ -43,7 +43,7 @@ function HistoryPage() {
     }, [state.currentInvoice.invoice]);
     const currentInvoice = useMemo(() => {
         if (listInvoice.length !== 0) {
-            if (listInvoice[listInvoice.length - 1].status === 0 || listInvoice[listInvoice.length - 1].status === 1) {
+            if (listInvoice[listInvoice.length - 1].status < 3) {
                 return listInvoice[listInvoice.length - 1];
             }
         } else {
@@ -129,6 +129,8 @@ function HistoryPage() {
                                                         {currentInvoice.status === 0
                                                             ? 'Chưa thanh toán'
                                                             : currentInvoice.status === 1
+                                                            ? 'Đã thanh toán'
+                                                            : currentInvoice.status === 2
                                                             ? 'Đang giao'
                                                             : 'Đã giao'}
                                                     </span>

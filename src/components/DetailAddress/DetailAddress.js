@@ -117,7 +117,7 @@ function DetailAddress({ data = {}, onCloseModal = () => {}, onChangeLocation = 
 
                 {loading && <AiOutlineLoading3Quarters className={cx('loading')} />}
             </div>
-            {searchResult.length !== 0 ? (
+            {searchResult && searchResult.length !== 0 ? (
                 <div className={cx('search-result')}>
                     {searchResult.map((item, index) => (
                         <div

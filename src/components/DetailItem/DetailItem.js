@@ -19,7 +19,7 @@ const sizeOrders = [
 ];
 
 function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false }) {
-    const detailItem = data.Recipe || data;
+    const detailItem = data;
     const [toppings, setToppings] = useState([]);
     const [num, setNum] = useState(data.quantity || 1);
     const [size, setSize] = useState(data.size || 0);
@@ -30,7 +30,7 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
     const [state, dispatch] = useContext(StoreContext);
     const getToppingList = async (e) => {
         const results = await shopService.getToppingList(data.idRecipe);
-        if (results) {
+        if (results && results.isSuccess) {
             setToppings(results.listTopping);
         }
     };
@@ -49,7 +49,7 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
         // Duyệt qua từng phần tử topping đã check, tìm phần tử đã check trong list toppings có cả price và lấy price của phần tử đó cộng vào total
         const checkedToppingPrice =
             checkedToppings.reduce((total, currentId) => {
-                const toppingPrice = toppings.find((item) => item.idRecipe === currentId);
+                const toppingPrice = toppings && toppings.find((item) => item.idRecipe === currentId);
                 if (toppingPrice) {
                     return toppingPrice.price + total;
                 }
