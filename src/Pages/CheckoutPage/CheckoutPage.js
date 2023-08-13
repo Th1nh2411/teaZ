@@ -5,12 +5,13 @@ import Button from '../../components/Button';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useContext, useEffect, useState } from 'react';
 import * as invoiceService from '../../services/invoiceService';
+import * as paymentService from '../../services/paymentService';
 import { StoreContext, actions } from '../../store';
 import { priceFormat } from '../../utils/format';
 import { IoLocationSharp } from 'react-icons/io5';
 import { AiOutlineRight } from 'react-icons/ai';
 import Image from '../../components/Image/Image';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, redirect, useNavigate } from 'react-router-dom';
 import config from '../../config';
 import LocalStorageManager from '../../utils/LocalStorageManager';
 const cx = classNames.bind(styles);
@@ -82,11 +83,13 @@ function CheckoutPage() {
         if (token) {
             const results = await invoiceService.createInvoice(idShipping_company, shippingFee, token);
             if (results.isSuccess) {
-                dispatch(actions.setCart({ ...state.cartData, products: [], total: 0 }));
-                // dispatch(actions.setCurrentInvoice({ cart: [] }));
-                const getNewInvoice = await state.getCurrentInvoice();
-                dispatch(actions.setToast({ show: true, title: 'Đặt hàng', content: 'Đặt hàng thành công' }));
-                navigate(config.routes.payment);
+                const results2 = await paymentService.create_payment_url({
+                    amount: (state.cartData.total + shippingFee) * 1000,
+                    bankCode: 'NCB',
+                });
+                if (results2 && results2.isSuccess) {
+                    window.location.replace(results2.url);
+                }
             } else if (results.runOut) {
                 dispatch(
                     actions.setToast({

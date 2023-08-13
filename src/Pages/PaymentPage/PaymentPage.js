@@ -9,6 +9,7 @@ import Modal from '../../components/Modal';
 import Button from '../../components/Button';
 import { BillIcon, QRIcon } from '../../components/Icons/Icons';
 import * as invoiceService from '../../services/invoiceService';
+import * as paymentService from '../../services/paymentService';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { StoreContext, actions } from '../../store';
 import LocalStorageManager from '../../utils/LocalStorageManager';
@@ -19,39 +20,61 @@ import { AiOutlineRight } from 'react-icons/ai';
 import { BsFillPhoneFill } from 'react-icons/bs';
 import { RiRefund2Line } from 'react-icons/ri';
 import images from '../../assets/images';
+import { useSearchParams } from 'react-router-dom';
 const cx = classNames.bind(styles);
 
 function CheckoutPage() {
     const location = useLocation();
-    const payment = {
-        id: 1,
-        name: 'MoMo',
-        logo: 'https://minio.thecoffeehouse.com/image/tchmobileapp/386_ic_momo@3x.png',
-        qrCode: 'https://static.mservice.io/blogscontents/momo-upload-api-211217174745-637753600658721515.png',
-    };
-
+    const [searchParams, setSearchParams] = useSearchParams();
+    const paymentStatus = searchParams.get('vnp_TransactionStatus');
     const [state, dispatch] = useContext(StoreContext);
     const [showConfirmCancelInvoice, setShowConfirmCancelInvoice] = useState();
     const localStorageManager = LocalStorageManager.getInstance();
     const navigate = useNavigate();
 
     const { invoice, products } = state.currentInvoice;
-
     const confirmPaymentInvoice = async () => {
-        const token = localStorageManager.getItem('token');
-        if (token) {
-            const results = await invoiceService.confirmInvoice(invoice.idInvoice, invoice.total, token);
+        if (invoice) {
+            const token = localStorageManager.getItem('token');
+            if (token) {
+                const results = await invoiceService.confirmInvoice(invoice.idInvoice, invoice.total, token);
+                if (results && results.isSuccess) {
+                    invoice.status = 1;
+                    dispatch(actions.setToast({ show: true, title: 'Đặt hàng', content: 'Thanh toán thành công' }));
+                }
+            }
         }
-        dispatch(actions.setToast({ show: true, title: 'Đặt hàng', content: 'Thanh toán thành công' }));
-        const getNewInvoice = await state.getCurrentInvoice();
+    };
+    useEffect(() => {
+        if (paymentStatus === '00') {
+            confirmPaymentInvoice();
+        } else if (paymentStatus === '02') {
+            dispatch(
+                actions.setToast({
+                    show: true,
+                    title: 'Thất bại',
+                    content: 'Khách hàng huỷ giao dịch',
+                    type: 'error',
+                }),
+            );
+        }
+    }, [invoice]);
+    // useEffect(() => {
+    //     if (!products) {
+    //         dispatch(actions.setToast({ show: true, title: 'Giao hàng', content: 'Đơn hàng đã được giao' }));
+    //         navigate(config.routes.home);
+    //     }
+    // }, [products]);
+    const paymentVNPay = async () => {
+        const results = await paymentService.create_payment_url({
+            amount: (state.cartData.total + invoice.shippingFee) * 1000,
+            bankCode: 'NCB',
+        });
+        if (results && results.isSuccess) {
+            window.location.replace(results.url);
+        }
     };
 
-    useEffect(() => {
-        if (!products) {
-            dispatch(actions.setToast({ show: true, title: 'Giao hàng', content: 'Đơn hàng đã được giao' }));
-            navigate(config.routes.home);
-        }
-    }, [products]);
     const handleCancelInvoice = async () => {
         const token = localStorageManager.getItem('token');
         if (token) {
@@ -85,12 +108,8 @@ function CheckoutPage() {
             )}
             <div className={cx('wrapper')}>
                 <div className={cx('title')}>
-                    {invoice && invoice.status === 0 ? (
-                        <Image src={payment.logo} className={cx('title-icon')} />
-                    ) : (
-                        <BillIcon className={cx('title-icon')} />
-                    )}
-                    {invoice && invoice.status === 0 ? 'Cổng thanh toán ' + payment.name : 'Đơn hàng hiện tại'}
+                    <BillIcon className={cx('title-icon')} />
+                    Đơn hàng hiện tại
                 </div>
                 <div className={cx('body')}>
                     <div className={cx('delivery-section')}>
@@ -137,7 +156,6 @@ function CheckoutPage() {
                                     <IoLocationSharp className={cx('info-icon')} />
                                     <div className={cx('info-detail')}>{state.detailAddress.address}</div>
                                 </div>
-                                {/* <AiOutlineRight className={cx('info-actions')} /> */}
                             </div>
                             <div className={cx('info')}>
                                 <div className={cx('info-body')}>
@@ -151,7 +169,6 @@ function CheckoutPage() {
                                         </div>
                                     )}
                                 </div>
-                                {/* <AiOutlineRight className={cx('info-actions')} /> */}
                             </div>
                             <div className={cx('delivery-subtitle')}>
                                 Thời gian đặt đơn : <span>{orderTime}</span>
@@ -167,15 +184,8 @@ function CheckoutPage() {
                     <div className={cx('qr-scan-wrapper')}>
                         {invoice && invoice.status === 0 ? (
                             <>
-                                <div className={cx('qr-scan-title')}>Quét mã QR để thanh toán</div>
-
-                                <div className={cx('qr-img-wrapper')}>
-                                    <Image src={payment.qrCode} className={cx('qr-img')} />
-                                </div>
-                                <div className={cx('qr-scan-subtitle')}>
-                                    <QRIcon className={cx('icon')} />
-                                    Sử dụng <b>App {payment.name}</b> hoặc ứng dụng camera hỗ trợ QR code để quét mã
-                                </div>
+                                <div className={cx('qr-scan-title')}>Trạng thái đơn hàng</div>
+                                <Image src={images.payment} className={cx('qr-img')} />
                                 <div className={cx('actions-wrapper')}>
                                     <div
                                         onClick={() => setShowConfirmCancelInvoice(true)}
@@ -184,8 +194,8 @@ function CheckoutPage() {
                                         <RiRefund2Line className={cx('refund-icon')} />
                                         Hủy đơn
                                     </div>
-                                    <div onClick={() => confirmPaymentInvoice()} className={cx('actions-paid')}>
-                                        Đã thanh toán?
+                                    <div onClick={() => paymentVNPay()} className={cx('actions-paid')}>
+                                        Thanh toán
                                     </div>
                                 </div>
                             </>
@@ -193,10 +203,6 @@ function CheckoutPage() {
                             <>
                                 <div className={cx('qr-scan-title')}>Đơn hàng đang chờ xác nhận</div>
                                 <Image src={images.barista} className={cx('qr-img')} />
-                                {/* <div className={cx('qr-scan-subtitle')}>
-                                    <RiRefund2Line className={cx('icon')} />
-                                    Liên hệ hotline <b>099669966</b> để có thể hủy đơn hàng đang giao
-                                </div> */}
                                 <div className={cx('actions-wrapper')}>
                                     <div
                                         onClick={() => setShowConfirmCancelInvoice(true)}
