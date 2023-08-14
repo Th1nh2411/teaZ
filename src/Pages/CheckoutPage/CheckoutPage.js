@@ -63,10 +63,14 @@ function CheckoutPage() {
                 token,
             );
             if (results.isSuccess && payment === 1) {
-                const results2 = await paymentService.create_payment_url({
-                    amount: (state.cartData.total + shippingFee).toFixed(3) * 1000,
-                    bankCode: 'NCB',
-                });
+                const results2 = await paymentService.create_payment_url(
+                    {
+                        amount: (state.cartData.total + shippingFee).toFixed(3) * 1000,
+                        bankCode: 'NCB',
+                        orderId: results.invoice.idInvoice,
+                    },
+                    token,
+                );
                 if (results2 && results2.isSuccess) {
                     window.location.replace(results2.url);
                 }

@@ -75,12 +75,18 @@ function CheckoutPage() {
     //     }
     // }, [products]);
     const paymentVNPay = async () => {
-        const results = await paymentService.create_payment_url({
-            amount: (invoice.total + invoice.shippingFee).toFixed(3) * 1000,
-            bankCode: 'NCB',
-        });
-        if (results && results.isSuccess) {
-            window.location.replace(results.url);
+        const token = localStorageManager.getItem('token');
+        if (token) {
+            const results = await paymentService.create_payment_url(
+                {
+                    amount: (invoice.total + invoice.shippingFee).toFixed(3) * 1000,
+                    bankCode: 'NCB',
+                },
+                token,
+            );
+            if (results && results.isSuccess) {
+                window.location.replace(results.url);
+            }
         }
     };
 
