@@ -59,11 +59,12 @@ function CheckoutPage() {
                 idShipping_company,
                 shippingFee,
                 state.detailAddress.address,
+                payment,
                 token,
             );
             if (results.isSuccess && payment === 1) {
                 const results2 = await paymentService.create_payment_url({
-                    amount: (state.cartData.total + shippingFee) * 1000,
+                    amount: (state.cartData.total + shippingFee).toFixed(3) * 1000,
                     bankCode: 'NCB',
                 });
                 if (results2 && results2.isSuccess) {
