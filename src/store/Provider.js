@@ -33,7 +33,7 @@ function Provider({ children }) {
         detailItem: { show: false, data: null, editing: false },
         detailAddress: { show: false, address: '' },
         cartData: null,
-        currentInvoice: { invoice: null },
+        currentInvoice: { invoice: undefined },
         toast: { show: false, content: '', title: '' },
         getCurrentCart,
         getCurrentInvoice,
@@ -51,11 +51,9 @@ function Provider({ children }) {
             var getCurrentInvoiceInterval = setInterval(() => {
                 getCurrentInvoice();
             }, 10000);
-        } else {
-            clearInterval(getCurrentInvoiceInterval);
         }
         return () => clearInterval(getCurrentInvoiceInterval);
-    }, [state.currentInvoice.invoice]);
+    }, [state.currentInvoice]);
     return <UserContext.Provider value={[state, dispatch]}>{children}</UserContext.Provider>;
 }
 

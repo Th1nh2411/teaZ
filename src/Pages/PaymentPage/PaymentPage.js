@@ -34,19 +34,17 @@ function CheckoutPage() {
 
     const { invoice, products } = state.currentInvoice;
     const confirmPaymentInvoice = async () => {
-        if (invoice) {
-            const token = localStorageManager.getItem('token');
-            if (token) {
-                const results = await invoiceService.confirmInvoice(invoice.idInvoice, invoice.total, token);
-                if (results && results.isSuccess) {
-                    invoice.status = 1;
-                    dispatch(actions.setToast({ show: true, title: 'Đặt hàng', content: 'Thanh toán thành công' }));
-                }
+        const token = localStorageManager.getItem('token');
+        if (token) {
+            const results = await invoiceService.confirmInvoice(invoice.idInvoice, invoice.total, token);
+            if (results && results.isSuccess) {
+                dispatch(actions.setToast({ show: true, title: 'Đặt hàng', content: 'Thanh toán thành công' }));
+                const getCurrentInvoice = await state.getCurrentInvoice();
             }
         }
     };
     useEffect(() => {
-        if (paymentStatus === '00') {
+        if (paymentStatus === '00' && invoice && invoice.status === 0) {
             confirmPaymentInvoice();
         } else if (paymentStatus === '02') {
             dispatch(
@@ -58,6 +56,16 @@ function CheckoutPage() {
                 }),
             );
         }
+        if (invoice === null) {
+            dispatch(
+                actions.setToast({
+                    show: true,
+                    title: 'Giao hàng',
+                    content: 'Giao hàng thành công. Quý khách kiểm tra lại đơn hàng',
+                }),
+            );
+            navigate(config.routes.history);
+        }
     }, [invoice]);
     // useEffect(() => {
     //     if (!products) {
@@ -67,7 +75,7 @@ function CheckoutPage() {
     // }, [products]);
     const paymentVNPay = async () => {
         const results = await paymentService.create_payment_url({
-            amount: (state.cartData.total + invoice.shippingFee) * 1000,
+            amount: (invoice.total + invoice.shippingFee) * 1000,
             bankCode: 'NCB',
         });
         if (results && results.isSuccess) {

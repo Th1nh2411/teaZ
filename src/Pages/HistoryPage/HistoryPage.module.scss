@@ -19,6 +19,11 @@
     flex-direction: column;
     align-items: center;
 }
+.invoice-list {
+    padding-left: 30px;
+    overflow-y: scroll;
+    height: 55vh;
+}
 .avatar {
     border-radius: 50%;
     height: 180px;

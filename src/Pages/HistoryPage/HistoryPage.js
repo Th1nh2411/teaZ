@@ -104,7 +104,7 @@ function HistoryPage() {
                             <div className={cx('title')}>
                                 <BsFillClipboard2Fill className={cx('title-icon')} /> Lịch sử đặt hàng
                             </div>
-                            <div className={cx('body')}>
+                            <div className={cx('body', 'invoice-list')}>
                                 {currentInvoice && (
                                     <div className={cx('invoice-wrapper')}>
                                         <div className={cx('left-side')}>
