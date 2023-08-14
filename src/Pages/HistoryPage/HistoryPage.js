@@ -43,8 +43,8 @@ function HistoryPage() {
     }, [state.currentInvoice.invoice]);
     const currentInvoice = useMemo(() => {
         if (listInvoice.length !== 0) {
-            if (listInvoice[listInvoice.length - 1].status < 3) {
-                return listInvoice[listInvoice.length - 1];
+            if (listInvoice[0].status < 3) {
+                return listInvoice[0];
             }
         } else {
             return null;
@@ -154,7 +154,7 @@ function HistoryPage() {
                                 )}
 
                                 {currentInvoice
-                                    ? listInvoice.slice(0, -1).map((item, index) => (
+                                    ? listInvoice.slice(1).map((item, index) => (
                                           <div key={index} className={cx('invoice-wrapper')}>
                                               <div className={cx('left-side')}>
                                                   <BillIcon className={cx('invoice-img')} />
