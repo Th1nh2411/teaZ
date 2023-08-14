@@ -16,32 +16,6 @@ import config from '../../config';
 import LocalStorageManager from '../../utils/LocalStorageManager';
 const cx = classNames.bind(styles);
 
-const payments = [
-    {
-        id: 1,
-        name: 'MoMo',
-        logo: 'https://minio.thecoffeehouse.com/image/tchmobileapp/386_ic_momo@3x.png',
-        qrCode: 'https://static.mservice.io/blogscontents/momo-upload-api-211217174745-637753600658721515.png',
-    },
-    {
-        id: 2,
-        name: 'ZaloPay',
-        logo: 'https://minio.thecoffeehouse.com/image/tchmobileapp/388_ic_zalo@3x.png',
-        qrCode: 'https://scontent.xx.fbcdn.net/v/t1.15752-9/348360855_206187095684147_2635888829051936565_n.jpg?stp=dst-jpg_s206x206&_nc_cat=101&ccb=1-7&_nc_sid=aee45a&_nc_ohc=9RsNUFxCOHMAX_lkBCD&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent.xx&oh=03_AdTTbe7GjqL6joDLxICXrMH3jW3wN7oq6oBjPaNwe39NGA&oe=64A3936B',
-    },
-    {
-        id: 3,
-        name: 'ShopeePay',
-        logo: 'https://minio.thecoffeehouse.com/image/tchmobileapp/1120_1119_ShopeePay-Horizontal2_O.png',
-        qrCode: 'https://treoo.zendesk.com/hc/article_attachments/4403097262361/shopeepay-qr-code.png',
-    },
-    {
-        id: 4,
-        name: 'Thẻ ngân hàng',
-        logo: 'https://minio.thecoffeehouse.com/image/tchmobileapp/385_ic_atm@3x.png',
-        qrCode: 'https://scontent.xx.fbcdn.net/v/t1.15752-9/351805778_631469008880943_2995489567085744667_n.png?stp=dst-png_p206x206&_nc_cat=108&ccb=1-7&_nc_sid=aee45a&_nc_ohc=yedCmHVszGQAX8bv3FB&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent.xx&oh=03_AdRVIt9ckExtLolb-OBlmx7F0CBxriObb9c-xDibmxwkuQ&oe=64A3A6E7',
-    },
-];
 function CheckoutPage() {
     const [checkPolicy, setCheckPolicy] = useState(false);
     const [idShipping_company, setIdShippingCompany] = useState(1);
@@ -87,7 +61,7 @@ function CheckoutPage() {
                 state.detailAddress.address,
                 token,
             );
-            if (results.isSuccess) {
+            if (results.isSuccess && payment === 1) {
                 const results2 = await paymentService.create_payment_url({
                     amount: (state.cartData.total + shippingFee) * 1000,
                     bankCode: 'NCB',
@@ -95,6 +69,16 @@ function CheckoutPage() {
                 if (results2 && results2.isSuccess) {
                     window.location.replace(results2.url);
                 }
+            } else if (results.isSuccess && payment === 0) {
+                dispatch(
+                    actions.setToast({
+                        show: true,
+                        title: 'Đặt hàng',
+                        content: 'Đặt hàng thành công.',
+                    }),
+                );
+                const getCurrentInvoice = await state.getCurrentInvoice();
+                navigate(config.routes.payment + '?vnp_TransactionStatus=00');
             } else if (results.runOut) {
                 dispatch(
                     actions.setToast({
@@ -105,6 +89,15 @@ function CheckoutPage() {
                     }),
                 );
                 navigate(config.routes.home);
+            } else {
+                dispatch(
+                    actions.setToast({
+                        show: true,
+                        title: 'Đặt hàng thất bại',
+                        content: results.message,
+                        type: 'info',
+                    }),
+                );
             }
         }
     };
@@ -184,8 +177,8 @@ function CheckoutPage() {
                             size="lg"
                             onChange={(e) => setPayment(Number(e.target.value))}
                         >
-                            <option value={0}>Thanh toán VNPAY</option>
-                            <option value={1}>Thanh toán khi nhận hàng</option>
+                            <option value={1}>Thanh toán VNPAY</option>
+                            <option value={0}>Thanh toán khi nhận hàng</option>
                         </Form.Select>
                         {/* {payments.map((item, index) => (
                             <label key={index} htmlFor={`payment-${index}`} className={cx('payment-item')}>

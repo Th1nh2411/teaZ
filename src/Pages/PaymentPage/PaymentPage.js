@@ -38,7 +38,9 @@ function CheckoutPage() {
         if (token) {
             const results = await invoiceService.confirmInvoice(invoice.idInvoice, invoice.total, token);
             if (results && results.isSuccess) {
-                dispatch(actions.setToast({ show: true, title: 'Đặt hàng', content: 'Thanh toán thành công' }));
+                dispatch(
+                    actions.setToast({ show: true, title: 'Đặt hàng', content: 'Vui lòng chờ nhân viên xác nhận đơn' }),
+                );
                 const getCurrentInvoice = await state.getCurrentInvoice();
             }
         }
@@ -55,8 +57,7 @@ function CheckoutPage() {
                     type: 'error',
                 }),
             );
-        }
-        if (invoice === null) {
+        } else if (invoice === null) {
             dispatch(
                 actions.setToast({
                     show: true,
