@@ -81,7 +81,12 @@ function CheckoutPage() {
     const handleClickCheckout = async () => {
         const token = localStorageManager.getItem('token');
         if (token) {
-            const results = await invoiceService.createInvoice(idShipping_company, shippingFee, token);
+            const results = await invoiceService.createInvoice(
+                idShipping_company,
+                shippingFee,
+                state.detailAddress.address,
+                token,
+            );
             if (results.isSuccess) {
                 const results2 = await paymentService.create_payment_url({
                     amount: (state.cartData.total + shippingFee) * 1000,
@@ -174,7 +179,15 @@ function CheckoutPage() {
                 <div className={cx('checkout-section')}>
                     <div className={cx('payment-wrapper')}>
                         <div className={cx('body-title')}>Phương thức thanh toán</div>
-                        {payments.map((item, index) => (
+                        <Form.Select
+                            className={cx('payment-select')}
+                            size="lg"
+                            onChange={(e) => setPayment(Number(e.target.value))}
+                        >
+                            <option value={0}>Thanh toán VNPAY</option>
+                            <option value={1}>Thanh toán khi nhận hàng</option>
+                        </Form.Select>
+                        {/* {payments.map((item, index) => (
                             <label key={index} htmlFor={`payment-${index}`} className={cx('payment-item')}>
                                 <Form.Check
                                     value={item.id}
@@ -189,7 +202,7 @@ function CheckoutPage() {
                                     <Image src={item.logo} className={cx('payment-img')} />
                                 </label>
                             </label>
-                        ))}
+                        ))} */}
                     </div>
                     <div className={cx('checkout-wrapper')}>
                         <div className={cx('body-title')}>Hóa đơn thanh toán</div>

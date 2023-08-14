@@ -124,6 +124,9 @@
     }
 }
 .payment-wrapper {
+    .payment-select {
+        width: auto;
+    }
     .payment-item {
         padding: 5px;
         display: flex;

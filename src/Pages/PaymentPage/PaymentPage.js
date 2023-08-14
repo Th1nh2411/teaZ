@@ -162,7 +162,7 @@ function CheckoutPage() {
                             <div className={cx('info')}>
                                 <div className={cx('info-body')}>
                                     <IoLocationSharp className={cx('info-icon')} />
-                                    <div className={cx('info-detail')}>{state.detailAddress.address}</div>
+                                    <div className={cx('info-detail')}>{invoice && invoice.address}</div>
                                 </div>
                             </div>
                             <div className={cx('info')}>
