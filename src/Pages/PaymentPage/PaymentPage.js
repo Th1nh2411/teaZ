@@ -61,8 +61,8 @@ function CheckoutPage() {
             dispatch(
                 actions.setToast({
                     show: true,
-                    title: 'Giao hàng',
-                    content: 'Giao hàng thành công. Quý khách kiểm tra lại đơn hàng',
+                    title: 'Đơn hàng',
+                    content: 'Đơn hàng đã hoàn thành hoặc được huỷ',
                 }),
             );
             navigate(config.routes.history);
