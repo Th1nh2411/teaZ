@@ -14,7 +14,11 @@ function CartItem({ data = {}, onDelItem = () => {} }) {
     const [state, dispatch] = useContext(StoreContext);
     const localStorageManager = LocalStorageManager.getInstance();
     const handleEditItem = () => {
-        dispatch(actions.setDetailItem({ show: true, data: { ...data, idRecipe: data.idProduct[1] }, editing: true }));
+        const arrRecipe = data.idProduct.split(',');
+        const idMainProduct = arrRecipe[0];
+        dispatch(
+            actions.setDetailItem({ show: true, data: { ...data, idRecipe: idMainProduct.slice(1) }, editing: true }),
+        );
     };
     const handleDelItem = async () => {
         const token = localStorageManager.getItem('token');
