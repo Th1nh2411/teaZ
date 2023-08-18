@@ -141,9 +141,9 @@ function DefaultLayout({ children }) {
                 <Cart
                     data={state.cartData}
                     onCloseModal={() => setShowCart(false)}
-                    onDelItem={async () => {
-                        const cart = await state.getCurrentCart();
-                    }}
+                    // onDelItem={async () => {
+                    //     const cart = await state.getCurrentCart();
+                    // }}
                 />
             )}
             {state.detailItem.show && (
@@ -151,11 +151,11 @@ function DefaultLayout({ children }) {
                     data={state.detailItem.data}
                     onCloseModal={async (editing) => {
                         dispatch(actions.setDetailItem({ show: false, data: {} }));
-                        if (editing) {
-                            setTimeout(async () => {
-                                await state.getCurrentCart();
-                            }, [1500]);
-                        }
+                        // if (editing) {
+                        //     setTimeout(async () => {
+                        //         await state.getCurrentCart();
+                        //     }, [1500]);
+                        // }
                     }}
                     editing={state.detailItem.editing}
                 />

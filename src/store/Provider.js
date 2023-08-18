@@ -9,22 +9,26 @@ import * as cartService from '../services/cartService';
 function Provider({ children }) {
     const localStorageManager = LocalStorageManager.getInstance();
     const getCurrentInvoice = async () => {
-        const token = localStorageManager.getItem('token');
-        if (token) {
-            const results = await invoiceService.getCurrentInvoice(token);
-            if (results) {
-                dispatch(actions.setCurrentInvoice(results));
-            }
-        }
+        let invoice = localStorageManager.getItem('currentInvoice') || {};
+        dispatch(actions.setCurrentInvoice(invoice));
+        // const token = localStorageManager.getItem('token');
+        // if (token) {
+        //     const results = await invoiceService.getCurrentInvoice(token);
+        //     if (results) {
+        //         dispatch(actions.setCurrentInvoice(results));
+        //     }
+        // }
     };
     const getCurrentCart = async () => {
-        const token = localStorageManager.getItem('token');
-        if (token) {
-            const results = await cartService.getCartItem(token);
-            if (results) {
-                dispatch(actions.setCart(results));
-            }
-        }
+        // const token = localStorageManager.getItem('token');
+        // if (token) {
+        //     const results = await cartService.getCartItem(token);
+        //     if (results) {
+        //         dispatch(actions.setCart(results));
+        //     }
+        // }
+        let cart = localStorageManager.getItem('cart') || {};
+        dispatch(actions.setCart(cart));
     };
     const initState = {
         userInfo: null,
@@ -46,14 +50,14 @@ function Provider({ children }) {
     useEffect(() => {
         getCurrentCart();
     }, [state.userInfo]);
-    useEffect(() => {
-        if (state.currentInvoice.invoice && state.currentInvoice.invoice.status !== 0) {
-            var getCurrentInvoiceInterval = setInterval(() => {
-                getCurrentInvoice();
-            }, 10000);
-        }
-        return () => clearInterval(getCurrentInvoiceInterval);
-    }, [state.currentInvoice]);
+    // useEffect(() => {
+    //     if (state.currentInvoice.invoice && state.currentInvoice.invoice.status !== 0) {
+    //         var getCurrentInvoiceInterval = setInterval(() => {
+    //             getCurrentInvoice();
+    //         }, 10000);
+    //     }
+    //     return () => clearInterval(getCurrentInvoiceInterval);
+    // }, [state.currentInvoice]);
     return <UserContext.Provider value={[state, dispatch]}>{children}</UserContext.Provider>;
 }
 

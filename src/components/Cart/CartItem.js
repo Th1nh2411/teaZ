@@ -14,18 +14,20 @@ function CartItem({ data = {}, onDelItem = () => {} }) {
     const [state, dispatch] = useContext(StoreContext);
     const localStorageManager = LocalStorageManager.getInstance();
     const handleEditItem = () => {
-        const arrRecipe = data.idProduct.split(',');
-        const idMainProduct = arrRecipe[0];
-        dispatch(
-            actions.setDetailItem({ show: true, data: { ...data, idRecipe: idMainProduct.slice(1) }, editing: true }),
-        );
+        dispatch(actions.setDetailItem({ show: true, data, editing: true }));
     };
     const handleDelItem = async () => {
-        const token = localStorageManager.getItem('token');
-        const results = await cartService.delCartItem(data.idProduct, token);
-        if (results) {
-            onDelItem();
-        }
+        const cartData = {
+            products: state.cartData.products.filter((item) => item.idRecipe !== data.idRecipe),
+            total: (state.cartData.total || 0) - data.totalProduct,
+        };
+        dispatch(actions.setCart(cartData));
+        localStorageManager.setItem('cart', cartData);
+        // const token = localStorageManager.getItem('token');
+        // const results = await cartService.delCartItem(data.idProduct, token);
+        // if (results) {
+        //     onDelItem();
+        // }
     };
     return (
         <div className={cx('item-wrapper', { disable: !data.isActive })}>

@@ -91,18 +91,9 @@ function CheckoutPage() {
     };
 
     const handleCancelInvoice = async () => {
-        const token = localStorageManager.getItem('token');
-        if (token) {
-            const results = await invoiceService.cancelCurrentInvoice(token);
-            if (results && results.isCancel) {
-                dispatch(actions.setToast({ show: true, title: 'Hủy đơn', content: results.message }));
-                dispatch(actions.setCurrentInvoice({ invoice: null }));
-                navigate(config.routes.home);
-            } else {
-                dispatch(actions.setToast({ show: true, title: 'Hủy đơn', content: results.message, type: 'info' }));
-                setShowConfirmCancelInvoice(false);
-            }
-        }
+        dispatch(actions.setToast({ show: true, title: 'Hủy đơn', content: 'Huỷ đơn thành công' }));
+        dispatch(actions.setCurrentInvoice({ invoice: null }));
+        navigate(config.routes.home);
     };
     const orderTime = useMemo(
         () => (invoice && invoice.date ? dayjs(invoice.date).format('HH:mm DD/MM/YYYY') : 'Vừa lên đơn'),
