@@ -1,5 +1,7 @@
 Doc: https://docs.google.com/document/d/1Z0jSGbtzdfzhF4kmWWc6i6dJ09poG9yuSjei1Pm1o2M/edit#heading=h.gjdgxs
+
 Demo: https://tea-z.vercel.app/
+
 Admin github: https://github.com/Th1nh2411/teaZ_manage
 
 Run web: npm start
