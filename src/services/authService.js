@@ -1,9 +1,5 @@
-// import * as httpRequest from '../utils/httpRequest';
-import axios from 'axios';
+import * as httpRequest from '../utils/httpRequest';
 
-const httpRequest = axios.create({
-    baseURL: 'https://mocki.io/v1/',
-});
 export const login = async (username, password) => {
     // const config = {
     //     headers: { access_token: token },
@@ -13,8 +9,8 @@ export const login = async (username, password) => {
         password,
     };
     try {
-        const res = await httpRequest.get('93162a4b-1b23-49bb-9989-367fe0ae9813', body);
-        return res.data;
+        const res = await httpRequest.post('account/login', body);
+        return res;
     } catch (error) {
         console.log(error);
         return error.response && error.response.data;
@@ -46,8 +42,8 @@ export const register = async (phone, password, name, mail) => {
         mail,
     };
     try {
-        const res = await httpRequest.get('93162a4b-1b23-49bb-9989-367fe0ae9813', body);
-        return res.data;
+        const res = await httpRequest.post('account/create', body);
+        return res;
     } catch (error) {
         console.log(error);
         return error.response && error.response.data;
@@ -61,8 +57,8 @@ export const sendOTP = async (username) => {
         username,
     };
     try {
-        const res = await httpRequest.get('93162a4b-1b23-49bb-9989-367fe0ae9813', body);
-        return res.data;
+        const res = await httpRequest.post('account/forgotpassword', body);
+        return res;
     } catch (error) {
         console.log(error);
         return error.response && error.response.data;
@@ -77,8 +73,8 @@ export const confirmOTP = async (username, verifyID) => {
         verifyID,
     };
     try {
-        const res = await httpRequest.get('93162a4b-1b23-49bb-9989-367fe0ae9813', body);
-        return res.data;
+        const res = await httpRequest.post('account/forgotpassword/verify', body);
+        return res;
     } catch (error) {
         console.log(error);
         return error.response && error.response.data;
@@ -94,8 +90,8 @@ export const changePasswordForgot = async (username, password, repeatPassword) =
         repeatPassword,
     };
     try {
-        const res = await httpRequest.get('93162a4b-1b23-49bb-9989-367fe0ae9813', body);
-        return res.data;
+        const res = await httpRequest.post('account/forgotpassword/changePw', body);
+        return res;
     } catch (error) {
         console.log(error);
         return error.response && error.response.data;
@@ -107,8 +103,8 @@ export const editProfile = async (body, token) => {
     };
 
     try {
-        const res = await httpRequest.get('93162a4b-1b23-49bb-9989-367fe0ae9813', body, config);
-        return res.data;
+        const res = await httpRequest.patch('user/editUserInfo', body, config);
+        return res;
     } catch (error) {
         console.log(error);
         return error.response && error.response.data;
@@ -120,8 +116,8 @@ export const changePassword = async (body, token) => {
     };
 
     try {
-        const res = await httpRequest.get('93162a4b-1b23-49bb-9989-367fe0ae9813', body, config);
-        return res.data;
+        const res = await httpRequest.put('account/changepassword', body, config);
+        return res;
     } catch (error) {
         console.log(error);
         return error.response && error.response.data;

@@ -20,10 +20,12 @@ const sizeOrders = [
 
 function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false }) {
     const detailItem = data;
-    const [toppings, setToppings] = useState();
+    const [toppings, setToppings] = useState([]);
     const [num, setNum] = useState(data.quantity || 1);
     const [size, setSize] = useState(data.size || 0);
-    const [checkedToppings, setCheckedToppings] = useState(data.listTopping ? data.listTopping : []);
+    const [checkedToppings, setCheckedToppings] = useState(
+        data.listTopping ? data.listTopping.map((item) => item.idRecipe) : [],
+    );
     const localStorageManager = LocalStorageManager.getInstance();
     const [state, dispatch] = useContext(StoreContext);
     const getToppingList = async (e) => {
@@ -35,11 +37,11 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
     useEffect(() => {
         getToppingList();
     }, []);
-    const handleChangeToppingCheckBox = (e, topping) => {
+    const handleChangeToppingCheckBox = (e) => {
         if (e.target.checked) {
-            setCheckedToppings([topping, ...checkedToppings]);
+            setCheckedToppings([Number(e.target.value), ...checkedToppings]);
         } else {
-            const newToppings = checkedToppings.filter((item) => item.idRecipe !== Number(e.target.value));
+            const newToppings = checkedToppings.filter((item) => item !== Number(e.target.value));
             setCheckedToppings(newToppings);
         }
     };
@@ -54,28 +56,14 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
             }, 0) || 0;
         return ((detailItem.price * data.discount) / 100 + size + checkedToppingPrice) * num;
     }, [num, size, checkedToppings, toppings]);
+
     const cart = document.querySelector('#show-cart-btn');
     const cartNum = document.querySelector('#num-item-cart');
     const imageRef = useRef(null);
     const handleEditItemCart = async () => {
-        const newProducts = state.cartData.products;
-        var index = state.cartData.products.findIndex((item) => item.idRecipe === data.idRecipe);
-        if (index !== -1) {
-            newProducts[index].size = size;
-            newProducts[index].quantity = num;
-            newProducts[index].listTopping = checkedToppings;
-            newProducts[index].totalProduct = total;
-        }
-
-        const cartData = {
-            products: newProducts,
-            total: (state.cartData.total || 0) + total,
-        };
-        dispatch(actions.setCart(cartData));
-        localStorageManager.setItem('cart', cartData);
-        // const recipesID = [detailItem.idProduct[1], ...checkedToppings].join(',');
-        // const token = localStorageManager.getItem('token');
-        // const results = await cartService.editCartItem(detailItem.idProduct, recipesID, num, size, token);
+        const recipesID = [detailItem.idProduct[1], ...checkedToppings].join(',');
+        const token = localStorageManager.getItem('token');
+        const results = await cartService.editCartItem(detailItem.idProduct, recipesID, num, size, token);
         await onCloseModal(true);
     };
     const handleAddItemCart = async () => {
@@ -118,25 +106,9 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
     };
 
     const storeItems = async () => {
-        // const recipesID = [detailItem.idRecipe, ...checkedToppings].join(',');
-        dispatch(
-            actions.setCart({
-                products: [
-                    ...(state.cartData.products || []),
-                    { ...data, size, quantity: num, totalProduct: total, listTopping: checkedToppings },
-                ],
-                total: (state.cartData.total || 0) + total,
-            }),
-        );
-        localStorageManager.setItem('cart', {
-            products: [
-                ...(state.cartData.products || []),
-                { ...data, size, quantity: num, listTopping: checkedToppings },
-            ],
-            total: (state.cartData.total || 0) + total,
-        });
-        // const token = localStorageManager.getItem('token');
-        // const results = await cartService.addItemToCart(recipesID, num, size, token);
+        const recipesID = [detailItem.idRecipe, ...checkedToppings].join(',');
+        const token = localStorageManager.getItem('token');
+        const results = await cartService.addItemToCart(recipesID, num, size, token);
         // Change ui Num
         cartNum.classList.add('add-item');
         // cartNum.innerHTML = Number(cartNum.innerHTML) + 1;
@@ -220,12 +192,12 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
                                                 value={topping.idRecipe}
                                                 checked={
                                                     checkedToppings !== [] &&
-                                                    checkedToppings.some((item) => item.idRecipe === topping.idRecipe)
+                                                    checkedToppings.some((item) => item === topping.idRecipe)
                                                 }
                                                 type="checkbox"
                                                 isValid
                                                 id={`size-${index}`}
-                                                onChange={(e) => handleChangeToppingCheckBox(e, topping)}
+                                                onChange={(e) => handleChangeToppingCheckBox(e)}
                                             ></Form.Check>
                                         </div>
                                     </label>

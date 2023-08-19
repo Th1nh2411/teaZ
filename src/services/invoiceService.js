@@ -1,17 +1,13 @@
-// import * as httpRequest from '../utils/httpRequest';
-import axios from 'axios';
+import * as httpRequest from '../utils/httpRequest';
 
-const httpRequest = axios.create({
-    baseURL: 'https://mocki.io/v1/',
-});
 export const getShippingCompany = async () => {
     // const config = {
 
     // };
 
     try {
-        const res = await httpRequest.get(`3b2a1805-cc9a-4948-a36c-b53d7cd6cd00`);
-        return res.data;
+        const res = await httpRequest.get(`order/getListCompanies`);
+        return res;
     } catch (error) {
         console.log(error);
         return error.response && error.response.data;
@@ -26,8 +22,8 @@ export const getShippingFee = async (distance, idShipping_company = 1) => {
     };
 
     try {
-        const res = await httpRequest.get(`8aa024dd-97db-4aaf-82d1-436e6cddff09`, config);
-        return res.data;
+        const res = await httpRequest.get(`order/getShipFee`, config);
+        return res;
     } catch (error) {
         console.log(error);
         return error.response && error.response.data;
@@ -39,8 +35,8 @@ export const createInvoice = async (idShipping_company = 1, shippingFee, address
     };
     const body = { idShipping_company, shippingFee, address, payment_status };
     try {
-        const res = await httpRequest.get(`bed59ccb-8207-492d-ac71-1e6081bb64bf`, body, config);
-        return res.data;
+        const res = await httpRequest.post(`order/createInvoice`, body, config);
+        return res;
     } catch (error) {
         console.log(error);
         return error.response && error.response.data;
@@ -52,8 +48,8 @@ export const confirmInvoice = async (idInvoice, total, token) => {
     };
     const body = { idInvoice, total };
     try {
-        const res = await httpRequest.get(`bed59ccb-8207-492d-ac71-1e6081bb64bf`, body, config);
-        return res.data;
+        const res = await httpRequest.put(`order/confirmInvoice`, body, config);
+        return res;
     } catch (error) {
         console.log(error);
         return error.response && error.response.data;
@@ -64,8 +60,8 @@ export const getCurrentInvoice = async (token) => {
         headers: { access_token: token },
     };
     try {
-        const res = await httpRequest.get(`bed59ccb-8207-492d-ac71-1e6081bb64bf`, config);
-        return res.data;
+        const res = await httpRequest.get(`order/getCurrentInvoice`, config);
+        return res;
     } catch (error) {
         console.log(error);
         return error.response && error.response.data;
@@ -76,8 +72,8 @@ export const cancelCurrentInvoice = async (token) => {
         headers: { access_token: token },
     };
     try {
-        const res = await httpRequest.get(`bed59ccb-8207-492d-ac71-1e6081bb64bf`, {}, config);
-        return res.data;
+        const res = await httpRequest.del(`order/cancelInvoice`, {}, config);
+        return res;
     } catch (error) {
         console.log(error);
         return error.response && error.response.data;
@@ -88,8 +84,8 @@ export const getAllInvoice = async (token) => {
         headers: { access_token: token },
     };
     try {
-        const res = await httpRequest.get(`0fddc7f4-c5e1-4b0b-9578-6687466f8de7`, config);
-        return res.data;
+        const res = await httpRequest.get(`order/getAllInvoice`, config);
+        return res;
     } catch (error) {
         console.log(error);
         return error.response && error.response.data;
@@ -101,8 +97,8 @@ export const getDetailInvoice = async (idInvoice, token) => {
         headers: { access_token: token },
     };
     try {
-        const res = await httpRequest.get(`cd82a73a-25f1-4b58-ad23-05c7f6aab0ca`, config);
-        return res.data;
+        const res = await httpRequest.get(`order/getDetailInvoice/${idInvoice}`, config);
+        return res;
     } catch (error) {
         console.log(error);
         return error.response && error.response.data;
