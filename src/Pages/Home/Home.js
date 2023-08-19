@@ -24,7 +24,7 @@ function Home() {
     const [state, dispatch] = useContext(StoreContext);
     const getListItem = async () => {
         setLoading(true);
-        const results = await shopService.getItemFromShop(state.idShop, orderType);
+        const results = await shopService.getItemFromShop(orderType);
         if (results) {
             setMenu(results.menu);
         }
