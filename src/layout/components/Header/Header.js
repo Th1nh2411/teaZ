@@ -11,13 +11,11 @@ import { HiUserCircle } from 'react-icons/hi';
 import { MdOutlineHistoryEdu } from 'react-icons/md';
 import Button from '../../../components/Button/Button';
 import { useContext, useEffect, useState } from 'react';
-import LocalStorageManager from '../../../utils/LocalStorageManager';
 
 import { StoreContext, actions } from '../../../store';
 const cx = classNames.bind(styles);
 
 function Header() {
-    const localStorageManager = LocalStorageManager.getInstance();
     const [state, dispatch] = useContext(StoreContext);
     const currentPath = useLocation().pathname;
     const navigate = useNavigate();
@@ -44,8 +42,6 @@ function Header() {
                 console.log(menuItem);
                 break;
             case 'logout':
-                localStorageManager.removeItem('token');
-                localStorageManager.removeItem('userInfo');
                 dispatch(actions.setUserInfo({}));
                 dispatch(actions.setCurrentInvoice({}));
                 if (currentPath !== config.routes.home) {
@@ -96,7 +92,7 @@ function Header() {
                             </div>
                         </div>
                         <div className={cx('actions')}>
-                            {localStorageManager.getItem('token') ? (
+                            {state.userInfo ? (
                                 <>
                                     <Menu items={USER_MENU} onChange={handleOnchangeMenu}>
                                         <div className={cx('action-icon')}>

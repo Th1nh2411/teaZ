@@ -26,7 +26,7 @@ function Home() {
         setLoading(true);
         const results = await shopService.getItemFromShop(orderType);
         if (results) {
-            setMenu(results.menu);
+            setMenu(results.data);
         }
         setLoading(false);
     };

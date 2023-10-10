@@ -7,15 +7,12 @@ import Button from '../Button';
 import images from '../../assets/images';
 import Image from '../Image/Image';
 import * as cartService from '../../services/cartService';
-import LocalStorageManager from '../../utils/LocalStorageManager';
 
 const cx = classNames.bind(styles);
 
 function DetailChange({ data, onCloseModal = () => {} }) {
-    const localStorageManager = LocalStorageManager.getInstance();
     const deleteUnavailableItem = async () => {
-        const token = localStorageManager.getItem('token');
-        const results = await cartService.delUnavailableItem(data.listIdProduct, token);
+        const results = await cartService.delUnavailableItem(data.listIdProduct);
     };
     return (
         <Modal

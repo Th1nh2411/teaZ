@@ -6,7 +6,6 @@ import Image from '../Image/Image';
 import { MdOutlineAddShoppingCart } from 'react-icons/md';
 import { HiMinusCircle, HiPlusCircle } from 'react-icons/hi';
 import { Col, Form, Row } from 'react-bootstrap';
-import LocalStorageManager from '../../utils/LocalStorageManager';
 import * as shopService from '../../services/shopService';
 import * as cartService from '../../services/cartService';
 import { StoreContext, actions } from '../../store';
@@ -26,7 +25,6 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
     const [checkedToppings, setCheckedToppings] = useState(
         data.listTopping ? data.listTopping.map((item) => item.idRecipe) : [],
     );
-    const localStorageManager = LocalStorageManager.getInstance();
     const [state, dispatch] = useContext(StoreContext);
     const getToppingList = async (e) => {
         const results = await shopService.getToppingList(data.idRecipe);
@@ -62,14 +60,11 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
     const imageRef = useRef(null);
     const handleEditItemCart = async () => {
         const recipesID = [detailItem.idProduct[1], ...checkedToppings].join(',');
-        const token = localStorageManager.getItem('token');
-        const results = await cartService.editCartItem(detailItem.idProduct, recipesID, num, size, token);
+        const results = await cartService.editCartItem(detailItem.idProduct, recipesID, num, size);
         await onCloseModal(true);
     };
     const handleAddItemCart = async () => {
-        const token = localStorageManager.getItem('token');
-
-        if (token) {
+        if (state.userInfo) {
             const speed = 800,
                 curveDelay = 300;
             const imageY = imageRef.current.getBoundingClientRect().top,
@@ -107,8 +102,7 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
 
     const storeItems = async () => {
         const recipesID = [detailItem.idRecipe, ...checkedToppings].join(',');
-        const token = localStorageManager.getItem('token');
-        const results = await cartService.addItemToCart(recipesID, num, size, token);
+        const results = await cartService.addItemToCart(recipesID, num, size);
         // Change ui Num
         cartNum.classList.add('add-item');
         // cartNum.innerHTML = Number(cartNum.innerHTML) + 1;

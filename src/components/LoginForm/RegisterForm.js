@@ -7,7 +7,6 @@ import Button from '../Button';
 import images from '../../assets/images';
 import Image from '../Image/Image';
 import * as authService from '../../services/authService';
-import LocalStorageManager from '../../utils/LocalStorageManager';
 import { StoreContext, actions } from '../../store';
 
 const cx = classNames.bind(styles);

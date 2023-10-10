@@ -7,7 +7,6 @@ import Button from '../Button';
 import images from '../../assets/images';
 import Image from '../Image/Image';
 import * as authService from '../../services/authService';
-import LocalStorageManager from '../../utils/LocalStorageManager';
 import { StoreContext, actions } from '../../store';
 import RegisterForm from './RegisterForm';
 import ForgotForm from './ForgotForm';
@@ -19,7 +18,6 @@ function LoginForm({ onCloseModal = () => {} }) {
     const [password, setPassword] = useState('');
     const [form, setForm] = useState('login');
     const [loginStatus, setLoginStatus] = useState('');
-    const localStorageManager = LocalStorageManager.getInstance();
     const [state, dispatch] = useContext(StoreContext);
     const handleSubmitLogin = (e) => {
         e.preventDefault();
@@ -28,8 +26,6 @@ function LoginForm({ onCloseModal = () => {} }) {
         const postLogin = async () => {
             const results = await authService.login(phoneNumber, password);
             if (results && results.isSuccess) {
-                localStorageManager.setItem('token', results.token);
-                localStorageManager.setItem('userInfo', results.userInfo);
                 dispatch(actions.setUserInfo(results.userInfo));
                 dispatch(
                     actions.setToast({

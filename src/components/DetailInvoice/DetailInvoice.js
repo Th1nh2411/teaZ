@@ -7,7 +7,6 @@ import Button from '../Button';
 import images from '../../assets/images';
 import Image from '../Image/Image';
 import * as invoiceService from '../../services/invoiceService';
-import LocalStorageManager from '../../utils/LocalStorageManager';
 import { BillIcon } from '../Icons';
 import { priceFormat } from '../../utils/format';
 import dayjs from 'dayjs';
@@ -18,18 +17,14 @@ function DetailInvoice({ idInvoice, onCloseModal = () => {} }) {
     const [invoiceInfo, setInvoiceInfo] = useState();
     const [invoiceCart, setInvoiceCart] = useState();
     const [loading, setLoading] = useState();
-    const localStorageManager = LocalStorageManager.getInstance();
     const getListInvoice = async () => {
-        const token = localStorageManager.getItem('token');
-        if (token) {
-            setLoading(true);
-            const results = await invoiceService.getDetailInvoice(idInvoice, token);
-            if (results) {
-                setInvoiceInfo(results.invoice);
-                setInvoiceCart(results.products);
-            }
-            setLoading(false);
+        setLoading(true);
+        const results = await invoiceService.getDetailInvoice(idInvoice);
+        if (results) {
+            setInvoiceInfo(results.invoice);
+            setInvoiceCart(results.products);
         }
+        setLoading(false);
     };
     useEffect(() => {
         getListInvoice();

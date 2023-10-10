@@ -6,7 +6,6 @@ import Image from '../Image/Image';
 import * as mapService from '../../services/mapService';
 import * as shopService from '../../services/shopService';
 
-import LocalStorageManager from '../../utils/LocalStorageManager';
 import { IoLocationSharp, IoSearch } from 'react-icons/io5';
 import { BiStore, BiTargetLock } from 'react-icons/bi';
 import { useDebounce } from '../../hooks';
@@ -41,7 +40,7 @@ function DetailAddress({ data = {}, onCloseModal = () => {}, onChangeLocation = 
         console.log(results);
         if (results) {
             setShopInfo(results);
-            dispatch(actions.setDistance(results.distance));
+            dispatch(actions.setShippingFee(results.distance));
         }
     };
     useEffect(() => {

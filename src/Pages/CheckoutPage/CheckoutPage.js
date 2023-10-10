@@ -13,7 +13,6 @@ import { AiOutlineRight } from 'react-icons/ai';
 import Image from '../../components/Image/Image';
 import { Link, redirect, useNavigate } from 'react-router-dom';
 import config from '../../config';
-import LocalStorageManager from '../../utils/LocalStorageManager';
 const cx = classNames.bind(styles);
 
 function CheckoutPage() {
@@ -21,21 +20,10 @@ function CheckoutPage() {
     const [idShipping_company, setIdShippingCompany] = useState(1);
     const [listCompany, setListCompany] = useState([]);
     const [payment, setPayment] = useState(1);
-    const [shippingFee, setShippingFee] = useState(15);
     const [state, dispatch] = useContext(StoreContext);
-    const localStorageManager = LocalStorageManager.getInstance();
+    const shippingFee = state.shippingFee;
     const navigate = useNavigate();
-    const getShippingFee = async () => {
-        const results = await invoiceService.getShippingFee(state.distance, idShipping_company);
-        if (results && results.total > 15) {
-            setShippingFee(Number(results.total));
-        } else {
-            setShippingFee(15);
-        }
-    };
-    useEffect(() => {
-        getShippingFee();
-    }, [state.distance, idShipping_company]);
+
     const getShippingCompany = async () => {
         const results = await invoiceService.getShippingCompany();
         if (results && results.isSuccess) {
@@ -53,57 +41,50 @@ function CheckoutPage() {
         }
     };
     const handleClickCheckout = async () => {
-        const token = localStorageManager.getItem('token');
-        if (token) {
-            const results = await invoiceService.createInvoice(
-                idShipping_company,
-                shippingFee,
-                state.detailAddress.address,
-                payment,
-                token,
-            );
-            if (results.isSuccess && payment === 1) {
-                const results2 = await paymentService.create_payment_url(
-                    {
-                        amount: (state.cartData.total + shippingFee).toFixed(3) * 1000,
-                        bankCode: 'NCB',
-                        orderId: results.invoice.idInvoice,
-                    },
-                    token,
-                );
-                if (results2 && results2.isSuccess) {
-                    window.location.replace(results2.url);
-                }
-            } else if (results.isSuccess && payment === 0) {
-                dispatch(
-                    actions.setToast({
-                        show: true,
-                        title: 'Đặt hàng',
-                        content: 'Đặt hàng thành công.',
-                    }),
-                );
-                const getCurrentInvoice = await state.getCurrentInvoice();
-                navigate(config.routes.payment + '?vnp_TransactionStatus=00');
-            } else if (results.runOut) {
-                dispatch(
-                    actions.setToast({
-                        show: true,
-                        title: 'Đặt hàng',
-                        content: 'Giỏ hàng có món đã hết hàng. Vui lòng thay đổi giỏ hàng của bạn',
-                        type: 'info',
-                    }),
-                );
-                navigate(config.routes.home);
-            } else {
-                dispatch(
-                    actions.setToast({
-                        show: true,
-                        title: 'Đặt hàng thất bại',
-                        content: results.message,
-                        type: 'info',
-                    }),
-                );
+        const results = await invoiceService.createInvoice(
+            idShipping_company,
+            shippingFee,
+            state.detailAddress.address,
+            payment,
+        );
+        if (results.isSuccess && payment === 1) {
+            const results2 = await paymentService.create_payment_url({
+                amount: (state.cartData.total + shippingFee).toFixed(3) * 1000,
+                bankCode: 'NCB',
+                orderId: results.invoice.idInvoice,
+            });
+            if (results2 && results2.isSuccess) {
+                window.location.replace(results2.url);
             }
+        } else if (results.isSuccess && payment === 0) {
+            dispatch(
+                actions.setToast({
+                    show: true,
+                    title: 'Đặt hàng',
+                    content: 'Đặt hàng thành công.',
+                }),
+            );
+            const getCurrentInvoice = await state.getCurrentInvoice();
+            navigate(config.routes.payment + '?vnp_TransactionStatus=00');
+        } else if (results.runOut) {
+            dispatch(
+                actions.setToast({
+                    show: true,
+                    title: 'Đặt hàng',
+                    content: 'Giỏ hàng có món đã hết hàng. Vui lòng thay đổi giỏ hàng của bạn',
+                    type: 'info',
+                }),
+            );
+            navigate(config.routes.home);
+        } else {
+            dispatch(
+                actions.setToast({
+                    show: true,
+                    title: 'Đặt hàng thất bại',
+                    content: results.message,
+                    type: 'info',
+                }),
+            );
         }
     };
     return (

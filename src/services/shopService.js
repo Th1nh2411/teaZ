@@ -1,14 +1,24 @@
 import * as httpRequest from '../utils/httpRequest';
 
 export const getShopInfo = async (latitude = 10.848046, longitude = 106.785888) => {
+    try {
+        const res = await httpRequest.get('shop');
+        return res;
+    } catch (error) {
+        console.log(error);
+        return error.response && error.response.data;
+    }
+};
+export const getShippingFee = async (userLat, userLng, idShipping_company = 1) => {
     const config = {
         params: {
-            latitude,
-            longitude,
+            userLat,
+            userLng,
         },
     };
+
     try {
-        const res = await httpRequest.get('shop/getShopInfo', config);
+        const res = await httpRequest.get(`shipping-company/feeship/${idShipping_company}`, config);
         return res;
     } catch (error) {
         console.log(error);
@@ -16,13 +26,8 @@ export const getShopInfo = async (latitude = 10.848046, longitude = 106.785888) 
     }
 };
 export const getItemFromShop = async (idType) => {
-    const config = {
-        params: {
-            idType,
-        },
-    };
     try {
-        const res = await httpRequest.get('shop/type', config);
+        const res = await httpRequest.get(`recipe/menu/${idType}`);
         return res;
     } catch (error) {
         console.log(error);

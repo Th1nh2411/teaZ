@@ -12,7 +12,6 @@ import * as invoiceService from '../../services/invoiceService';
 import * as paymentService from '../../services/paymentService';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { StoreContext, actions } from '../../store';
-import LocalStorageManager from '../../utils/LocalStorageManager';
 import config from '../../config';
 import dayjs from 'dayjs';
 import { IoLocationSharp } from 'react-icons/io5';
@@ -29,20 +28,16 @@ function CheckoutPage() {
     const paymentStatus = searchParams.get('vnp_TransactionStatus');
     const [state, dispatch] = useContext(StoreContext);
     const [showConfirmCancelInvoice, setShowConfirmCancelInvoice] = useState();
-    const localStorageManager = LocalStorageManager.getInstance();
     const navigate = useNavigate();
 
     const { invoice, products } = state.currentInvoice;
     const confirmPaymentInvoice = async () => {
-        const token = localStorageManager.getItem('token');
-        if (token) {
-            const results = await invoiceService.confirmInvoice(invoice.idInvoice, invoice.total, token);
-            if (results && results.isSuccess) {
-                dispatch(
-                    actions.setToast({ show: true, title: 'Đặt hàng', content: 'Vui lòng chờ nhân viên xác nhận đơn' }),
-                );
-                const getCurrentInvoice = await state.getCurrentInvoice();
-            }
+        const results = await invoiceService.confirmInvoice(invoice.idInvoice, invoice.total);
+        if (results && results.isSuccess) {
+            dispatch(
+                actions.setToast({ show: true, title: 'Đặt hàng', content: 'Vui lòng chờ nhân viên xác nhận đơn' }),
+            );
+            const getCurrentInvoice = await state.getCurrentInvoice();
         }
     };
     useEffect(() => {
@@ -75,33 +70,24 @@ function CheckoutPage() {
     //     }
     // }, [products]);
     const paymentVNPay = async () => {
-        const token = localStorageManager.getItem('token');
-        if (token) {
-            const results = await paymentService.create_payment_url(
-                {
-                    amount: (invoice.total + invoice.shippingFee).toFixed(3) * 1000,
-                    bankCode: 'NCB',
-                },
-                token,
-            );
-            if (results && results.isSuccess) {
-                window.location.replace(results.url);
-            }
+        const results = await paymentService.create_payment_url({
+            amount: (invoice.total + invoice.shippingFee).toFixed(3) * 1000,
+            bankCode: 'NCB',
+        });
+        if (results && results.isSuccess) {
+            window.location.replace(results.url);
         }
     };
 
     const handleCancelInvoice = async () => {
-        const token = localStorageManager.getItem('token');
-        if (token) {
-            const results = await invoiceService.cancelCurrentInvoice(token);
-            if (results && results.isCancel) {
-                dispatch(actions.setToast({ show: true, title: 'Hủy đơn', content: results.message }));
-                dispatch(actions.setCurrentInvoice({ invoice: null }));
-                navigate(config.routes.home);
-            } else {
-                dispatch(actions.setToast({ show: true, title: 'Hủy đơn', content: results.message, type: 'info' }));
-                setShowConfirmCancelInvoice(false);
-            }
+        const results = await invoiceService.cancelCurrentInvoice();
+        if (results && results.isCancel) {
+            dispatch(actions.setToast({ show: true, title: 'Hủy đơn', content: results.message }));
+            dispatch(actions.setCurrentInvoice({ invoice: null }));
+            navigate(config.routes.home);
+        } else {
+            dispatch(actions.setToast({ show: true, title: 'Hủy đơn', content: results.message, type: 'info' }));
+            setShowConfirmCancelInvoice(false);
         }
     };
     const orderTime = useMemo(

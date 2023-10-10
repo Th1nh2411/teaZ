@@ -7,7 +7,6 @@ import { useContext, useEffect, useMemo, useState } from 'react';
 import Cart from '../../components/Cart/Cart';
 import { HiShoppingCart } from 'react-icons/hi';
 import { BiArrowToTop } from 'react-icons/bi';
-import LocalStorageManager from '../../utils/LocalStorageManager';
 import { StoreContext, actions } from '../../store';
 import DetailItem from '../../components/DetailItem/DetailItem';
 import LoginForm from '../../components/LoginForm/LoginForm';
@@ -27,7 +26,6 @@ function DefaultLayout({ children }) {
     const [location, setLocation] = useState(false);
     const [address, setAddress] = useState('');
 
-    const localStorageManager = LocalStorageManager.getInstance();
     const [state, dispatch] = useContext(StoreContext);
     const currentPath = useLocation().pathname;
     useEffect(() => {
@@ -59,19 +57,13 @@ function DefaultLayout({ children }) {
     // useEffect(() => {
     //     getCartData();
     // }, [state.userInfo, state.currentInvoice]);
-    console.log(state);
     const getLocation = () => {
         navigator.geolocation.getCurrentPosition((position) => {
             const { latitude, longitude } = position.coords;
             setLocation({ latitude, longitude });
         });
     };
-    const getUserInfoToken = () => {
-        if (localStorageManager.getItem('userInfo')) {
-            const userInfo = localStorageManager.getItem('userInfo');
-            dispatch(actions.setUserInfo(userInfo));
-        }
-    };
+    const getUserInfoToken = () => {};
 
     useEffect(() => {
         getLocation();
@@ -86,21 +78,21 @@ function DefaultLayout({ children }) {
             }
         }
     };
-    const setDistance = async () => {
+    const setShippingFee = async () => {
         if (location) {
-            const results = await shopService.getShopInfo(location.latitude, location.longitude);
+            const results = await shopService.getShippingFee(location.latitude, location.longitude);
             if (results) {
-                dispatch(actions.setDistance(results.distance));
+                dispatch(actions.setShippingFee(results.data));
             }
         }
     };
     useEffect(() => {
         getAddress();
-        setDistance();
+        setShippingFee();
     }, [location]);
     const handleCLickShowCart = () => {
-        const token = localStorageManager.getItem('token');
-        if (token) {
+        const userInfo = state.userInfo;
+        if (userInfo) {
             setShowCart(true);
         } else {
             dispatch(actions.setShowLogin(true));

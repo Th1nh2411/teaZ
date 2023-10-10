@@ -6,7 +6,6 @@ import Button from '../../components/Button';
 import { Col, Form, Row } from 'react-bootstrap';
 import { MdOutlineAddShoppingCart } from 'react-icons/md';
 import { useContext, useEffect, useState } from 'react';
-import LocalStorageManager from '../../utils/LocalStorageManager';
 import * as authService from '../../services/authService';
 import Tippy from '@tippyjs/react';
 import { MdOutlineInfo } from 'react-icons/md';
@@ -21,7 +20,6 @@ function ChangePwForm({ onCloseModal = () => {} }) {
     const [confirmPw, setConfirmPwValue] = useState('');
     const [valueChange, setValueChange] = useState(false);
     const [state, dispatch] = useContext(StoreContext);
-    const localStorageManage = LocalStorageManager.getInstance();
     const editProfile = async () => {
         if (newPassword && newPassword !== confirmPw) {
             dispatch(
@@ -45,28 +43,25 @@ function ChangePwForm({ onCloseModal = () => {} }) {
             );
             return;
         }
-        const token = localStorageManage.getItem('token');
-        if (token) {
-            const results = await authService.changePassword({ oldPassword, newPassword }, token);
-            if (results && results.isSuccess) {
-                dispatch(
-                    actions.setToast({
-                        show: true,
-                        content: 'Đổi mật khẩu thành công',
-                        title: 'Thành công',
-                    }),
-                );
-                onCloseModal(true);
-            } else {
-                dispatch(
-                    actions.setToast({
-                        show: true,
-                        content: results.message,
-                        title: 'Thất bại',
-                        type: 'error',
-                    }),
-                );
-            }
+        const results = await authService.changePassword({ oldPassword, newPassword });
+        if (results && results.isSuccess) {
+            dispatch(
+                actions.setToast({
+                    show: true,
+                    content: 'Đổi mật khẩu thành công',
+                    title: 'Thành công',
+                }),
+            );
+            onCloseModal(true);
+        } else {
+            dispatch(
+                actions.setToast({
+                    show: true,
+                    content: results.message,
+                    title: 'Thất bại',
+                    type: 'error',
+                }),
+            );
         }
     };
     const handleCancelEdit = (e) => {

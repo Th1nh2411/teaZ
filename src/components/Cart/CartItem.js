@@ -3,7 +3,6 @@ import classNames from 'classnames/bind';
 import { memo, useContext, useEffect, useMemo, useState } from 'react';
 import Image from '../Image/Image';
 import { AiTwotoneDelete, AiTwotoneEdit } from 'react-icons/ai';
-import LocalStorageManager from '../../utils/LocalStorageManager';
 import { priceFormat } from '../../utils/format';
 import { StoreContext, actions } from '../../store';
 import * as cartService from '../../services/cartService';
@@ -12,7 +11,6 @@ const cx = classNames.bind(styles);
 
 function CartItem({ data = {}, onDelItem = () => {} }) {
     const [state, dispatch] = useContext(StoreContext);
-    const localStorageManager = LocalStorageManager.getInstance();
     const handleEditItem = () => {
         const arrRecipe = data.idProduct.split(',');
         const idMainProduct = arrRecipe[0];
@@ -21,8 +19,7 @@ function CartItem({ data = {}, onDelItem = () => {} }) {
         );
     };
     const handleDelItem = async () => {
-        const token = localStorageManager.getItem('token');
-        const results = await cartService.delCartItem(data.idProduct, token);
+        const results = await cartService.delCartItem(data.idProduct);
         if (results) {
             onDelItem();
         }

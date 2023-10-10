@@ -7,7 +7,6 @@ import Button from '../Button';
 import { HiShoppingBag } from 'react-icons/hi';
 import { AiOutlineClose } from 'react-icons/ai';
 import CartItem from './CartItem';
-import LocalStorageManager from '../../utils/LocalStorageManager';
 import * as invoiceService from '../../services/invoiceService';
 import { StoreContext, actions } from '../../store';
 import { priceFormat } from '../../utils/format';
@@ -20,7 +19,6 @@ import { RiFileWarningLine } from 'react-icons/ri';
 const cx = classNames.bind(styles);
 
 function Cart({ data = {}, onCloseModal = () => {}, onDelItem = () => {} }) {
-    const localStorageManager = LocalStorageManager.getInstance();
     const navigate = useNavigate();
     const [state, dispatch] = useContext(StoreContext);
 

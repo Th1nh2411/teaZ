@@ -6,7 +6,6 @@ import Button from '../../components/Button';
 import { Col, Form, Row } from 'react-bootstrap';
 import { MdOutlineAddShoppingCart } from 'react-icons/md';
 import { useContext, useEffect, useState } from 'react';
-import LocalStorageManager from '../../utils/LocalStorageManager';
 import * as authService from '../../services/authService';
 import Tippy from '@tippyjs/react';
 import { MdOutlineInfo } from 'react-icons/md';
@@ -21,36 +20,30 @@ function ProfileForm({ data, onCloseModal = () => {} }) {
     const [mail, setMailValue] = useState(data ? data.mail : '');
     const [valueChange, setValueChange] = useState(false);
     const [state, dispatch] = useContext(StoreContext);
-    const localStorageManage = LocalStorageManager.getInstance();
     const editProfile = async () => {
-        const token = localStorageManage.getItem('token');
-        if (token) {
-            const results = await authService.editProfile({ name, phone, mail }, token);
-            if (results && results.isSuccess) {
-                dispatch(
-                    actions.setToast({
-                        show: true,
-                        content: 'Cập nhật thông tin cá nhân thành công',
-                        title: 'Thành công',
-                    }),
-                );
-                const results2 = await authService.refreshToken(mail);
-                if (results2 && results2.isSuccess) {
-                    localStorageManage.setItem('token', results2.token);
-                    localStorageManage.setItem('userInfo', results2.userInfo);
-                    dispatch(actions.setUserInfo(results2.userInfo));
-                }
-                onCloseModal();
-            } else {
-                dispatch(
-                    actions.setToast({
-                        show: true,
-                        content: results.message,
-                        title: 'Thất bại',
-                        type: 'error',
-                    }),
-                );
+        const results = await authService.editProfile({ name, phone, mail });
+        if (results && results.isSuccess) {
+            dispatch(
+                actions.setToast({
+                    show: true,
+                    content: 'Cập nhật thông tin cá nhân thành công',
+                    title: 'Thành công',
+                }),
+            );
+            const results2 = await authService.refreshToken(mail);
+            if (results2 && results2.isSuccess) {
+                dispatch(actions.setUserInfo(results2.userInfo));
             }
+            onCloseModal();
+        } else {
+            dispatch(
+                actions.setToast({
+                    show: true,
+                    content: results.message,
+                    title: 'Thất bại',
+                    type: 'error',
+                }),
+            );
         }
     };
     const handleCancelEdit = (e) => {

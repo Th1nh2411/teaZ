@@ -10,7 +10,6 @@ import { priceFormat } from '../../utils/format';
 import { IoLocationSharp } from 'react-icons/io5';
 import { AiOutlineRight } from 'react-icons/ai';
 import Image from '../../components/Image';
-import LocalStorageManager from '../../utils/LocalStorageManager';
 import dayjs from 'dayjs';
 import { BillIcon } from '../../components/Icons';
 import DetailInvoice from '../../components/DetailInvoice/DetailInvoice';
@@ -26,15 +25,11 @@ function HistoryPage() {
     const [showChangePw, setShowChangePw] = useState();
     const [loading, setLoading] = useState();
     const [state, dispatch] = useContext(StoreContext);
-    const localStorageManager = LocalStorageManager.getInstance();
     const getListInvoice = async () => {
-        const token = localStorageManager.getItem('token');
         setLoading(true);
-        if (token) {
-            const results = await invoiceService.getAllInvoice(token);
-            if (results && results.isSuccess) {
-                setListInvoice(results.invoices);
-            }
+        const results = await invoiceService.getAllInvoice();
+        if (results && results.isSuccess) {
+            setListInvoice(results.invoices);
         }
         setLoading(false);
     };

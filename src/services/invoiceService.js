@@ -13,29 +13,11 @@ export const getShippingCompany = async () => {
         return error.response && error.response.data;
     }
 };
-export const getShippingFee = async (distance, idShipping_company = 1) => {
-    const config = {
-        params: {
-            distance,
-            idShipping_company,
-        },
-    };
 
-    try {
-        const res = await httpRequest.get(`order/getShipFee`, config);
-        return res;
-    } catch (error) {
-        console.log(error);
-        return error.response && error.response.data;
-    }
-};
 export const createInvoice = async (idShipping_company = 1, shippingFee, address, payment_status, token) => {
-    const config = {
-        headers: { access_token: token },
-    };
     const body = { idShipping_company, shippingFee, address, payment_status };
     try {
-        const res = await httpRequest.post(`order/createInvoice`, body, config);
+        const res = await httpRequest.post(`order/createInvoice`, body);
         return res;
     } catch (error) {
         console.log(error);
@@ -43,12 +25,9 @@ export const createInvoice = async (idShipping_company = 1, shippingFee, address
     }
 };
 export const confirmInvoice = async (idInvoice, total, token) => {
-    const config = {
-        headers: { access_token: token },
-    };
     const body = { idInvoice, total };
     try {
-        const res = await httpRequest.put(`order/confirmInvoice`, body, config);
+        const res = await httpRequest.put(`order/confirmInvoice`, body);
         return res;
     } catch (error) {
         console.log(error);
@@ -56,11 +35,8 @@ export const confirmInvoice = async (idInvoice, total, token) => {
     }
 };
 export const getCurrentInvoice = async (token) => {
-    const config = {
-        headers: { access_token: token },
-    };
     try {
-        const res = await httpRequest.get(`order/getCurrentInvoice`, config);
+        const res = await httpRequest.get(`invoice/current/get`);
         return res;
     } catch (error) {
         console.log(error);
@@ -68,11 +44,8 @@ export const getCurrentInvoice = async (token) => {
     }
 };
 export const cancelCurrentInvoice = async (token) => {
-    const config = {
-        headers: { access_token: token },
-    };
     try {
-        const res = await httpRequest.del(`order/cancelInvoice`, {}, config);
+        const res = await httpRequest.del(`order/cancelInvoice`, {});
         return res;
     } catch (error) {
         console.log(error);
@@ -80,11 +53,8 @@ export const cancelCurrentInvoice = async (token) => {
     }
 };
 export const getAllInvoice = async (token) => {
-    const config = {
-        headers: { access_token: token },
-    };
     try {
-        const res = await httpRequest.get(`order/getAllInvoice`, config);
+        const res = await httpRequest.get(`order/getAllInvoice`);
         return res;
     } catch (error) {
         console.log(error);
@@ -93,11 +63,8 @@ export const getAllInvoice = async (token) => {
 };
 
 export const getDetailInvoice = async (idInvoice, token) => {
-    const config = {
-        headers: { access_token: token },
-    };
     try {
-        const res = await httpRequest.get(`order/getDetailInvoice/${idInvoice}`, config);
+        const res = await httpRequest.get(`order/getDetailInvoice/${idInvoice}`);
         return res;
     } catch (error) {
         console.log(error);

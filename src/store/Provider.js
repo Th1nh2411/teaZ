@@ -2,33 +2,25 @@ import { useEffect, useReducer } from 'react';
 import UserContext from './Context';
 import reducer from './reducer';
 import { actions } from '.';
-import LocalStorageManager from '../utils/LocalStorageManager';
 import * as invoiceService from '../services/invoiceService';
 import * as cartService from '../services/cartService';
 
 function Provider({ children }) {
-    const localStorageManager = LocalStorageManager.getInstance();
     const getCurrentInvoice = async () => {
-        const token = localStorageManager.getItem('token');
-        if (token) {
-            const results = await invoiceService.getCurrentInvoice(token);
-            if (results) {
-                dispatch(actions.setCurrentInvoice(results));
-            }
+        const results = await invoiceService.getCurrentInvoice();
+        if (results) {
+            dispatch(actions.setCurrentInvoice(results));
         }
     };
     const getCurrentCart = async () => {
-        const token = localStorageManager.getItem('token');
-        if (token) {
-            const results = await cartService.getCartItem(token);
-            if (results) {
-                dispatch(actions.setCart(results));
-            }
+        const results = await cartService.getCartItem();
+        if (results) {
+            dispatch(actions.setCart(results));
         }
     };
     const initState = {
         userInfo: null,
-        distance: 0,
+        shippingFee: 15,
         showLogin: false,
         detailItem: { show: false, data: null, editing: false },
         detailAddress: { show: false, address: '' },
@@ -41,10 +33,14 @@ function Provider({ children }) {
     const [state, dispatch] = useReducer(reducer, initState);
 
     useEffect(() => {
-        getCurrentInvoice();
+        if (state.userInfo) {
+            getCurrentInvoice();
+        }
     }, []);
     useEffect(() => {
-        getCurrentCart();
+        if (state.userInfo) {
+            getCurrentCart();
+        }
     }, [state.userInfo]);
     useEffect(() => {
         if (state.currentInvoice.invoice && state.currentInvoice.invoice.status !== 0) {
