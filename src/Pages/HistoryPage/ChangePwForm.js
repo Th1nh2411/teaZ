@@ -44,7 +44,7 @@ function ChangePwForm({ onCloseModal = () => {} }) {
             return;
         }
         const results = await authService.changePassword({ oldPassword, newPassword });
-        if (results && results.isSuccess) {
+        if (results) {
             dispatch(
                 actions.setToast({
                     show: true,

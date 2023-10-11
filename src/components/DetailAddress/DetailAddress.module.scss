@@ -71,24 +71,6 @@
     color: rgb(127 127 127);
     background-color: rgb(236, 239, 241);
 }
-.clear {
-    cursor: pointer;
-}
-
-.clear,
-.loading {
-    background-color: transparent;
-    font-size: 1.4rem;
-    display: flex;
-    position: absolute;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--secondary-color);
-}
-.loading {
-    animation: spinner 1s linear infinite;
-}
 
 // Search result
 .search-result {

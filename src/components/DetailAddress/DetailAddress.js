@@ -12,16 +12,18 @@ import { useDebounce } from '../../hooks';
 import { AiFillCloseCircle, AiOutlineClose, AiOutlineLoading3Quarters } from 'react-icons/ai';
 import images from '../../assets/images';
 import { StoreContext, actions } from '../../store';
+import { Skeleton } from 'antd';
 
 const cx = classNames.bind(styles);
 
 function DetailAddress({ data = {}, onCloseModal = () => {}, onChangeLocation = () => {} }) {
     const [location, setLocation] = useState({ latitude: data.latitude, longitude: data.longitude });
-    const [address, setAddress] = useState(data.address);
+
     const [searchValue, setSearchValue] = useState('');
     const [searchResult, setSearchResult] = useState([]);
-    const [shopInfo, setShopInfo] = useState();
-    const [loading, setLoading] = useState(false);
+    const [shopInfo, setShopInfo] = useState({});
+    const [searchLoading, setSearchLoading] = useState(false);
+    const [dataLoading, setDataLoading] = useState(false);
     const debouncedValue = useDebounce(searchValue, 500);
     const [state, dispatch] = useContext(StoreContext);
     const getCurrentLocation = () => {
@@ -29,34 +31,31 @@ function DetailAddress({ data = {}, onCloseModal = () => {}, onChangeLocation = 
             const { latitude, longitude } = position.coords;
             setLocation({ latitude, longitude });
             onChangeLocation(latitude, longitude);
-            const results = await mapService.getAddress(latitude, longitude);
-            if (results) {
-                setAddress(results.display_name);
-            }
         });
     };
     const getShopInfo = async () => {
+        setDataLoading(true);
         const results = await shopService.getShopInfo(location.latitude, location.longitude);
-        console.log(results);
+        setDataLoading(false);
         if (results) {
-            setShopInfo(results);
-            dispatch(actions.setShippingFee(results.distance));
+            setShopInfo(results.data);
         }
     };
     useEffect(() => {
         getShopInfo();
     }, [location]);
+    console.log(data.distance);
     useEffect(() => {
         if (!debouncedValue.trim()) {
             setSearchResult([]);
             return;
         }
         const fetchApi = async () => {
-            setLoading(true);
+            setSearchLoading(true);
             const results = await mapService.searchAddress(debouncedValue);
             setSearchResult(results);
 
-            setLoading(false);
+            setSearchLoading(false);
         };
         fetchApi();
     }, [debouncedValue]);
@@ -72,11 +71,9 @@ function DetailAddress({ data = {}, onCloseModal = () => {}, onChangeLocation = 
     };
     const handleClickAddress = (latitude, longitude, newAddress) => {
         setLocation({ latitude, longitude });
-        setAddress(newAddress);
         setSearchResult([]);
         setSearchValue('');
         onChangeLocation(latitude, longitude);
-        dispatch(actions.setDetailAddress({ address: newAddress }));
     };
     const handleClickCurrentLocation = () => {
         getCurrentLocation();
@@ -107,14 +104,14 @@ function DetailAddress({ data = {}, onCloseModal = () => {}, onChangeLocation = 
                     <IoSearch />
                 </div>
                 <input onChange={handleChangeInput} value={searchValue} placeholder="Vui lòng nhập địa chỉ" />
-                {loading ||
+                {searchLoading ||
                     (!!searchValue && (
                         <button onClick={handleClearSearch} className={cx('clear')}>
                             <AiFillCloseCircle />
                         </button>
                     ))}
 
-                {loading && <AiOutlineLoading3Quarters className={cx('loading')} />}
+                {searchLoading && <AiOutlineLoading3Quarters className={cx('loading')} />}
             </div>
             {searchResult && searchResult.length !== 0 ? (
                 <div className={cx('search-result')}>
@@ -137,7 +134,7 @@ function DetailAddress({ data = {}, onCloseModal = () => {}, onChangeLocation = 
             ) : (
                 <>
                     <div className={cx('chosen-address')}>
-                        <span>Địa chỉ đã chọn :</span> {address}
+                        <span>Địa chỉ đã chọn :</span> {state.detailAddress.address}
                     </div>
                     <div onClick={handleClickCurrentLocation} className={cx('current-address')}>
                         <BiTargetLock className={cx('icon')} />
@@ -149,32 +146,29 @@ function DetailAddress({ data = {}, onCloseModal = () => {}, onChangeLocation = 
                             Thông tin cửa hàng
                             <BiStore className={cx('icon')} />
                         </h2>
-                        {shopInfo && (
+                        <Skeleton loading={dataLoading}>
                             <div className={cx('shop-item', 'active')}>
-                                <Image src={shopInfo.shop.image} className={cx('shop-img')} />
+                                <Image src={shopInfo.image} className={cx('shop-img')} />
                                 <div className={cx('shop-info')}>
-                                    <div className={cx('shop-address')}>Địa chỉ : {shopInfo.shop.address}</div>
+                                    <div className={cx('shop-address')}>Địa chỉ : {shopInfo.address}</div>
                                     <div className={cx('shop-desc')}>
-                                        <span>Khoảng cách tới quán :</span>{' '}
-                                        {shopInfo.distance / 100 > 1
-                                            ? `${(shopInfo.distance / 1000).toFixed(2)} km`
-                                            : 'dưới 100 m'}
+                                        <span>Khoảng cách tới quán :</span> {data.distance} km
                                     </div>
                                     <div className={cx('shop-desc')}>
                                         <span>Giờ hoạt động :</span> 07:00am - 21:00pm
                                     </div>
                                     <div
                                         className={cx('shop-desc', {
-                                            open: shopInfo.shop.isActive,
-                                            close: !shopInfo.shop.isActive,
+                                            open: shopInfo.isActive,
+                                            close: !shopInfo.isActive,
                                         })}
                                     >
                                         <span>Trạng thái hoạt động :</span>{' '}
-                                        {shopInfo.shop.isActive ? 'Đang mở cửa' : 'Đã đóng cửa'}
+                                        {shopInfo.isActive ? 'Đang mở cửa' : 'Đã đóng cửa'}
                                     </div>
                                 </div>
                             </div>
-                        )}
+                        </Skeleton>
                     </div>
                 </>
             )}

@@ -28,7 +28,7 @@ function ForgotForm({ onClickChangeForm = () => {} }) {
     };
     const sendOTP = async () => {
         const results = await authService.sendOTP(username);
-        if (results && results.isSuccess) {
+        if (results) {
             dispatch(
                 actions.setToast({
                     show: true,
@@ -50,7 +50,7 @@ function ForgotForm({ onClickChangeForm = () => {} }) {
     };
     const confirmOTP = async () => {
         const results = await authService.confirmOTP(username, otp);
-        if (results && results.isSuccess) {
+        if (results) {
             dispatch(
                 actions.setToast({
                     show: true,
@@ -72,7 +72,7 @@ function ForgotForm({ onClickChangeForm = () => {} }) {
     };
     const changePassword = async () => {
         const results = await authService.changePasswordForgot(username, password, confirmPassword);
-        if (results && results.isSuccess) {
+        if (results) {
             dispatch(
                 actions.setToast({
                     show: true,

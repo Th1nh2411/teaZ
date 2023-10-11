@@ -32,9 +32,11 @@ function Search() {
         const fetchApi = async () => {
             setLoading(true);
             const results = await shopService.getSearchResult(debouncedValue, state.idShop);
-            setSearchResult(results.recipes);
+            if(results){
+                setSearchResult(results.data);
 
-            setLoading(false);
+                setLoading(false);
+            }
         };
         fetchApi();
     }, [debouncedValue]);

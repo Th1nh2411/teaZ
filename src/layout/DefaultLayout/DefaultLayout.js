@@ -24,7 +24,7 @@ function DefaultLayout({ children }) {
     const [backToTop, setBackToTop] = useState(false);
 
     const [location, setLocation] = useState(false);
-    const [address, setAddress] = useState('');
+    const [distance, setDistance] = useState(0);
 
     const [state, dispatch] = useContext(StoreContext);
     const currentPath = useLocation().pathname;
@@ -43,20 +43,6 @@ function DefaultLayout({ children }) {
             behavior: 'smooth',
         });
     };
-
-    // const getCartData = async () => {
-    //     const token = localStorageManager.getItem('token');
-
-    //     if (token && state.userInfo) {
-    //         const results = await cartService.getCartItem(token);
-    //         if (results) {
-    //             dispatch(actions.setCart(results));
-    //         }
-    //     }
-    // };
-    // useEffect(() => {
-    //     getCartData();
-    // }, [state.userInfo, state.currentInvoice]);
     const getLocation = () => {
         navigator.geolocation.getCurrentPosition((position) => {
             const { latitude, longitude } = position.coords;
@@ -71,11 +57,6 @@ function DefaultLayout({ children }) {
     }, []);
     const getAddress = async () => {
         if (location) {
-            const results = await mapService.getAddress(location.latitude, location.longitude);
-            if (results) {
-                setAddress(results.display_name);
-                dispatch(actions.setDetailAddress({ address: results.display_name }));
-            }
         }
     };
     const setShippingFee = async () => {
@@ -83,6 +64,11 @@ function DefaultLayout({ children }) {
             const results = await shopService.getShippingFee(location.latitude, location.longitude);
             if (results) {
                 dispatch(actions.setShippingFee(results.data));
+                setDistance(results.distance);
+                const results2 = await mapService.getAddress(location.latitude, location.longitude);
+                if (results2) {
+                    dispatch(actions.setDetailAddress({ address: results2.display_name }));
+                }
             }
         }
     };
@@ -154,7 +140,7 @@ function DefaultLayout({ children }) {
             )}
             {state.detailAddress.show && (
                 <DetailAddress
-                    data={{ ...location, address: address }}
+                    data={{ ...location, distance }}
                     onCloseModal={() => {
                         dispatch(actions.setDetailAddress({ show: false }));
                     }}

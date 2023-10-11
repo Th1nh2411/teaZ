@@ -33,7 +33,7 @@ function CheckoutPage() {
     const { invoice, products } = state.currentInvoice;
     const confirmPaymentInvoice = async () => {
         const results = await invoiceService.confirmInvoice(invoice.idInvoice, invoice.total);
-        if (results && results.isSuccess) {
+        if (results) {
             dispatch(
                 actions.setToast({ show: true, title: 'Đặt hàng', content: 'Vui lòng chờ nhân viên xác nhận đơn' }),
             );
@@ -74,7 +74,7 @@ function CheckoutPage() {
             amount: (invoice.total + invoice.shippingFee).toFixed(3) * 1000,
             bankCode: 'NCB',
         });
-        if (results && results.isSuccess) {
+        if (results) {
             window.location.replace(results.url);
         }
     };

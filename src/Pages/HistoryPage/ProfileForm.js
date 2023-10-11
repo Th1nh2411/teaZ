@@ -22,7 +22,7 @@ function ProfileForm({ data, onCloseModal = () => {} }) {
     const [state, dispatch] = useContext(StoreContext);
     const editProfile = async () => {
         const results = await authService.editProfile({ name, phone, mail });
-        if (results && results.isSuccess) {
+        if (results) {
             dispatch(
                 actions.setToast({
                     show: true,

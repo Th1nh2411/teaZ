@@ -26,7 +26,7 @@ function RegisterForm({ onClickChangeForm = () => {} }) {
         // fetch api register
         const postRegister = async () => {
             const results = await authService.register(phone, password, name, mail);
-            if (results && results.isSuccess) {
+            if (results) {
                 dispatch(
                     actions.setToast({
                         show: true,

@@ -28,7 +28,7 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
     const [state, dispatch] = useContext(StoreContext);
     const getToppingList = async (e) => {
         const results = await shopService.getToppingList(data.idRecipe);
-        if (results && results.isSuccess) {
+        if (results) {
             setToppings(results.listTopping);
         }
     };

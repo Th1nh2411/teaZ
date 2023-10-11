@@ -25,7 +25,7 @@ function LoginForm({ onCloseModal = () => {} }) {
         // fetch api login
         const postLogin = async () => {
             const results = await authService.login(phoneNumber, password);
-            if (results && results.isSuccess) {
+            if (results) {
                 dispatch(actions.setUserInfo(results.userInfo));
                 dispatch(
                     actions.setToast({

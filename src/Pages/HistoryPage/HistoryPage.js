@@ -28,7 +28,7 @@ function HistoryPage() {
     const getListInvoice = async () => {
         setLoading(true);
         const results = await invoiceService.getAllInvoice();
-        if (results && results.isSuccess) {
+        if (results) {
             setListInvoice(results.invoices);
         }
         setLoading(false);

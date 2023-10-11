@@ -26,7 +26,7 @@ function CheckoutPage() {
 
     const getShippingCompany = async () => {
         const results = await invoiceService.getShippingCompany();
-        if (results && results.isSuccess) {
+        if (results) {
             setListCompany(results.shipping_company);
         }
     };

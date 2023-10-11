@@ -187,12 +187,39 @@ body {
     border-radius: 50%;
     animation: shadow 0.5s linear infinite;
 }
+// search loading
+.clear {
+    cursor: pointer;
+}
+
+.clear,
+.loading {
+    background-color: transparent;
+    font-size: 1.4rem;
+    display: flex;
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--secondary-color);
+}
+.loading {
+    animation: spinner 1s linear infinite;
+}
 @keyframes loader {
     0% {
         left: -100px;
     }
     100% {
         left: 110%;
+    }
+}
+@keyframes spinner {
+    from {
+        transform: translateY(-50%) rotate(0);
+    }
+    to {
+        transform: translateY(-50%) rotate(360deg);
     }
 }
 

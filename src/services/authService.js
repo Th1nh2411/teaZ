@@ -1,15 +1,15 @@
 import * as httpRequest from '../utils/httpRequest';
 
-export const login = async (username, password) => {
+export const login = async (phone, password) => {
     // const config = {
     //     headers: { access_token: token },
     // };
     const body = {
-        username,
+        phone,
         password,
     };
     try {
-        const res = await httpRequest.post('account/login', body);
+        const res = await httpRequest.post('auth/login', body);
         return res;
     } catch (error) {
         console.log(error);
