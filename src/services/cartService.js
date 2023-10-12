@@ -6,7 +6,7 @@ export const getCartItem = async (token) => {
     };
 
     try {
-        const res = await httpRequest.get(`order/currentCart`, config);
+        const res = await httpRequest.get(`cart-product`, config);
         return res;
     } catch (error) {
         console.log(error);
