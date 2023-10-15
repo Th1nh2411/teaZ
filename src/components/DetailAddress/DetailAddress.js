@@ -44,7 +44,6 @@ function DetailAddress({ data = {}, onCloseModal = () => {}, onChangeLocation = 
     useEffect(() => {
         getShopInfo();
     }, [location]);
-    console.log(data.distance);
     useEffect(() => {
         if (!debouncedValue.trim()) {
             setSearchResult([]);

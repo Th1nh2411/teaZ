@@ -54,7 +54,7 @@ export const cancelCurrentInvoice = async (token) => {
 };
 export const getAllInvoice = async (token) => {
     try {
-        const res = await httpRequest.get(`order/getAllInvoice`);
+        const res = await httpRequest.get(`invoice`);
         return res;
     } catch (error) {
         console.log(error);
@@ -64,7 +64,7 @@ export const getAllInvoice = async (token) => {
 
 export const getDetailInvoice = async (idInvoice, token) => {
     try {
-        const res = await httpRequest.get(`order/getDetailInvoice/${idInvoice}`);
+        const res = await httpRequest.get(`invoice/${idInvoice}`);
         return res;
     } catch (error) {
         console.log(error);

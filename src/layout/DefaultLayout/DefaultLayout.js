@@ -18,6 +18,8 @@ import DetailChange from '../../components/DetailChange/DetailChange';
 import * as mapService from '../../services/mapService';
 import * as shopService from '../../services/shopService';
 import DetailAddress from '../../components/DetailAddress';
+import Cookies from 'js-cookie';
+import { setUserInfo } from '../../store/actions';
 const cx = classNames.bind(styles);
 function DefaultLayout({ children }) {
     const [showCart, setShowCart] = useState(false);
@@ -49,11 +51,9 @@ function DefaultLayout({ children }) {
             setLocation({ latitude, longitude });
         });
     };
-    const getUserInfoToken = () => {};
 
     useEffect(() => {
         getLocation();
-        getUserInfoToken();
     }, []);
     const getAddress = async () => {
         if (location) {
@@ -91,6 +91,7 @@ function DefaultLayout({ children }) {
             state.cartData.products.reduce((total, current) => current.quantity + total, 0),
         [state.cartData],
     );
+    console.log(state);
     return (
         <>
             <div className={cx('wrapper')}>

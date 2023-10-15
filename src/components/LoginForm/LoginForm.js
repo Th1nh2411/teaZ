@@ -10,6 +10,7 @@ import * as authService from '../../services/authService';
 import { StoreContext, actions } from '../../store';
 import RegisterForm from './RegisterForm';
 import ForgotForm from './ForgotForm';
+import Cookies from 'js-cookie';
 
 const cx = classNames.bind(styles);
 
@@ -26,6 +27,7 @@ function LoginForm({ onCloseModal = () => {} }) {
         const postLogin = async () => {
             const results = await authService.login(phoneNumber, password);
             if (results) {
+                Cookies.set('userInfo', JSON.stringify(results.userInfo));
                 dispatch(actions.setUserInfo(results.userInfo));
                 dispatch(
                     actions.setToast({

@@ -8,88 +8,97 @@ import images from '../../assets/images';
 import Image from '../Image/Image';
 import * as authService from '../../services/authService';
 import { StoreContext, actions } from '../../store';
-
+import { onlyNumber } from '../../utils/format';
+import OtpInput from 'react-otp-input';
 const cx = classNames.bind(styles);
 
 function RegisterForm({ onClickChangeForm = () => {} }) {
     const [phone, setPhoneNumber] = useState('');
     const [password, setPassword] = useState('');
-    const [mail, setMail] = useState('');
     const [name, setName] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [registerStatus, setRegisterStatus] = useState('');
-    const [message, setMessage] = useState('');
+    const [otp, setOtp] = useState('');
+    const [result, setResult] = useState('');
+    const [step, setStep] = useState(1);
     const [state, dispatch] = useContext(StoreContext);
-    const handleSubmitLogin = (e) => {
+    const postRegister = async () => {
+        const results = await authService.register(phone, password, name);
+        if (results) {
+            dispatch(
+                actions.setToast({
+                    show: true,
+                    content: 'Đăng kí thành công',
+                    title: 'Đăng kí',
+                }),
+            );
+            onClickChangeForm();
+        }
+    };
+    const sendOTP = (e) => {
         e.preventDefault();
-
-        // fetch api register
-        const postRegister = async () => {
-            const results = await authService.register(phone, password, name, mail);
-            if (results) {
-                dispatch(
-                    actions.setToast({
-                        show: true,
-                        content: 'Đăng kí thành công',
-                        title: 'Đăng kí',
-                    }),
-                );
-                onClickChangeForm();
-            } else if (results && results.existMail) {
-                setRegisterStatus('ExistMail');
-                setMessage(results.message);
-            } else {
-                setRegisterStatus('ExistPhone');
-                setMessage(results.message);
-            }
-        };
+        setStep(2);
+    };
+    const ValidateOtp = (e) => {
+        e.preventDefault();
+        if (otp === null) return;
         postRegister();
     };
     const handleChangePhoneValue = (e) => {
-        setPhoneNumber(e.target.value);
-        setRegisterStatus('');
+        if (onlyNumber(e.target.value)) {
+            setPhoneNumber(e.target.value);
+        }
     };
     const handleChangePasswordValue = (e) => {
         setPassword(e.target.value);
-        setRegisterStatus('');
     };
     return (
-        <form onSubmit={handleSubmitLogin}>
-            <Input
-                onChange={handleChangePhoneValue}
-                value={phone}
-                title="Số điện thoại"
-                errorMessage={message}
-                errorCondition={registerStatus === 'ExistPhone'}
-            />
-            <Input
-                onChange={(e) => setMail(e.target.value)}
-                value={mail}
-                type="mail"
-                title="Tài khoản gmail"
-                errorMessage={message}
-                errorCondition={registerStatus === 'ExistMail'}
-            />
-            <Input onChange={(e) => setName(e.target.value)} value={name} type="text" title="Tên người dùng" />
-            <Input
-                onChange={handleChangePasswordValue}
-                value={password}
-                title="Mật khẩu"
-                type="password"
-                errorMessage={'Mật khẩu phải lớn hơn 6 kí tự'}
-                errorCondition={password.length < 6 && password.length !== 0}
-            />
-            <Input
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                value={confirmPassword}
-                type="password"
-                title="Xác nhận mật khẩu"
-                errorMessage="Xác nhận không trùng với mật khẩu trên"
-                errorCondition={confirmPassword !== password && confirmPassword !== ''}
-            />
+        <form onSubmit={step === 1 ? sendOTP : ValidateOtp}>
+            {step === 1 ? (
+                <>
+                    <Input
+                        onChange={handleChangePhoneValue}
+                        value={phone}
+                        title="Số điện thoại"
+                        errorMessage={'Vui lòng nhập số điện thoại'}
+                        errorCondition={password.length === 10 && password.length !== 0}
+                    />
+                    <Input onChange={(e) => setName(e.target.value)} value={name} type="text" title="Tên người dùng" />
+                    <Input
+                        onChange={handleChangePasswordValue}
+                        value={password}
+                        title="Mật khẩu"
+                        type="password"
+                        errorMessage={'Mật khẩu phải lớn hơn 6 kí tự'}
+                        errorCondition={password.length < 6 && password.length !== 0}
+                    />
+                    <Input
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        value={confirmPassword}
+                        type="password"
+                        title="Xác nhận mật khẩu"
+                        errorMessage="Xác nhận không trùng với mật khẩu trên"
+                        errorCondition={confirmPassword !== password && confirmPassword !== ''}
+                    />
+                </>
+            ) : (
+                <OtpInput
+                    containerStyle={{ margin: '10px 0 20px' }}
+                    inputStyle={{
+                        textAlign: 'center',
+                        border: '1px solid',
+                        width: '40px',
+                        height: '40px',
+                        margin: '0 5px',
+                    }}
+                    value={otp}
+                    onChange={setOtp}
+                    numInputs={6}
+                    renderInput={(props) => <input {...props} />}
+                ></OtpInput>
+            )}
 
             <Button className={cx('login-btn')} primary>
-                Tạo tài khoản
+                {step === 1 ? 'Tạo tài khoản' : 'Xác thực mã OTP'}
             </Button>
             <div className={cx('toggle-form')}>
                 <span onClick={() => onClickChangeForm()}>Đăng nhập</span>

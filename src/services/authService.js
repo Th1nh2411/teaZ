@@ -31,7 +31,7 @@ export const refreshToken = async (username) => {
         return error.response && error.response.data;
     }
 };
-export const register = async (phone, password, name, mail) => {
+export const register = async (phone, password, name) => {
     // const config = {
     //     headers: { access_token: token },
     // };
@@ -39,10 +39,9 @@ export const register = async (phone, password, name, mail) => {
         phone,
         password,
         name,
-        mail,
     };
     try {
-        const res = await httpRequest.post('account/create', body);
+        const res = await httpRequest.post('auth/register', body);
         return res;
     } catch (error) {
         console.log(error);

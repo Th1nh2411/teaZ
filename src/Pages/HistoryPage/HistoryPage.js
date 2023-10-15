@@ -29,7 +29,7 @@ function HistoryPage() {
         setLoading(true);
         const results = await invoiceService.getAllInvoice();
         if (results) {
-            setListInvoice(results.invoices);
+            setListInvoice(results.data);
         }
         setLoading(false);
     };
@@ -46,6 +46,7 @@ function HistoryPage() {
         }
     }, [listInvoice]);
     const handleShowDetailInvoice = (id) => {
+        console.log(id);
         setDetailInvoice(id);
     };
     return (
@@ -140,7 +141,7 @@ function HistoryPage() {
                                             </div>
                                         </div>
                                         <div
-                                            onClick={() => handleShowDetailInvoice(currentInvoice.idInvoice)}
+                                            onClick={() => handleShowDetailInvoice(currentInvoice.id)}
                                             className={cx('invoice-actions')}
                                         >
                                             Xem chi tiết
@@ -175,7 +176,7 @@ function HistoryPage() {
                                                   </div>
                                               </div>
                                               <div
-                                                  onClick={() => handleShowDetailInvoice(item.idInvoice)}
+                                                  onClick={() => handleShowDetailInvoice(item.id)}
                                                   className={cx('invoice-actions')}
                                               >
                                                   Xem chi tiết
@@ -208,7 +209,7 @@ function HistoryPage() {
                                                   </div>
                                               </div>
                                               <div
-                                                  onClick={() => handleShowDetailInvoice(item.idInvoice)}
+                                                  onClick={() => handleShowDetailInvoice(item.id)}
                                                   className={cx('invoice-actions')}
                                               >
                                                   Xem chi tiết

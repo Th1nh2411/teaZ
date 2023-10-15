@@ -36,8 +36,8 @@ function CartItem({ data = {}, onDelItem = () => {} }) {
                         {data.name} ({data.size ? 'L' : 'M'}) x{data.quantity}
                     </div>
                     <div className={cx('item-topping')}>
-                        {data.listTopping.length !== 0 && <span>Topping :</span>}{' '}
-                        {data.listTopping.map((topping) => topping.name).join(', ')}
+                        {data.toppings.length !== 0 && <span>Topping :</span>}{' '}
+                        {data.toppings.map((topping) => topping.name).join(', ')}
                     </div>
                     <div className={cx('item-price')}>{priceFormat(data.totalProduct)}đ</div>
                     {/* <div className={cx('item-price')}></div> */}

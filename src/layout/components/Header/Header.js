@@ -13,6 +13,7 @@ import Button from '../../../components/Button/Button';
 import { useContext, useEffect, useState } from 'react';
 
 import { StoreContext, actions } from '../../../store';
+import Cookies from 'js-cookie';
 const cx = classNames.bind(styles);
 
 function Header() {
@@ -42,7 +43,8 @@ function Header() {
                 console.log(menuItem);
                 break;
             case 'logout':
-                dispatch(actions.setUserInfo({}));
+                Cookies.remove('userInfo');
+                dispatch(actions.setUserInfo(null));
                 dispatch(actions.setCurrentInvoice({}));
                 if (currentPath !== config.routes.home) {
                     navigate(config.routes.home);

@@ -25,7 +25,7 @@ export const getShippingFee = async (userLat, userLng, idShipping_company = 1) =
         return error.response && error.response.data;
     }
 };
-export const getItemFromShop = async (idType) => {
+export const getItemByType = async (idType) => {
     try {
         const res = await httpRequest.get(`recipe/menu/${idType}`);
         return res;
@@ -48,16 +48,15 @@ export const getToppingList = async (idRecipe) => {
         return error.response && error.response.data;
     }
 };
-export const getSearchResult = async (name, idShop, limit = 5) => {
+export const getListItem = async (keyword, limit = 5) => {
     const config = {
         params: {
-            name,
+            keyword,
             limit,
-            idShop,
         },
     };
     try {
-        const res = await httpRequest.get(`order/search`, config);
+        const res = await httpRequest.get(`recipe/menu`, config);
         return res;
     } catch (error) {
         console.log(error);

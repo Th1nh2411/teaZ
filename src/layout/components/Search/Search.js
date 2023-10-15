@@ -31,8 +31,8 @@ function Search() {
         }
         const fetchApi = async () => {
             setLoading(true);
-            const results = await shopService.getSearchResult(debouncedValue, state.idShop);
-            if(results){
+            const results = await shopService.getListItem(debouncedValue);
+            if (results) {
                 setSearchResult(results.data);
 
                 setLoading(false);

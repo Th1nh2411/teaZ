@@ -52,8 +52,8 @@ function Cart({ data = {}, onCloseModal = () => {}, onDelItem = () => {} }) {
                     <AiOutlineClose onClick={onCloseModal} className={cx('close-icon')} />
                 </div>
                 <div className={cx('body')}>
-                    {data && data.products && data.products.length !== 0 ? (
-                        data.products.map((item, index) => <CartItem onDelItem={onDelItem} data={item} key={index} />)
+                    {data && data.length !== 0 ? (
+                        data.map((item, index) => <CartItem onDelItem={onDelItem} data={item} key={index} />)
                     ) : (
                         <div className={cx('empty-cart-wrapper')}>
                             <Image src={images.emptyCart} className={cx('empty-cart-img')} />
