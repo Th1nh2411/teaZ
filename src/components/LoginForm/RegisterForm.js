@@ -10,6 +10,8 @@ import * as authService from '../../services/authService';
 import { StoreContext, actions } from '../../store';
 import { onlyNumber } from '../../utils/format';
 import OtpInput from 'react-otp-input';
+import { RecaptchaVerifier, getAuth, signInWithPhoneNumber } from 'firebase/auth';
+import { authentication } from '../../utils/firebase';
 const cx = classNames.bind(styles);
 
 function RegisterForm({ onClickChangeForm = () => {} }) {
@@ -18,7 +20,6 @@ function RegisterForm({ onClickChangeForm = () => {} }) {
     const [name, setName] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [otp, setOtp] = useState('');
-    const [result, setResult] = useState('');
     const [step, setStep] = useState(1);
     const [state, dispatch] = useContext(StoreContext);
     const postRegister = async () => {
@@ -34,8 +35,27 @@ function RegisterForm({ onClickChangeForm = () => {} }) {
             onClickChangeForm();
         }
     };
+    const generateCaptcha = () => {
+        window.recaptchaVerifier = new RecaptchaVerifier(
+            'recaptcha-container',
+            {
+                size: 'invisible',
+                callback: (response) => {},
+            },
+            authentication,
+        );
+    };
     const sendOTP = (e) => {
         e.preventDefault();
+        generateCaptcha();
+        let appVerifier = window.recaptchaVerifier;
+        signInWithPhoneNumber(authentication, phone, appVerifier)
+            .then((confirmationResult) => {
+                window.confirmationResult = confirmationResult;
+            })
+            .catch((error) => {
+                console.log(error);
+            });
         setStep(2);
     };
     const ValidateOtp = (e) => {
@@ -44,9 +64,9 @@ function RegisterForm({ onClickChangeForm = () => {} }) {
         postRegister();
     };
     const handleChangePhoneValue = (e) => {
-        if (onlyNumber(e.target.value)) {
-            setPhoneNumber(e.target.value);
-        }
+        // if (onlyNumber(e.target.value)) {
+        setPhoneNumber(e.target.value);
+        // }
     };
     const handleChangePasswordValue = (e) => {
         setPassword(e.target.value);
@@ -103,6 +123,7 @@ function RegisterForm({ onClickChangeForm = () => {} }) {
             <div className={cx('toggle-form')}>
                 <span onClick={() => onClickChangeForm()}>Đăng nhập</span>
             </div>
+            <div id="recaptcha-container" className={cx('justify-center flex')}></div>
         </form>
     );
 }

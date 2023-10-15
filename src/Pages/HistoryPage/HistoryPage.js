@@ -91,7 +91,7 @@ function HistoryPage() {
                                         Số điện thoại: <span>{state.userInfo && state.userInfo.phone}</span>
                                     </h3>
                                     <h3 className={cx('profile-info')}>
-                                        Tài khoản gmail: <span>{state.userInfo && state.userInfo.mail}</span>
+                                        Địa chỉ: <span>{state.userInfo && state.userInfo.address}</span>
                                     </h3>
                                 </div>
                             </div>

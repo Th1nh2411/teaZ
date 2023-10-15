@@ -105,7 +105,7 @@ function CheckoutPage() {
                                                 {item.name}({item.size ? 'L' : 'M'}) x{item.quantity}
                                             </div>
                                             <div className={cx('item-topping')}>
-                                                {item.listTopping.map((item) => item.name).join(', ')}
+                                                {item.toppings.map((item) => item.name).join(', ')}
                                             </div>
                                         </div>
                                         <div className={cx('item-price')}>{priceFormat(item.totalProduct)}đ</div>

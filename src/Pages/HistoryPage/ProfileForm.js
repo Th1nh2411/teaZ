@@ -17,11 +17,11 @@ const cx = classNames.bind(styles);
 function ProfileForm({ data, onCloseModal = () => {} }) {
     const [name, setNameValue] = useState(data ? data.name : '');
     const [phone, setPhoneValue] = useState(data ? data.phone : '');
-    const [mail, setMailValue] = useState(data ? data.mail : '');
+    const [address, setAddressValue] = useState(data ? data.address : '');
     const [valueChange, setValueChange] = useState(false);
     const [state, dispatch] = useContext(StoreContext);
     const editProfile = async () => {
-        const results = await authService.editProfile({ name, phone, mail });
+        const results = await authService.editProfile({ name, phone, address });
         if (results) {
             dispatch(
                 actions.setToast({
@@ -30,10 +30,7 @@ function ProfileForm({ data, onCloseModal = () => {} }) {
                     title: 'Thành công',
                 }),
             );
-            const results2 = await authService.refreshToken(mail);
-            if (results2 && results2.isSuccess) {
-                dispatch(actions.setUserInfo(results2.userInfo));
-            }
+
             onCloseModal();
         } else {
             dispatch(
@@ -50,7 +47,7 @@ function ProfileForm({ data, onCloseModal = () => {} }) {
         e.preventDefault();
         setNameValue(data.name);
         setPhoneValue(data.phone);
-        setMailValue(data.mail);
+        setAddressValue(data.address);
     };
     const handleClickConfirm = (e) => {
         e.preventDefault();
@@ -58,12 +55,12 @@ function ProfileForm({ data, onCloseModal = () => {} }) {
     };
 
     useEffect(() => {
-        if (data.name !== name || data.phone !== phone || data.mail !== mail) {
+        if (data.name !== name || data.phone !== phone || data.address !== address) {
             setValueChange(true);
         } else {
             setValueChange(false);
         }
-    }, [name, phone, mail]);
+    }, [name, phone, address]);
     return (
         <Modal
             handleClickOutside={() => {
@@ -77,12 +74,11 @@ function ProfileForm({ data, onCloseModal = () => {} }) {
                 <Input
                     className={cx('price-input')}
                     onChange={(event) => {
-                        setMailValue(event.target.value);
+                        setAddressValue(event.target.value);
                         setValueChange(true);
                     }}
-                    value={mail}
-                    title="Tài khoản gmail"
-                    type="email"
+                    value={address}
+                    title="Địa chỉ"
                 />
                 <Input
                     onChange={(event) => {

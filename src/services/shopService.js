@@ -41,7 +41,7 @@ export const getToppingList = async (idRecipe) => {
         },
     };
     try {
-        const res = await httpRequest.get(`order/topping`, config);
+        const res = await httpRequest.get(`recipe/topping`, config);
         return res;
     } catch (error) {
         console.log(error);

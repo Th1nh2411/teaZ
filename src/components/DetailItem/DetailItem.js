@@ -23,13 +23,13 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
     const [num, setNum] = useState(data.quantity || 1);
     const [size, setSize] = useState(data.size || 0);
     const [checkedToppings, setCheckedToppings] = useState(
-        data.listTopping ? data.listTopping.map((item) => item.idRecipe) : [],
+        data.toppings ? data.toppings.map((item) => item.idRecipe) : [],
     );
     const [state, dispatch] = useContext(StoreContext);
     const getToppingList = async (e) => {
         const results = await shopService.getToppingList(data.idRecipe);
         if (results) {
-            setToppings(results.listTopping);
+            setToppings(results.toppings);
         }
     };
     useEffect(() => {

@@ -16,21 +16,7 @@ export const login = async (phone, password) => {
         return error.response && error.response.data;
     }
 };
-export const refreshToken = async (username) => {
-    // const config = {
-    //     headers: { access_token: token },
-    // };
-    const body = {
-        username,
-    };
-    try {
-        const res = await httpRequest.post('account/refreshToken', body);
-        return res;
-    } catch (error) {
-        console.log(error);
-        return error.response && error.response.data;
-    }
-};
+
 export const register = async (phone, password, name) => {
     // const config = {
     //     headers: { access_token: token },
