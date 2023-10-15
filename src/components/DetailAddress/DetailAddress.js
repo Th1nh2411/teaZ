@@ -17,33 +17,18 @@ import { Skeleton } from 'antd';
 const cx = classNames.bind(styles);
 
 function DetailAddress({ data = {}, onCloseModal = () => {}, onChangeLocation = () => {} }) {
-    const [location, setLocation] = useState({ latitude: data.latitude, longitude: data.longitude });
-
     const [searchValue, setSearchValue] = useState('');
     const [searchResult, setSearchResult] = useState([]);
-    const [shopInfo, setShopInfo] = useState({});
     const [searchLoading, setSearchLoading] = useState(false);
-    const [dataLoading, setDataLoading] = useState(false);
     const debouncedValue = useDebounce(searchValue, 500);
     const [state, dispatch] = useContext(StoreContext);
     const getCurrentLocation = () => {
         navigator.geolocation.getCurrentPosition(async (position) => {
             const { latitude, longitude } = position.coords;
-            setLocation({ latitude, longitude });
             onChangeLocation(latitude, longitude);
         });
     };
-    const getShopInfo = async () => {
-        setDataLoading(true);
-        const results = await shopService.getShopInfo(location.latitude, location.longitude);
-        setDataLoading(false);
-        if (results) {
-            setShopInfo(results.data);
-        }
-    };
-    useEffect(() => {
-        getShopInfo();
-    }, [location]);
+
     useEffect(() => {
         if (!debouncedValue.trim()) {
             setSearchResult([]);
@@ -69,7 +54,6 @@ function DetailAddress({ data = {}, onCloseModal = () => {}, onChangeLocation = 
         }
     };
     const handleClickAddress = (latitude, longitude, newAddress) => {
-        setLocation({ latitude, longitude });
         setSearchResult([]);
         setSearchValue('');
         onChangeLocation(latitude, longitude);
@@ -145,11 +129,11 @@ function DetailAddress({ data = {}, onCloseModal = () => {}, onChangeLocation = 
                             Thông tin cửa hàng
                             <BiStore className={cx('icon')} />
                         </h2>
-                        <Skeleton loading={dataLoading}>
+                        {state.shopInfo && (
                             <div className={cx('shop-item', 'active')}>
-                                <Image src={shopInfo.image} className={cx('shop-img')} />
+                                <Image src={state.shopInfo.image} className={cx('shop-img')} />
                                 <div className={cx('shop-info')}>
-                                    <div className={cx('shop-address')}>Địa chỉ : {shopInfo.address}</div>
+                                    <div className={cx('shop-address')}>Địa chỉ : {state.shopInfo.address}</div>
                                     <div className={cx('shop-desc')}>
                                         <span>Khoảng cách tới quán :</span> {data.distance} km
                                     </div>
@@ -158,16 +142,16 @@ function DetailAddress({ data = {}, onCloseModal = () => {}, onChangeLocation = 
                                     </div>
                                     <div
                                         className={cx('shop-desc', {
-                                            open: shopInfo.isActive,
-                                            close: !shopInfo.isActive,
+                                            open: state.shopInfo.isActive,
+                                            close: !state.shopInfo.isActive,
                                         })}
                                     >
                                         <span>Trạng thái hoạt động :</span>{' '}
-                                        {shopInfo.isActive ? 'Đang mở cửa' : 'Đã đóng cửa'}
+                                        {state.shopInfo.isActive ? 'Đang mở cửa' : 'Đã đóng cửa'}
                                     </div>
                                 </div>
                             </div>
-                        </Skeleton>
+                        )}
                     </div>
                 </>
             )}

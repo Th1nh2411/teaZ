@@ -4,6 +4,7 @@ import {
     SET_DETAIL_ADDRESS,
     SET_DETAIL_ITEM,
     SET_SHIPPING_FEE,
+    SET_SHOP_INFO,
     SET_SHOW_LOGIN,
     SET_TOAST,
     SET_USER_INFO,
@@ -15,4 +16,5 @@ export const setDetailAddress = (payload) => ({ type: SET_DETAIL_ADDRESS, payloa
 export const setCart = (payload) => ({ type: SET_CART, payload });
 export const setCurrentInvoice = (payload) => ({ type: SET_CURRENT_INVOICE, payload });
 export const setToast = (payload) => ({ type: SET_TOAST, payload });
+export const setShopInfo = (payload) => ({ type: SET_SHOP_INFO, payload });
 export const setShippingFee = (payload) => ({ type: SET_SHIPPING_FEE, payload });

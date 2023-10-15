@@ -18,7 +18,7 @@ import { RiFileWarningLine } from 'react-icons/ri';
 
 const cx = classNames.bind(styles);
 
-function Cart({ data = {}, onCloseModal = () => {}, onDelItem = () => {} }) {
+function Cart({ cart = {}, onCloseModal = () => {}, onDelItem = () => {} }) {
     const navigate = useNavigate();
     const [state, dispatch] = useContext(StoreContext);
 
@@ -45,15 +45,15 @@ function Cart({ data = {}, onCloseModal = () => {}, onDelItem = () => {} }) {
                         <HiShoppingBag className={cx('icon')} />
                         <div className={cx('title')}>
                             Giỏ hàng của bạn (
-                            {data.products ? data.products.reduce((total, current) => current.quantity + total, 0) : 0}{' '}
+                            {cart.products ? cart.products.reduce((total, current) => current.quantity + total, 0) : 0}{' '}
                             món)
                         </div>
                     </div>
                     <AiOutlineClose onClick={onCloseModal} className={cx('close-icon')} />
                 </div>
                 <div className={cx('body')}>
-                    {data && data.length !== 0 ? (
-                        data.map((item, index) => <CartItem onDelItem={onDelItem} data={item} key={index} />)
+                    {cart.data && cart.data.length !== 0 ? (
+                        cart.data.map((item, index) => <CartItem onDelItem={onDelItem} data={item} key={index} />)
                     ) : (
                         <div className={cx('empty-cart-wrapper')}>
                             <Image src={images.emptyCart} className={cx('empty-cart-img')} />
@@ -76,7 +76,7 @@ function Cart({ data = {}, onCloseModal = () => {}, onDelItem = () => {} }) {
                                 </div>
                             )}
                         </div>
-                    ) : !data.shopStatus ? (
+                    ) : !cart.shopStatus ? (
                         <div className={cx('warning-wrapper')}>
                             <div className={cx('warning-title')}>
                                 Quán chưa mở cửa
@@ -91,13 +91,13 @@ function Cart({ data = {}, onCloseModal = () => {}, onDelItem = () => {} }) {
                     ) : (
                         <div className={cx('total')}>
                             <div className={cx('total-title')}>Tổng tiền tạm tính:</div>
-                            <div className={cx('total-num')}>{data.total && priceFormat(data.total)}đ</div>
+                            <div className={cx('total-num')}>{cart.total && priceFormat(cart.total)}đ</div>
                         </div>
                     )}
-                    {data.products && data.products.length !== 0 ? (
+                    {cart.data && cart.data.length !== 0 ? (
                         <Button
                             onClick={handleClickCheckout}
-                            disable={!!state.currentInvoice.invoice || !data.shopStatus}
+                            disable={!!state.currentInvoice.invoice || !cart.shopStatus}
                             primary
                             className={cx('checkout-btn')}
                         >

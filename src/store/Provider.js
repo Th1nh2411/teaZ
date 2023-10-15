@@ -16,7 +16,7 @@ function Provider({ children }) {
     const getCurrentCart = async () => {
         const results = await cartService.getCartItem();
         if (results) {
-            dispatch(actions.setCart(results.data));
+            dispatch(actions.setCart(results));
         }
     };
     const initState = {
@@ -26,6 +26,7 @@ function Provider({ children }) {
         detailItem: { show: false, data: null, editing: false },
         detailAddress: { show: false, address: '' },
         cartData: null,
+        shopInfo: {},
         currentInvoice: { invoice: undefined },
         toast: { show: false, content: '', title: '' },
         getCurrentCart,

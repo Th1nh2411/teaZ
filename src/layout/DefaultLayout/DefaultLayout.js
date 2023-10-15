@@ -55,10 +55,7 @@ function DefaultLayout({ children }) {
     useEffect(() => {
         getLocation();
     }, []);
-    const getAddress = async () => {
-        if (location) {
-        }
-    };
+
     const setShippingFee = async () => {
         if (location) {
             const results = await shopService.getShippingFee(location.latitude, location.longitude);
@@ -72,8 +69,15 @@ function DefaultLayout({ children }) {
             }
         }
     };
+    const getShopInfo = async () => {
+        const results = await shopService.getShopInfo(location.latitude, location.longitude);
+        if (results) {
+            dispatch(actions.setShopInfo(results.data));
+        }
+    };
+
     useEffect(() => {
-        getAddress();
+        getShopInfo();
         setShippingFee();
     }, [location]);
     const handleCLickShowCart = () => {
@@ -87,8 +91,8 @@ function DefaultLayout({ children }) {
     const cartQuantity = useMemo(
         () =>
             state.cartData &&
-            state.cartData.products &&
-            state.cartData.products.reduce((total, current) => current.quantity + total, 0),
+            state.cartData.data &&
+            state.cartData.data.reduce((total, current) => current.quantity + total, 0),
         [state.cartData],
     );
     console.log(state);
@@ -118,7 +122,7 @@ function DefaultLayout({ children }) {
             )}
             {showCart && (
                 <Cart
-                    data={state.cartData}
+                    cart={state.cartData}
                     onCloseModal={() => setShowCart(false)}
                     onDelItem={async () => {
                         const cart = await state.getCurrentCart();
