@@ -34,31 +34,31 @@ export const register = async (phone, password, name) => {
         return error.response && error.response.data;
     }
 };
-export const sendOTP = async (username) => {
+export const sendSMS = async (phone) => {
     // const config = {
     //     headers: { access_token: token },
     // };
     const body = {
-        username,
+        phone,
     };
     try {
-        const res = await httpRequest.post('account/forgotpassword', body);
+        const res = await httpRequest.post('auth/sms', body);
         return res;
     } catch (error) {
         console.log(error);
         return error.response && error.response.data;
     }
 };
-export const confirmOTP = async (username, verifyID) => {
+export const confirmOTP = async (phone, verifyID) => {
     // const config = {
     //     headers: { access_token: token },
     // };
     const body = {
-        username,
+        phone,
         verifyID,
     };
     try {
-        const res = await httpRequest.post('account/forgotpassword/verify', body);
+        const res = await httpRequest.post('auth/verify', body);
         return res;
     } catch (error) {
         console.log(error);

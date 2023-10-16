@@ -8,7 +8,7 @@ import images from '../../assets/images';
 import Image from '../Image/Image';
 import * as authService from '../../services/authService';
 import { StoreContext, actions } from '../../store';
-import { onlyNumber } from '../../utils/format';
+import { onlyNumber, onlyPhoneNumVN, phoneFormat } from '../../utils/format';
 import OtpInput from 'react-otp-input';
 import { RecaptchaVerifier, getAuth, signInWithPhoneNumber } from 'firebase/auth';
 import { authentication } from '../../utils/firebase';
@@ -22,7 +22,8 @@ function RegisterForm({ onClickChangeForm = () => {} }) {
     const [otp, setOtp] = useState('');
     const [step, setStep] = useState(1);
     const [state, dispatch] = useContext(StoreContext);
-    const postRegister = async () => {
+    const postRegister = async (e) => {
+        e.preventDefault();
         const results = await authService.register(phone, password, name);
         if (results) {
             dispatch(
@@ -49,39 +50,88 @@ function RegisterForm({ onClickChangeForm = () => {} }) {
         e.preventDefault();
         generateCaptcha();
         let appVerifier = window.recaptchaVerifier;
-        signInWithPhoneNumber(authentication, phone, appVerifier)
+        signInWithPhoneNumber(authentication, phoneFormat(phone), appVerifier)
             .then((confirmationResult) => {
                 window.confirmationResult = confirmationResult;
+                dispatch(
+                    actions.setToast({
+                        show: true,
+                        content: 'Đã gửi mã OTP đến SĐT đăng ký',
+                        title: 'Gửi SMS',
+                    }),
+                );
+                setStep(2);
             })
             .catch((error) => {
                 console.log(error);
             });
-        setStep(2);
     };
-    const ValidateOtp = (e) => {
+    const ValidateOTP = async (e) => {
         e.preventDefault();
-        if (otp === null) return;
-        postRegister();
+        if (!otp) return;
+        let confirmationResult = window.confirmationResult;
+        confirmationResult
+            .confirm(otp)
+            .then((result) => {
+                // User signed in successfully.
+                setStep(3);
+                dispatch(
+                    actions.setToast({
+                        show: true,
+                        content: 'Xác thực số điện thoại thành công',
+                        title: 'Xác thực',
+                    }),
+                );
+                // ...
+            })
+            .catch((error) => {
+                // User couldn't sign in (bad verification code?)
+                // ...
+                dispatch(
+                    actions.setToast({
+                        show: true,
+                        content: 'Nhập sai mã xác nhận',
+                        type: 'error',
+                    }),
+                );
+            });
     };
     const handleChangePhoneValue = (e) => {
-        // if (onlyNumber(e.target.value)) {
-        setPhoneNumber(e.target.value);
-        // }
+        if (onlyNumber(e.target.value)) {
+            setPhoneNumber(e.target.value);
+        }
     };
     const handleChangePasswordValue = (e) => {
         setPassword(e.target.value);
     };
+
     return (
-        <form onSubmit={step === 1 ? sendOTP : ValidateOtp}>
+        <form onSubmit={step === 1 ? sendOTP : step === 2 ? ValidateOTP : postRegister}>
             {step === 1 ? (
+                <Input
+                    onChange={handleChangePhoneValue}
+                    value={phone}
+                    title="Số điện thoại"
+                    errorMessage={'Vui lòng nhập đúng định dạng số điện thoại'}
+                    errorCondition={!onlyPhoneNumVN(phone) && phone.length !== 0}
+                />
+            ) : step === 2 ? (
+                <OtpInput
+                    containerStyle={{ margin: '10px 0 20px' }}
+                    inputStyle={{
+                        textAlign: 'center',
+                        border: '1px solid',
+                        width: '40px',
+                        height: '40px',
+                        margin: '0 5px',
+                    }}
+                    value={otp}
+                    onChange={setOtp}
+                    numInputs={6}
+                    renderInput={(props) => <input {...props} />}
+                ></OtpInput>
+            ) : (
                 <>
-                    <Input
-                        onChange={handleChangePhoneValue}
-                        value={phone}
-                        title="Số điện thoại"
-                        errorMessage={'Vui lòng nhập số điện thoại'}
-                        errorCondition={password.length === 10 && password.length !== 0}
-                    />
                     <Input onChange={(e) => setName(e.target.value)} value={name} type="text" title="Tên người dùng" />
                     <Input
                         onChange={handleChangePasswordValue}
@@ -100,25 +150,10 @@ function RegisterForm({ onClickChangeForm = () => {} }) {
                         errorCondition={confirmPassword !== password && confirmPassword !== ''}
                     />
                 </>
-            ) : (
-                <OtpInput
-                    containerStyle={{ margin: '10px 0 20px' }}
-                    inputStyle={{
-                        textAlign: 'center',
-                        border: '1px solid',
-                        width: '40px',
-                        height: '40px',
-                        margin: '0 5px',
-                    }}
-                    value={otp}
-                    onChange={setOtp}
-                    numInputs={6}
-                    renderInput={(props) => <input {...props} />}
-                ></OtpInput>
             )}
 
             <Button className={cx('login-btn')} primary>
-                {step === 1 ? 'Tạo tài khoản' : 'Xác thực mã OTP'}
+                {step === 1 ? 'Gửi mã xác thực SMS' : step === 2 ? 'Xác thực mã OTP' : 'Tạo tài khoản'}
             </Button>
             <div className={cx('toggle-form')}>
                 <span onClick={() => onClickChangeForm()}>Đăng nhập</span>

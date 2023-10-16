@@ -22,14 +22,12 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
     const [toppings, setToppings] = useState([]);
     const [num, setNum] = useState(data.quantity || 1);
     const [size, setSize] = useState(data.size || 0);
-    const [checkedToppings, setCheckedToppings] = useState(
-        data.toppings ? data.toppings.map((item) => item.idRecipe) : [],
-    );
+    const [checkedToppings, setCheckedToppings] = useState(data.toppings ? data.toppings.map((item) => item.id) : []);
     const [state, dispatch] = useContext(StoreContext);
     const getToppingList = async (e) => {
-        const results = await shopService.getToppingList(data.idRecipe);
+        const results = await shopService.getToppingList(data.id);
         if (results) {
-            setToppings(results.toppings);
+            setToppings(results.data);
         }
     };
     useEffect(() => {
@@ -47,7 +45,7 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
         // Duyệt qua từng phần tử topping đã check, tìm phần tử đã check trong list toppings có cả price và lấy price của phần tử đó cộng vào total
         const checkedToppingPrice =
             checkedToppings.reduce((total, currentId) => {
-                const toppingPrice = toppings && toppings.find((item) => item.idRecipe === currentId);
+                const toppingPrice = toppings && toppings.find((item) => item.id === currentId);
                 if (toppingPrice) {
                     return toppingPrice.price + total;
                 }
@@ -101,7 +99,7 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
     };
 
     const storeItems = async () => {
-        const recipesID = [detailItem.idRecipe, ...checkedToppings].join(',');
+        const recipesID = [detailItem.id, ...checkedToppings].join(',');
         const results = await cartService.addItemToCart(recipesID, num, size);
         // Change ui Num
         cartNum.classList.add('add-item');
@@ -183,10 +181,10 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
                                                 +{topping.price ? priceFormat(topping.price) : 0}₫
                                             </span>
                                             <Form.Check
-                                                value={topping.idRecipe}
+                                                value={topping.id}
                                                 checked={
                                                     checkedToppings !== [] &&
-                                                    checkedToppings.some((item) => item === topping.idRecipe)
+                                                    checkedToppings.some((item) => item === topping.id)
                                                 }
                                                 type="checkbox"
                                                 isValid

@@ -35,13 +35,8 @@ export const getItemByType = async (idType) => {
     }
 };
 export const getToppingList = async (idRecipe) => {
-    const config = {
-        params: {
-            idRecipe,
-        },
-    };
     try {
-        const res = await httpRequest.get(`recipe/topping`, config);
+        const res = await httpRequest.get(`recipe/recipe-topping/${idRecipe}`);
         return res;
     } catch (error) {
         console.log(error);

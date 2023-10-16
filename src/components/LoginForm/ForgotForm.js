@@ -27,7 +27,7 @@ function ForgotForm({ onClickChangeForm = () => {} }) {
         status === 1 ? sendOTP() : status === 2 ? confirmOTP() : changePassword();
     };
     const sendOTP = async () => {
-        const results = await authService.sendOTP(username);
+        const results = await authService.sendSMS(username);
         if (results) {
             dispatch(
                 actions.setToast({
