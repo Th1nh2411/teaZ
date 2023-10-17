@@ -6,7 +6,7 @@ export const getShippingCompany = async () => {
     // };
 
     try {
-        const res = await httpRequest.get(`order/getListCompanies`);
+        const res = await httpRequest.get(`shipping-company`);
         return res;
     } catch (error) {
         console.log(error);
@@ -17,7 +17,7 @@ export const getShippingCompany = async () => {
 export const createInvoice = async (idShipping_company = 1, shippingFee, address, payment_status, token) => {
     const body = { idShipping_company, shippingFee, address, payment_status };
     try {
-        const res = await httpRequest.post(`order/createInvoice`, body);
+        const res = await httpRequest.post(`invoice/checkout`, body);
         return res;
     } catch (error) {
         console.log(error);

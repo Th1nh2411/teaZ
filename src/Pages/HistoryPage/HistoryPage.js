@@ -1,8 +1,8 @@
 import styles from './HistoryPage.module.scss';
 import classNames from 'classnames/bind';
-import { BsFillClipboard2Fill, BsFillPhoneFill, BsPersonCircle } from 'react-icons/bs';
+import { BsCameraFill, BsFillClipboard2Fill, BsFillPhoneFill, BsPersonCircle } from 'react-icons/bs';
 import Button from '../../components/Button';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import * as invoiceService from '../../services/invoiceService';
 import { StoreContext, actions } from '../../store';
 import { priceFormat } from '../../utils/format';
@@ -16,6 +16,7 @@ import ProfileForm from './ProfileForm';
 import { MdEdit, MdLock } from 'react-icons/md';
 import ChangePwForm from './ChangePwForm';
 import { Alert, Col, Row } from 'antd';
+import CropperImage from '../../components/CropperImage/CropperImage';
 const cx = classNames.bind(styles);
 
 function HistoryPage() {
@@ -25,6 +26,10 @@ function HistoryPage() {
     const [showChangePw, setShowChangePw] = useState();
     const [loading, setLoading] = useState();
     const [state, dispatch] = useContext(StoreContext);
+
+    const uploadRef = useRef(null);
+    const [avatarSrc, setAvatarSrc] = useState(null);
+    const [showModalAvatar, setShowModalAvatar] = useState(false);
     const getListInvoice = async () => {
         setLoading(true);
         const results = await invoiceService.getAllInvoice();
@@ -39,8 +44,18 @@ function HistoryPage() {
     const handleShowDetailInvoice = (id) => {
         setDetailInvoice(id);
     };
+    const handleImgChange = (e) => {
+        setAvatarSrc(URL.createObjectURL(e.target.files[0]));
+        e.target.value = '';
+        setShowModalAvatar(true);
+    };
+    const handleInputClick = (e) => {
+        e.preventDefault();
+        uploadRef.current.click();
+    };
     return (
         <>
+            <CropperImage modalOpen={showModalAvatar} src={avatarSrc} onModalClose={() => setShowModalAvatar(false)} />
             {detailInvoice && <DetailInvoice idInvoice={detailInvoice} onCloseModal={() => setDetailInvoice(false)} />}
             {showEditProfile && <ProfileForm data={state.userInfo} onCloseModal={() => setShowEditProfile(false)} />}
             {showChangePw && <ChangePwForm onCloseModal={() => setShowChangePw(false)} />}
@@ -52,16 +67,23 @@ function HistoryPage() {
                     </div>
                 ) : (
                     <Row gutter={[40, 40]}>
-                        <Col xs={24} lg={10}>
+                        <Col xs={24} lg={12}>
                             <div className={cx('card')} style={{ backgroundColor: 'rgb(74 96 113)' }}>
-                                <div className={cx('title')} style={{ color: 'white' }}>
+                                <div className={cx('title')} style={{ color: '#26bada' }}>
                                     <BsPersonCircle className={cx('title-icon')} /> Thông tin cá nhân
                                 </div>
                                 <div className={cx('body')}>
-                                    <Image
-                                        src="https://png.pngtree.com/png-vector/20220817/ourmid/pngtree-cartoon-man-avatar-vector-ilustration-png-image_6111064.png"
-                                        className={cx('avatar')}
-                                    />
+                                    <div className={cx('avatar-wrapper')}>
+                                        <BsCameraFill onClick={handleInputClick} className={cx('camera-icon')} />
+                                        <Image src={state.userInfo && state.userInfo.photo} className={cx('avatar')} />
+                                        <input
+                                            hidden
+                                            type="file"
+                                            accept="image/*"
+                                            ref={uploadRef}
+                                            onChange={handleImgChange}
+                                        />
+                                    </div>
                                     <div className={cx('profile-wrapper')}>
                                         <div className={cx('d-flex')} style={{ margin: '10px 0' }}>
                                             <Button onClick={() => setShowEditProfile(true)} leftIcon={<MdEdit />}>
@@ -88,7 +110,7 @@ function HistoryPage() {
                                 </div>
                             </div>
                         </Col>
-                        <Col xs={24} lg={14}>
+                        <Col xs={24} lg={12}>
                             <div className={cx('card')}>
                                 <div className={cx('title')}>
                                     <BsFillClipboard2Fill className={cx('title-icon')} /> Lịch sử đặt hàng
@@ -110,7 +132,7 @@ function HistoryPage() {
                                                     )}
                                                     <div className={cx('invoice-body')}>
                                                         <div className={cx('invoice-title')}>
-                                                            Đơn hàng đặt lúc {dayjs(item.date).format('HH:mm')} ngày{' '}
+                                                            Đơn hàng {dayjs(item.date).format('HH:mm')} ngày{' '}
                                                             {dayjs(item.date).format('DD/MM/YYYY')}
                                                         </div>
                                                         <div className={cx('invoice-info')}>

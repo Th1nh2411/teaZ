@@ -34,46 +34,25 @@ export const register = async (phone, password, name) => {
         return error.response && error.response.data;
     }
 };
-export const sendSMS = async (phone) => {
-    // const config = {
-    //     headers: { access_token: token },
-    // };
+export const uploadFile = async (my_file) => {
+    const config = {
+        headers: { 'Content-Type': 'multipart/form-data' },
+    };
     const body = {
-        phone,
+        my_file,
     };
     try {
-        const res = await httpRequest.post('auth/sms', body);
+        const res = await httpRequest.post(`auth/upload`, body, config);
         return res;
     } catch (error) {
         console.log(error);
-        return error.response && error.response.data;
     }
 };
-export const confirmOTP = async (phone, verifyID) => {
+export const changePasswordForgot = async (body) => {
     // const config = {
     //     headers: { access_token: token },
     // };
-    const body = {
-        phone,
-        verifyID,
-    };
-    try {
-        const res = await httpRequest.post('auth/verify', body);
-        return res;
-    } catch (error) {
-        console.log(error);
-        return error.response && error.response.data;
-    }
-};
-export const changePasswordForgot = async (username, password, repeatPassword) => {
-    // const config = {
-    //     headers: { access_token: token },
-    // };
-    const body = {
-        username,
-        password,
-        repeatPassword,
-    };
+
     try {
         const res = await httpRequest.post('account/forgotpassword/changePw', body);
         return res;
@@ -82,26 +61,18 @@ export const changePasswordForgot = async (username, password, repeatPassword) =
         return error.response && error.response.data;
     }
 };
-export const editProfile = async (body, token) => {
-    const config = {
-        headers: { access_token: token },
-    };
-
+export const editProfile = async (body) => {
     try {
-        const res = await httpRequest.patch('user/editUserInfo', body, config);
+        const res = await httpRequest.patch('auth/profile', body);
         return res;
     } catch (error) {
         console.log(error);
         return error.response && error.response.data;
     }
 };
-export const changePassword = async (body, token) => {
-    const config = {
-        headers: { access_token: token },
-    };
-
+export const changePassword = async (body) => {
     try {
-        const res = await httpRequest.put('account/changepassword', body, config);
+        const res = await httpRequest.put('account/changepassword', body);
         return res;
     } catch (error) {
         console.log(error);
