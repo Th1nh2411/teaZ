@@ -14,17 +14,17 @@ export const getCartItem = async (token) => {
     }
 };
 
-export const addItemToCart = async (idRecipe = 1, quantityProduct = 1, sizeProduct = 0, token) => {
+export const addItemToCart = async (productString = 1, quantity = 1, size = 0, token) => {
     const config = {
         headers: { access_token: token },
     };
     const body = {
-        idRecipe,
-        quantityProduct,
-        sizeProduct,
+        productString,
+        quantity,
+        size,
     };
     try {
-        const res = await httpRequest.post('order/addToCart', body, config);
+        const res = await httpRequest.post('cart-product', body, config);
         return res;
     } catch (error) {
         console.log(error);
@@ -41,7 +41,7 @@ export const editCartItem = async (idProduct, idRecipe = 1, quantityProduct = 1,
         sizeProduct,
     };
     try {
-        const res = await httpRequest.post(`order/editProductCart/${idProduct}`, body, config);
+        const res = await httpRequest.patch(`cart-product/${idProduct}`, body, config);
         return res;
     } catch (error) {
         console.log(error);
@@ -54,7 +54,7 @@ export const delCartItem = async (idProduct, token) => {
     };
 
     try {
-        const res = await httpRequest.del(`order/deleteProductCart/${idProduct}`, {}, config);
+        const res = await httpRequest.del(`cart-product/${idProduct}`, {}, config);
         return res;
     } catch (error) {
         console.log(error);

@@ -2,7 +2,6 @@ import styles from './HistoryPage.module.scss';
 import classNames from 'classnames/bind';
 import { BsFillClipboard2Fill, BsFillPhoneFill, BsPersonCircle } from 'react-icons/bs';
 import Button from '../../components/Button';
-import { Col, Form, Row } from 'react-bootstrap';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import * as invoiceService from '../../services/invoiceService';
 import { StoreContext, actions } from '../../store';
@@ -16,6 +15,7 @@ import DetailInvoice from '../../components/DetailInvoice/DetailInvoice';
 import ProfileForm from './ProfileForm';
 import { MdEdit, MdLock } from 'react-icons/md';
 import ChangePwForm from './ChangePwForm';
+import { Alert, Col, Row } from 'antd';
 const cx = classNames.bind(styles);
 
 function HistoryPage() {
@@ -35,18 +35,8 @@ function HistoryPage() {
     };
     useEffect(() => {
         getListInvoice();
-    }, [state.currentInvoice.invoice]);
-    const currentInvoice = useMemo(() => {
-        if (listInvoice.length !== 0) {
-            if (listInvoice[0].status < 3) {
-                return listInvoice[0];
-            }
-        } else {
-            return null;
-        }
-    }, [listInvoice]);
+    }, [state.currentInvoice]);
     const handleShowDetailInvoice = (id) => {
-        console.log(id);
         setDetailInvoice(id);
     };
     return (
@@ -61,161 +51,98 @@ function HistoryPage() {
                         <span></span>
                     </div>
                 ) : (
-                    <Row>
-                        <Col lg={5}>
-                            <div className={cx('title')}>
-                                <BsPersonCircle className={cx('title-icon')} /> Thông tin cá nhân
-                            </div>
-                            <div className={cx('body')}>
-                                <Image
-                                    src="https://png.pngtree.com/png-vector/20220817/ourmid/pngtree-cartoon-man-avatar-vector-ilustration-png-image_6111064.png"
-                                    className={cx('avatar')}
-                                />
-                                <div className={cx('profile-wrapper')}>
-                                    <div className={cx('d-flex')}>
-                                        <Button onClick={() => setShowEditProfile(true)} leftIcon={<MdEdit />}>
-                                            Chỉnh sửa
-                                        </Button>
-                                        <Button
-                                            className={cx('ml-8')}
-                                            onClick={() => setShowChangePw(true)}
-                                            leftIcon={<MdLock />}
-                                        >
-                                            Đổi mật khẩu
-                                        </Button>
+                    <Row gutter={[40, 40]}>
+                        <Col xs={24} lg={10}>
+                            <div className={cx('card')} style={{ backgroundColor: 'rgb(74 96 113)' }}>
+                                <div className={cx('title')} style={{ color: 'white' }}>
+                                    <BsPersonCircle className={cx('title-icon')} /> Thông tin cá nhân
+                                </div>
+                                <div className={cx('body')}>
+                                    <Image
+                                        src="https://png.pngtree.com/png-vector/20220817/ourmid/pngtree-cartoon-man-avatar-vector-ilustration-png-image_6111064.png"
+                                        className={cx('avatar')}
+                                    />
+                                    <div className={cx('profile-wrapper')}>
+                                        <div className={cx('d-flex')} style={{ margin: '10px 0' }}>
+                                            <Button onClick={() => setShowEditProfile(true)} leftIcon={<MdEdit />}>
+                                                Chỉnh sửa
+                                            </Button>
+                                            <Button
+                                                className={cx('ml-8')}
+                                                onClick={() => setShowChangePw(true)}
+                                                leftIcon={<MdLock />}
+                                            >
+                                                Đổi mật khẩu
+                                            </Button>
+                                        </div>
+                                        <h4 className={cx('profile-info')}>
+                                            Tên người dùng: <span>{state.userInfo && state.userInfo.name}</span>
+                                        </h4>
+                                        <h4 className={cx('profile-info')}>
+                                            Số điện thoại: <span>{state.userInfo && state.userInfo.phone}</span>
+                                        </h4>
+                                        <h4 className={cx('profile-info')}>
+                                            Địa chỉ: <span>{state.userInfo && state.userInfo.address}</span>
+                                        </h4>
                                     </div>
-                                    <h3 className={cx('profile-info')}>
-                                        Tên người dùng: <span>{state.userInfo && state.userInfo.name}</span>
-                                    </h3>
-                                    <h3 className={cx('profile-info')}>
-                                        Số điện thoại: <span>{state.userInfo && state.userInfo.phone}</span>
-                                    </h3>
-                                    <h3 className={cx('profile-info')}>
-                                        Địa chỉ: <span>{state.userInfo && state.userInfo.address}</span>
-                                    </h3>
                                 </div>
                             </div>
                         </Col>
-                        <Col lg={7}>
-                            <div className={cx('title')}>
-                                <BsFillClipboard2Fill className={cx('title-icon')} /> Lịch sử đặt hàng
-                            </div>
-                            <div className={cx('body', 'invoice-list')}>
-                                {currentInvoice && (
-                                    <div className={cx('invoice-wrapper')}>
-                                        <div className={cx('left-side')}>
-                                            <Image
-                                                src={
-                                                    'https://order.phuclong.com.vn/_next/static/images/delivery-686d7142750173aa8bc5f1d11ea195e4.png'
-                                                }
-                                                className={cx('invoice-img')}
-                                            />
-                                            <div className={cx('invoice-body')}>
-                                                <div className={cx('invoice-title')}>
-                                                    Đơn hàng hiện tại
-                                                    {/* -{' '}
-                                                    <span>
-                                                        Đặt lúc {dayjs(currentInvoice.date).format('HH:mm')} ngày{' '}
-                                                        {dayjs(currentInvoice.date).format('DD/MM/YYYY')}
-                                                    </span> */}
+                        <Col xs={24} lg={14}>
+                            <div className={cx('card')}>
+                                <div className={cx('title')}>
+                                    <BsFillClipboard2Fill className={cx('title-icon')} /> Lịch sử đặt hàng
+                                </div>
+                                <div className={cx('body', 'invoice-list')}>
+                                    {listInvoice && listInvoice.length !== 0 ? (
+                                        listInvoice.map((item, index) => (
+                                            <div key={index} className={cx('invoice-wrapper')}>
+                                                <div className={cx('left-side')}>
+                                                    {item.status === 2 ? (
+                                                        <Image
+                                                            src={
+                                                                'https://order.phuclong.com.vn/_next/static/images/delivery-686d7142750173aa8bc5f1d11ea195e4.png'
+                                                            }
+                                                            className={cx('invoice-img')}
+                                                        />
+                                                    ) : (
+                                                        <BillIcon className={cx('invoice-img')} />
+                                                    )}
+                                                    <div className={cx('invoice-body')}>
+                                                        <div className={cx('invoice-title')}>
+                                                            Đơn hàng đặt lúc {dayjs(item.date).format('HH:mm')} ngày{' '}
+                                                            {dayjs(item.date).format('DD/MM/YYYY')}
+                                                        </div>
+                                                        <div className={cx('invoice-info')}>
+                                                            Trạng thái :{' '}
+                                                            <span>
+                                                                {item.status === 0
+                                                                    ? 'Chưa thanh toán'
+                                                                    : item.status === 1
+                                                                    ? 'Đã xác nhận'
+                                                                    : item.status === 2
+                                                                    ? 'Đang giao'
+                                                                    : 'Đã giao'}
+                                                            </span>
+                                                        </div>
+                                                        <div className={cx('invoice-info')}>
+                                                            Tổng tiền :{' '}
+                                                            <span>{priceFormat(item.shippingFee + item.total)}đ</span>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div className={cx('invoice-info')}>
-                                                    Trạng thái :{' '}
-                                                    <span>
-                                                        {currentInvoice.status === 0
-                                                            ? 'Chưa thanh toán'
-                                                            : currentInvoice.status === 1
-                                                            ? 'Đã thanh toán'
-                                                            : currentInvoice.status === 2
-                                                            ? 'Đang giao'
-                                                            : 'Đã giao'}
-                                                    </span>
-                                                </div>
-                                                <div className={cx('invoice-info')}>
-                                                    Tổng tiền :{' '}
-                                                    <span>
-                                                        {priceFormat(currentInvoice.shippingFee + currentInvoice.total)}
-                                                        đ
-                                                    </span>
+                                                <div
+                                                    onClick={() => handleShowDetailInvoice(item.id)}
+                                                    className={cx('invoice-actions')}
+                                                >
+                                                    Chi tiết
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div
-                                            onClick={() => handleShowDetailInvoice(currentInvoice.id)}
-                                            className={cx('invoice-actions')}
-                                        >
-                                            Xem chi tiết
-                                        </div>
-                                    </div>
-                                )}
-
-                                {currentInvoice
-                                    ? listInvoice.slice(1).map((item, index) => (
-                                          <div key={index} className={cx('invoice-wrapper')}>
-                                              <div className={cx('left-side')}>
-                                                  <BillIcon className={cx('invoice-img')} />
-                                                  <div className={cx('invoice-body')}>
-                                                      <div className={cx('invoice-title')}>
-                                                          Đơn hàng {dayjs(item.date).format('HH:mm')}{' '}
-                                                          {dayjs(item.date).format('DD/MM/YYYY')}
-                                                      </div>
-                                                      <div className={cx('invoice-info')}>
-                                                          Trạng thái :{' '}
-                                                          <span>
-                                                              {item.status === 0
-                                                                  ? 'Chưa thanh toán'
-                                                                  : item.status === 1
-                                                                  ? 'Đang giao'
-                                                                  : 'Đã giao'}
-                                                          </span>
-                                                      </div>
-                                                      <div className={cx('invoice-info')}>
-                                                          Tổng tiền :{' '}
-                                                          <span>{priceFormat(item.shippingFee + item.total)}đ</span>
-                                                      </div>
-                                                  </div>
-                                              </div>
-                                              <div
-                                                  onClick={() => handleShowDetailInvoice(item.id)}
-                                                  className={cx('invoice-actions')}
-                                              >
-                                                  Xem chi tiết
-                                              </div>
-                                          </div>
-                                      ))
-                                    : listInvoice.map((item, index) => (
-                                          <div key={index} className={cx('invoice-wrapper')}>
-                                              <div className={cx('left-side')}>
-                                                  <BillIcon className={cx('invoice-img')} />
-                                                  <div className={cx('invoice-body')}>
-                                                      <div className={cx('invoice-title')}>
-                                                          Đơn hàng đặt lúc {dayjs(item.date).format('HH:mm')} ngày{' '}
-                                                          {dayjs(item.date).format('DD/MM/YYYY')}
-                                                      </div>
-                                                      <div className={cx('invoice-info')}>
-                                                          Trạng thái :{' '}
-                                                          <span>
-                                                              {item.status === 0
-                                                                  ? 'Chưa thanh toán'
-                                                                  : item.status === 1
-                                                                  ? 'Đang giao'
-                                                                  : 'Đã giao'}
-                                                          </span>
-                                                      </div>
-                                                      <div className={cx('invoice-info')}>
-                                                          Tổng tiền :{' '}
-                                                          <span>{priceFormat(item.shippingFee + item.total)}đ</span>
-                                                      </div>
-                                                  </div>
-                                              </div>
-                                              <div
-                                                  onClick={() => handleShowDetailInvoice(item.id)}
-                                                  className={cx('invoice-actions')}
-                                              >
-                                                  Xem chi tiết
-                                              </div>
-                                          </div>
-                                      ))}
+                                        ))
+                                    ) : (
+                                        <Alert message="Bạn chưa đặt đơn nào cả" showIcon type="info" />
+                                    )}
+                                </div>
                             </div>
                         </Col>
                     </Row>

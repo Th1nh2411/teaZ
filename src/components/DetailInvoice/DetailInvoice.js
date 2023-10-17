@@ -63,7 +63,7 @@ function DetailInvoice({ idInvoice, onCloseModal = () => {} }) {
                                                 </div>
                                             )}
                                         </div>
-                                        <h5 className={cx('cart-item-price')}>{priceFormat(item.totalProduct)}đ</h5>
+                                        <h5 className={cx('cart-item-price')}>{priceFormat(item.price)}đ</h5>
                                     </div>
                                 ))}
                         </div>
@@ -84,6 +84,8 @@ function DetailInvoice({ idInvoice, onCloseModal = () => {} }) {
                                     {invoiceInfo.status === 0
                                         ? 'Chưa thanh toán'
                                         : invoiceInfo.status === 1
+                                        ? 'Đã xác nhận'
+                                        : invoiceInfo.status === 2
                                         ? 'Đang giao'
                                         : 'Đã giao'}
                                 </span>

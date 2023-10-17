@@ -27,7 +27,7 @@ function Provider({ children }) {
         detailAddress: { show: false, address: '' },
         cartData: null,
         shopInfo: {},
-        currentInvoice: { invoice: undefined },
+        currentInvoice: null,
         toast: { show: false, content: '', title: '' },
         getCurrentCart,
         getCurrentInvoice,
@@ -45,7 +45,7 @@ function Provider({ children }) {
         }
     }, [state.userInfo]);
     useEffect(() => {
-        if (state.currentInvoice.invoice && state.currentInvoice.invoice.status !== 0) {
+        if (state.currentInvoice && state.currentInvoice.status !== 0) {
             var getCurrentInvoiceInterval = setInterval(() => {
                 getCurrentInvoice();
             }, 10000);

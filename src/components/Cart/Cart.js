@@ -76,7 +76,7 @@ function Cart({ cart = {}, onCloseModal = () => {}, onDelItem = () => {} }) {
                                 </div>
                             )}
                         </div>
-                    ) : !cart.shopStatus ? (
+                    ) : !state.shopInfo.isActive ? (
                         <div className={cx('warning-wrapper')}>
                             <div className={cx('warning-title')}>
                                 Quán chưa mở cửa
@@ -97,7 +97,7 @@ function Cart({ cart = {}, onCloseModal = () => {}, onDelItem = () => {} }) {
                     {cart.data && cart.data.length !== 0 ? (
                         <Button
                             onClick={handleClickCheckout}
-                            disable={!!state.currentInvoice.invoice || !cart.shopStatus}
+                            disable={!!state.currentInvoice || !state.shopInfo.isActive}
                             primary
                             className={cx('checkout-btn')}
                         >
