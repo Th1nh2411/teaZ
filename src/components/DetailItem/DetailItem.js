@@ -10,6 +10,8 @@ import * as shopService from '../../services/shopService';
 import * as cartService from '../../services/cartService';
 import { StoreContext, actions } from '../../store';
 import { priceFormat } from '../../utils/format';
+import { RiHeartFill, RiHeartAddLine } from 'react-icons/ri';
+import { Tooltip } from 'antd';
 
 const cx = classNames.bind(styles);
 const sizeOrders = [
@@ -22,6 +24,7 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
     const [toppings, setToppings] = useState([]);
     const [num, setNum] = useState(data.quantity || 1);
     const [size, setSize] = useState(data.size || 0);
+    const [isLiked, setIsLiked] = useState(data.isLiked || false);
     const [checkedToppings, setCheckedToppings] = useState(data.toppings ? data.toppings.map((item) => item.id) : []);
     const [state, dispatch] = useContext(StoreContext);
     const getToppingList = async (e) => {
@@ -105,6 +108,9 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
         cartNum.classList.add('add-item');
         // cartNum.innerHTML = Number(cartNum.innerHTML) + 1;
     };
+    const handleClickFavor = () => {
+        setIsLiked(!isLiked);
+    };
     return (
         <Modal
             className={cx('detail-wrapper')}
@@ -116,9 +122,19 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
                 <Col>
                     <div className={cx('order-img-wrapper')}>
                         <Image ref={imageRef} src={detailItem.image} className={cx('order-img')} />
-                        {data.discount !== 100 && (
+                        {isLiked ? (
+                            <Tooltip title="Bỏ yêu thích">
+                                <RiHeartFill className={cx('heart-icon')} onClick={handleClickFavor} />
+                            </Tooltip>
+                        ) : (
+                            <Tooltip title="Yêu thích">
+                                <RiHeartAddLine className={cx('heart-icon')} onClick={handleClickFavor} />
+                            </Tooltip>
+                        )}
+
+                        {detailItem.discount !== 100 && (
                             <div className={cx('sale-off')}>
-                                <span className={cx('sale-off-percent')}>{100 - data.discount}% OFF</span>
+                                <span className={cx('sale-off-percent')}>{100 - detailItem.discount}% OFF</span>
                             </div>
                         )}
                     </div>
@@ -131,7 +147,7 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
                             <div className={cx('order-price-wrapper')}>
                                 <div className={cx('order-price')}>{priceFormat(detailItem.price)}₫</div>
                                 <div className={cx('order-price-discounted')}>
-                                    {priceFormat((detailItem.price * data.discount) / 100)}₫
+                                    {priceFormat((detailItem.price * detailItem.discount) / 100)}₫
                                 </div>
                             </div>
                             <div className={cx('order-quantity-wrapper')}>

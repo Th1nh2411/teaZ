@@ -30,7 +30,7 @@ function CheckoutPage() {
     const [showConfirmCancelInvoice, setShowConfirmCancelInvoice] = useState();
     const navigate = useNavigate();
 
-    const { invoice, products } = state.currentInvoice;
+    const { invoice, products, user } = state.currentInvoice;
     const confirmPaymentInvoice = async () => {
         const results = await invoiceService.confirmInvoice(invoice.idInvoice, invoice.total);
         if (results) {
@@ -155,7 +155,7 @@ function CheckoutPage() {
                             <div className={cx('info')}>
                                 <div className={cx('info-body')}>
                                     <IoLocationSharp className={cx('info-icon')} />
-                                    <div className={cx('info-detail')}>{invoice && invoice.address}</div>
+                                    <div className={cx('info-detail')}>{user && user.address}</div>
                                 </div>
                             </div>
                             <div className={cx('info')}>
@@ -163,9 +163,9 @@ function CheckoutPage() {
                                     <BsFillPhoneFill className={cx('info-icon')} />
                                     {state.userInfo && (
                                         <div>
-                                            <div className={cx('info-title')}>{state.userInfo.name}</div>
+                                            <div className={cx('info-title')}>{user.name}</div>
                                             <div className={cx('info-detail')}>
-                                                Số điện thoại : {state.userInfo.phone || '09999999'}
+                                                Số điện thoại : {user.phone || '09999999'}
                                             </div>
                                         </div>
                                     )}

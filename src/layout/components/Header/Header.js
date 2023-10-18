@@ -8,6 +8,7 @@ import Search from '../Search';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import config from '../../../config';
 import { HiUserCircle } from 'react-icons/hi';
+import { BiBookHeart } from 'react-icons/bi';
 import { MdOutlineHistoryEdu } from 'react-icons/md';
 import Button from '../../../components/Button/Button';
 import { useContext, useEffect, useState } from 'react';
@@ -27,7 +28,12 @@ function Header() {
             to: config.routes.history,
             type: 'history',
         },
-
+        {
+            icon: <BiBookHeart />,
+            title: 'Danh sách yêu thích',
+            to: config.routes.favor,
+            type: 'favor',
+        },
         {
             icon: <IoLogOutOutline />,
             title: 'Đăng xuất',

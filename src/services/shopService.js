@@ -25,9 +25,14 @@ export const getShippingFee = async (userLat, userLng, idShipping_company = 1) =
         return error.response && error.response.data;
     }
 };
-export const getItemByType = async (idType) => {
+export const getItemByType = async (idType, id) => {
+    const config = {
+        params: {
+            id,
+        },
+    };
     try {
-        const res = await httpRequest.get(`recipe/menu/${idType}`);
+        const res = await httpRequest.get(`recipe/menu/${idType}`, config);
         return res;
     } catch (error) {
         console.log(error);

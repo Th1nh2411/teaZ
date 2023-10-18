@@ -11,6 +11,7 @@ import Tippy from '@tippyjs/react';
 import { MdOutlineInfo } from 'react-icons/md';
 import { onlyNumber } from '../../utils/format';
 import { StoreContext, actions } from '../../store';
+import Cookies from 'js-cookie';
 
 const cx = classNames.bind(styles);
 
@@ -30,7 +31,8 @@ function ProfileForm({ data, onCloseModal = () => {} }) {
                     title: 'Thành công',
                 }),
             );
-
+            Cookies.set('userInfo', JSON.stringify({ ...state.userInfo, name, phone, address }));
+            dispatch(actions.setUserInfo({ ...state.userInfo, name, phone, address }));
             onCloseModal();
         }
     };

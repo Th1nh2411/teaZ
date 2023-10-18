@@ -79,3 +79,12 @@ export const changePassword = async (body) => {
         return error.response && error.response.data;
     }
 };
+export const getWishListItem = async () => {
+    try {
+        const res = await httpRequest.get('wishlist');
+        return res;
+    } catch (error) {
+        console.log(error);
+        return error.response && error.response.data;
+    }
+};

@@ -12,14 +12,10 @@ const cx = classNames.bind(styles);
 function CartItem({ data = {}, onDelItem = () => {} }) {
     const [state, dispatch] = useContext(StoreContext);
     const handleEditItem = () => {
-        const arrRecipe = data.idProduct.split(',');
-        const idMainProduct = arrRecipe[0];
-        dispatch(
-            actions.setDetailItem({ show: true, data: { ...data, idRecipe: idMainProduct.slice(1) }, editing: true }),
-        );
+        dispatch(actions.setDetailItem({ show: true, data, editing: true }));
     };
     const handleDelItem = async () => {
-        const results = await cartService.delCartItem(data.idProduct);
+        const results = await cartService.delCartItem(data.productId);
         if (results) {
             onDelItem();
         }
@@ -39,7 +35,7 @@ function CartItem({ data = {}, onDelItem = () => {} }) {
                         {data.toppings.length !== 0 && <span>Topping :</span>}{' '}
                         {data.toppings.map((topping) => topping.name).join(', ')}
                     </div>
-                    <div className={cx('item-price')}>{priceFormat(data.totalProduct)}đ</div>
+                    <div className={cx('item-price')}>{priceFormat(data.price)}đ</div>
                     {/* <div className={cx('item-price')}></div> */}
                 </div>
             </div>

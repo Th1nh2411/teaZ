@@ -4,6 +4,7 @@ import Image from '../Image/Image';
 import { Col } from 'react-bootstrap';
 import { MdOutlineAddShoppingCart } from 'react-icons/md';
 import { priceFormat } from '../../utils/format';
+import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
 
 const cx = classNames.bind(styles);
 
@@ -14,6 +15,7 @@ function OrderItem({ data = {} }) {
             <div>
                 <div className={cx('order-img-wrapper')}>
                     <Image src={data.image} className={cx('order-img')} />
+                    {!!data.isLiked && <AiFillHeart className={cx('heart-icon')} />}
                     {data.discount !== 100 && (
                         <div className={cx('sale-off')}>
                             <span className={cx('sale-off-percent')}>{100 - data.discount}% OFF</span>
