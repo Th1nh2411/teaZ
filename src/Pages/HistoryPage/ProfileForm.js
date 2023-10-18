@@ -32,15 +32,6 @@ function ProfileForm({ data, onCloseModal = () => {} }) {
             );
 
             onCloseModal();
-        } else {
-            dispatch(
-                actions.setToast({
-                    show: true,
-                    content: results.message,
-                    title: 'Thất bại',
-                    type: 'error',
-                }),
-            );
         }
     };
     const handleCancelEdit = (e) => {

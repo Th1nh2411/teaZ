@@ -91,7 +91,7 @@ function Cart({ cart = {}, onCloseModal = () => {}, onDelItem = () => {} }) {
                     ) : (
                         <div className={cx('total')}>
                             <div className={cx('total-title')}>Tổng tiền tạm tính:</div>
-                            <div className={cx('total-num')}>{cart.total && priceFormat(cart.total)}đ</div>
+                            <div className={cx('total-num')}>{cart.total ? priceFormat(cart.total) : 0}đ</div>
                         </div>
                     )}
                     {cart.data && cart.data.length !== 0 ? (

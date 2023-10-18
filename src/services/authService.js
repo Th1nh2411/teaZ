@@ -54,7 +54,7 @@ export const changePasswordForgot = async (body) => {
     // };
 
     try {
-        const res = await httpRequest.post('account/forgotpassword/changePw', body);
+        const res = await httpRequest.post('auth/forgotpassword', body);
         return res;
     } catch (error) {
         console.log(error);
@@ -72,7 +72,7 @@ export const editProfile = async (body) => {
 };
 export const changePassword = async (body) => {
     try {
-        const res = await httpRequest.put('account/changepassword', body);
+        const res = await httpRequest.post('auth/changepassword', body);
         return res;
     } catch (error) {
         console.log(error);

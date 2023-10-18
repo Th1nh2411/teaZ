@@ -17,9 +17,9 @@ const cx = classNames.bind(styles);
 
 function ForgotForm({ onClickChangeForm = () => {} }) {
     const [phone, setPhone] = useState('');
-    const [password, setPassword] = useState('');
+    const [newPassword, setPassword] = useState('');
     const [otp, setOtp] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
+    const [repeatPassword, setConfirmPassword] = useState('');
     const [step, setStep] = useState(1);
 
     const [state, dispatch] = useContext(StoreContext);
@@ -89,7 +89,7 @@ function ForgotForm({ onClickChangeForm = () => {} }) {
             });
     };
     const changePassword = async () => {
-        const results = await authService.changePasswordForgot(phone, password, confirmPassword);
+        const results = await authService.changePasswordForgot({ phone, newPassword, repeatPassword });
         if (results) {
             dispatch(
                 actions.setToast({
@@ -99,15 +99,6 @@ function ForgotForm({ onClickChangeForm = () => {} }) {
                 }),
             );
             onClickChangeForm();
-        } else {
-            dispatch(
-                actions.setToast({
-                    show: true,
-                    content: results.message,
-                    title: 'Thất bại',
-                    type: 'error',
-                }),
-            );
         }
     };
 
@@ -119,7 +110,7 @@ function ForgotForm({ onClickChangeForm = () => {} }) {
                         setPhone(e.target.value);
                     }}
                     value={phone}
-                    title="Số điện thoại hoặc gmail"
+                    title="Điền số điện thoại đăng ký"
                 />
             )}
             {step === 2 && (
@@ -144,25 +135,25 @@ function ForgotForm({ onClickChangeForm = () => {} }) {
                         onChange={(e) => {
                             setPassword(e.target.value);
                         }}
-                        value={password}
+                        value={newPassword}
                         title="Mật khẩu"
                         type="password"
                         errorMessage={'Mật khẩu phải lớn hơn 6 kí tự'}
-                        errorCondition={password.length < 6 && password.length !== 0}
+                        errorCondition={newPassword.length < 6 && newPassword.length !== 0}
                     />
                     <Input
                         onChange={(e) => setConfirmPassword(e.target.value)}
-                        value={confirmPassword}
+                        value={repeatPassword}
                         type="password"
                         title="Xác nhận mật khẩu"
                         errorMessage="Xác nhận không trùng với mật khẩu trên"
-                        errorCondition={confirmPassword !== password && confirmPassword !== ''}
+                        errorCondition={repeatPassword !== newPassword && repeatPassword !== ''}
                     />
                 </>
             )}
 
             <Button className={cx('login-btn')} primary>
-                {step === 1 ? 'Gửi OTP đến gmail đăng ký' : step === 2 ? 'Xác nhận mã OTP' : 'Đổi mật khẩu'}
+                {step === 1 ? 'Gửi OTP đến SDT đăng ký' : step === 2 ? 'Xác nhận mã OTP' : 'Đổi mật khẩu'}
             </Button>
             <div className={cx('toggle-form')}>
                 <span onClick={() => onClickChangeForm()}>Đăng nhập</span>

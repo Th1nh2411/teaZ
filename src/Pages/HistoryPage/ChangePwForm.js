@@ -17,11 +17,11 @@ const cx = classNames.bind(styles);
 function ChangePwForm({ onCloseModal = () => {} }) {
     const [oldPassword, setOldPwValue] = useState('');
     const [newPassword, setPasswordValue] = useState('');
-    const [confirmPw, setConfirmPwValue] = useState('');
+    const [repeatPassword, setRepeatPw] = useState('');
     const [valueChange, setValueChange] = useState(false);
     const [state, dispatch] = useContext(StoreContext);
     const editProfile = async () => {
-        if (newPassword && newPassword !== confirmPw) {
+        if (newPassword && newPassword !== repeatPassword) {
             dispatch(
                 actions.setToast({
                     show: true,
@@ -43,7 +43,7 @@ function ChangePwForm({ onCloseModal = () => {} }) {
             );
             return;
         }
-        const results = await authService.changePassword({ oldPassword, newPassword });
+        const results = await authService.changePassword({ oldPassword, newPassword, repeatPassword });
         if (results) {
             dispatch(
                 actions.setToast({
@@ -53,22 +53,13 @@ function ChangePwForm({ onCloseModal = () => {} }) {
                 }),
             );
             onCloseModal(true);
-        } else {
-            dispatch(
-                actions.setToast({
-                    show: true,
-                    content: results.message,
-                    title: 'Thất bại',
-                    type: 'error',
-                }),
-            );
         }
     };
     const handleCancelEdit = (e) => {
         e.preventDefault();
         setOldPwValue('');
         setPasswordValue('');
-        setConfirmPwValue('');
+        setRepeatPw('');
     };
     const handleClickConfirm = (e) => {
         e.preventDefault();
@@ -76,12 +67,12 @@ function ChangePwForm({ onCloseModal = () => {} }) {
     };
 
     useEffect(() => {
-        if (oldPassword !== '' || newPassword !== '' || confirmPw !== '') {
+        if (oldPassword !== '' || newPassword !== '' || repeatPassword !== '') {
             setValueChange(true);
         } else {
             setValueChange(false);
         }
-    }, [newPassword, confirmPw, oldPassword]);
+    }, [newPassword, repeatPassword, oldPassword]);
     return (
         <Modal
             handleClickOutside={() => {
@@ -118,12 +109,12 @@ function ChangePwForm({ onCloseModal = () => {} }) {
                 <Input
                     required={newPassword.length !== 0}
                     onChange={(event) => {
-                        setConfirmPwValue(event.target.value);
+                        setRepeatPw(event.target.value);
                         setValueChange(true);
                     }}
-                    errorCondition={newPassword !== confirmPw && confirmPw.length !== 0}
+                    errorCondition={newPassword !== repeatPassword && repeatPassword.length !== 0}
                     errorMessage="Xác nhận phải trùng với mật khẩu đã nhập"
-                    value={confirmPw}
+                    value={repeatPassword}
                     title="Xác nhận mật khẩu"
                     type="password"
                 />
