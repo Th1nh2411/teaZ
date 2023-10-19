@@ -88,3 +88,12 @@ export const getWishListItem = async () => {
         return error.response && error.response.data;
     }
 };
+export const updateFavor = async (idRecipe) => {
+    try {
+        const res = await httpRequest.post(`wishlist/${idRecipe}`);
+        return res;
+    } catch (error) {
+        console.log(error);
+        return error.response && error.response.data;
+    }
+};

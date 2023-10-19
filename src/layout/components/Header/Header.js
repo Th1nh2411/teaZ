@@ -52,6 +52,7 @@ function Header() {
                 Cookies.remove('userInfo');
                 dispatch(actions.setUserInfo(null));
                 dispatch(actions.setCurrentInvoice({}));
+                dispatch(actions.setCart(null));
                 if (currentPath !== config.routes.home) {
                     navigate(config.routes.home);
                 }

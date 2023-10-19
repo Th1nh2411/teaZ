@@ -32,7 +32,7 @@ function Home() {
     };
     useEffect(() => {
         getListItem();
-    }, [orderType, state.idShop]);
+    }, [orderType, state.userInfo]);
     return (
         <div className={cx('wrapper')}>
             <Slider />

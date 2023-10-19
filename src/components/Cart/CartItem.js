@@ -6,6 +6,7 @@ import { AiTwotoneDelete, AiTwotoneEdit } from 'react-icons/ai';
 import { priceFormat } from '../../utils/format';
 import { StoreContext, actions } from '../../store';
 import * as cartService from '../../services/cartService';
+import { Popconfirm } from 'antd';
 
 const cx = classNames.bind(styles);
 
@@ -43,9 +44,17 @@ function CartItem({ data = {}, onDelItem = () => {} }) {
                 <div onClick={handleEditItem} className={cx('action-edit')}>
                     <AiTwotoneEdit />
                 </div>
-                <div onClick={handleDelItem} className={cx('action-del')}>
-                    <AiTwotoneDelete />
-                </div>
+                <Popconfirm
+                    title="Xoá món"
+                    description="Xoá món này ra khỏi giỏ hàng?"
+                    onConfirm={handleDelItem}
+                    okText="Xoá"
+                    cancelText="Huỷ"
+                >
+                    <div className={cx('action-del')}>
+                        <AiTwotoneDelete />
+                    </div>
+                </Popconfirm>
             </div>
         </div>
     );

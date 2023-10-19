@@ -8,6 +8,7 @@ import { HiMinusCircle, HiPlusCircle } from 'react-icons/hi';
 import { Col, Form, Row } from 'react-bootstrap';
 import * as shopService from '../../services/shopService';
 import * as cartService from '../../services/cartService';
+import * as authService from '../../services/authService';
 import { StoreContext, actions } from '../../store';
 import { priceFormat } from '../../utils/format';
 import { RiHeartFill, RiHeartAddLine } from 'react-icons/ri';
@@ -62,6 +63,15 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
     const handleEditItemCart = async () => {
         const recipesID = [detailItem.idProduct[1], ...checkedToppings].join(',');
         const results = await cartService.editCartItem(detailItem.idProduct, recipesID, num, size);
+        if (results) {
+            dispatch(
+                actions.setToast({
+                    show: true,
+                    content: results.message,
+                    title: 'Sửa món',
+                }),
+            );
+        }
         await onCloseModal(true);
     };
     const handleAddItemCart = async () => {
@@ -104,12 +114,31 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
     const storeItems = async () => {
         const recipesID = [detailItem.id, ...checkedToppings].join(',');
         const results = await cartService.addItemToCart(recipesID, num, size);
+        if (results) {
+            dispatch(
+                actions.setToast({
+                    show: true,
+                    content: results.message,
+                    title: 'Thêm món',
+                }),
+            );
+        }
         // Change ui Num
         cartNum.classList.add('add-item');
         // cartNum.innerHTML = Number(cartNum.innerHTML) + 1;
     };
-    const handleClickFavor = () => {
+    const handleClickFavor = async () => {
         setIsLiked(!isLiked);
+        const results = await authService.updateFavor(detailItem.id);
+        if (results) {
+            dispatch(
+                actions.setToast({
+                    show: true,
+                    content: results.message,
+                    title: 'Yêu thích',
+                }),
+            );
+        }
     };
     return (
         <Modal
