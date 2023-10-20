@@ -22,7 +22,7 @@ function CartItem({ data = {}, onDelItem = () => {} }) {
         }
     };
     return (
-        <div className={cx('item-wrapper', { disable: !data.isActive })}>
+        <div className={cx('item-wrapper', { disable: data.isActive === 2 })}>
             <h3 className={cx('disable-title')}>Ngưng bán</h3>
             <div className={cx('item-left-side')}>
                 <div className={cx('item-img-wrapper')}>

@@ -56,17 +56,18 @@ function DefaultLayout({ children }) {
         getLocation();
     }, []);
 
-    const setShippingFee = async () => {
+    const getDistance = async () => {
         if (location) {
             const results = await shopService.getShippingFee(location.latitude, location.longitude);
             if (results) {
-                dispatch(actions.setShippingFee(results.data));
                 setDistance(results.distance);
-                const results2 = await mapService.getAddress(location.latitude, location.longitude);
-                if (results2) {
-                    dispatch(actions.setDetailAddress({ address: results2.display_name }));
-                }
             }
+        }
+    };
+    const getAddress = async () => {
+        const results = await mapService.getAddress(location.latitude, location.longitude);
+        if (results) {
+            dispatch(actions.setDetailAddress({ address: results.display_name, location }));
         }
     };
     const getShopInfo = async () => {
@@ -78,7 +79,8 @@ function DefaultLayout({ children }) {
 
     useEffect(() => {
         getShopInfo();
-        setShippingFee();
+        getDistance();
+        getAddress();
     }, [location]);
     const handleCLickShowCart = () => {
         const userInfo = state.userInfo;

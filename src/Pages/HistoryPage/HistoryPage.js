@@ -15,7 +15,7 @@ import DetailInvoice from '../../components/DetailInvoice/DetailInvoice';
 import ProfileForm from './ProfileForm';
 import { MdEdit, MdLock } from 'react-icons/md';
 import ChangePwForm from './ChangePwForm';
-import { Alert, Col, Row } from 'antd';
+import { Alert, Badge, Col, Row } from 'antd';
 import CropperImage from '../../components/CropperImage/CropperImage';
 const cx = classNames.bind(styles);
 
@@ -137,15 +137,30 @@ function HistoryPage() {
                                                         </div>
                                                         <div className={cx('invoice-info')}>
                                                             Trạng thái :{' '}
-                                                            <span>
-                                                                {item.status === 0
-                                                                    ? 'Chưa thanh toán'
-                                                                    : item.status === 1
-                                                                    ? 'Đã xác nhận'
-                                                                    : item.status === 2
-                                                                    ? 'Đang giao'
-                                                                    : 'Đã giao'}
-                                                            </span>
+                                                            <Badge
+                                                                status={
+                                                                    item.status === 0
+                                                                        ? 'error'
+                                                                        : item.status === 1
+                                                                        ? 'warning'
+                                                                        : item.status === 2
+                                                                        ? 'processing'
+                                                                        : item.status === 3
+                                                                        ? 'success'
+                                                                        : 'default'
+                                                                }
+                                                                text={
+                                                                    item.status === 0
+                                                                        ? 'Chưa thanh toán'
+                                                                        : item.status === 1
+                                                                        ? 'Đã xác nhận'
+                                                                        : item.status === 2
+                                                                        ? 'Đang giao'
+                                                                        : item.status === 3
+                                                                        ? 'Đã giao'
+                                                                        : 'Đã huỷ đơn'
+                                                                }
+                                                            />
                                                         </div>
                                                         <div className={cx('invoice-info')}>
                                                             Tổng tiền :{' '}

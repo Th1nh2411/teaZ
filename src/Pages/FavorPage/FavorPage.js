@@ -50,7 +50,7 @@ function FavorPage() {
                                 key={index}
                                 md="3"
                                 onClick={() => {
-                                    if (item.isActive) {
+                                    if (item.isActive === 1) {
                                         dispatch(actions.setDetailItem({ show: true, data: item }));
                                     }
                                 }}

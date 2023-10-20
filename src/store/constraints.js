@@ -6,4 +6,3 @@ export const SET_CART = 'set_cart';
 export const SET_CURRENT_INVOICE = 'set_current_invoice';
 export const SET_TOAST = 'set_toast';
 export const SET_SHOP_INFO = 'set_shop_info';
-export const SET_SHIPPING_FEE = 'set_shipping_fee';

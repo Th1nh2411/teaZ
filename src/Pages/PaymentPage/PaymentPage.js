@@ -30,7 +30,7 @@ function CheckoutPage() {
     const [showConfirmCancelInvoice, setShowConfirmCancelInvoice] = useState();
     const navigate = useNavigate();
 
-    const { invoice, products, user } = state.currentInvoice;
+    const { invoice, products, user } = state.currentInvoice || {};
     const confirmPaymentInvoice = async () => {
         const results = await invoiceService.confirmInvoice(invoice.idInvoice, invoice.total);
         if (results) {
@@ -71,8 +71,7 @@ function CheckoutPage() {
     // }, [products]);
     const paymentVNPay = async () => {
         const results = await paymentService.create_payment_url({
-            amount: (invoice.total + invoice.shippingFee).toFixed(3) * 1000,
-            bankCode: 'NCB',
+            id_order: state.currentInvoice.invoice.id,
         });
         if (results) {
             window.location.replace(results.url);
@@ -80,14 +79,11 @@ function CheckoutPage() {
     };
 
     const handleCancelInvoice = async () => {
-        const results = await invoiceService.cancelCurrentInvoice();
-        if (results && results.isCancel) {
+        const results = await invoiceService.cancelCurrentInvoice(state.currentInvoice.invoice.id);
+        if (results) {
             dispatch(actions.setToast({ show: true, title: 'Hủy đơn', content: results.message }));
             dispatch(actions.setCurrentInvoice({ invoice: null }));
             navigate(config.routes.home);
-        } else {
-            dispatch(actions.setToast({ show: true, title: 'Hủy đơn', content: results.message, type: 'info' }));
-            setShowConfirmCancelInvoice(false);
         }
     };
     const orderTime = useMemo(
@@ -163,9 +159,9 @@ function CheckoutPage() {
                                     <BsFillPhoneFill className={cx('info-icon')} />
                                     {state.userInfo && (
                                         <div>
-                                            <div className={cx('info-title')}>{user.name}</div>
+                                            <div className={cx('info-title')}>{user && user.name}</div>
                                             <div className={cx('info-detail')}>
-                                                Số điện thoại : {user.phone || '09999999'}
+                                                Số điện thoại : {(user && user.phone) || '09999999'}
                                             </div>
                                         </div>
                                     )}

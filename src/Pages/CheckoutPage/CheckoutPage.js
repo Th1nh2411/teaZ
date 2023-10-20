@@ -6,33 +6,47 @@ import { Col, Form, Row } from 'react-bootstrap';
 import { useContext, useEffect, useState } from 'react';
 import * as invoiceService from '../../services/invoiceService';
 import * as paymentService from '../../services/paymentService';
+import * as shopService from '../../services/shopService';
+import * as authService from '../../services/authService';
 import { StoreContext, actions } from '../../store';
 import { priceFormat } from '../../utils/format';
 import { IoLocationSharp } from 'react-icons/io5';
 import { AiOutlineRight } from 'react-icons/ai';
 import Image from '../../components/Image/Image';
-import { Link, redirect, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import config from '../../config';
+import TextArea from 'antd/es/input/TextArea';
 const cx = classNames.bind(styles);
 
 function CheckoutPage() {
     const [checkPolicy, setCheckPolicy] = useState(false);
-    const [idShipping_company, setIdShippingCompany] = useState(1);
+    const [shippingCompanyId, setIdShippingCompany] = useState(1);
     const [listCompany, setListCompany] = useState([]);
-    const [payment, setPayment] = useState(1);
+    const [paymentMethod, setPayment] = useState(1);
+    const [description, setDescription] = useState('');
     const [state, dispatch] = useContext(StoreContext);
-    const shippingFee = state.shippingFee;
+    const [shippingFee, setShippingFee] = useState(15);
+    const location = state.detailAddress.location || {};
     const navigate = useNavigate();
 
     const getShippingCompany = async () => {
         const results = await invoiceService.getShippingCompany();
         if (results) {
-            setListCompany(results.shipping_company);
+            setListCompany(results.data);
+        }
+    };
+    const getShippingFee = async () => {
+        const results = await shopService.getShippingFee(location.latitude, location.longitude, shippingCompanyId);
+        if (results) {
+            setShippingFee(results.data);
         }
     };
     useEffect(() => {
         getShippingCompany();
     }, []);
+    useEffect(() => {
+        getShippingFee();
+    }, [shippingCompanyId]);
     const handleCheckBoxPolicy = (e) => {
         if (e.target.checked) {
             setCheckPolicy(true);
@@ -41,22 +55,23 @@ function CheckoutPage() {
         }
     };
     const handleClickCheckout = async () => {
-        const results = await invoiceService.createInvoice(
-            idShipping_company,
+        await authService.editProfile({
+            address: state.detailAddress.address,
+        });
+        const results = await invoiceService.createInvoice({
+            shippingCompanyId,
             shippingFee,
-            state.detailAddress.address,
-            payment,
-        );
-        if (results.isSuccess && payment === 1) {
+            paymentMethod: paymentMethod ? 'Vnpay' : 'Thanh toan khi nhan hang',
+            description,
+        });
+        if (results && paymentMethod === 1) {
             const results2 = await paymentService.create_payment_url({
-                amount: (state.cartData.total + shippingFee).toFixed(3) * 1000,
-                bankCode: 'NCB',
-                orderId: results.invoice.idInvoice,
+                id_order: results.data.id,
             });
-            if (results2 && results2.isSuccess) {
+            if (results2) {
                 window.location.replace(results2.url);
             }
-        } else if (results.isSuccess && payment === 0) {
+        } else if (results && paymentMethod === 0) {
             dispatch(
                 actions.setToast({
                     show: true,
@@ -66,25 +81,6 @@ function CheckoutPage() {
             );
             const getCurrentInvoice = await state.getCurrentInvoice();
             navigate(config.routes.payment + '?vnp_TransactionStatus=00');
-        } else if (results.runOut) {
-            dispatch(
-                actions.setToast({
-                    show: true,
-                    title: 'Đặt hàng',
-                    content: 'Giỏ hàng có món đã hết hàng. Vui lòng thay đổi giỏ hàng của bạn',
-                    type: 'info',
-                }),
-            );
-            navigate(config.routes.home);
-        } else {
-            dispatch(
-                actions.setToast({
-                    show: true,
-                    title: 'Đặt hàng thất bại',
-                    content: results.message,
-                    type: 'info',
-                }),
-            );
         }
     };
     return (
@@ -98,7 +94,7 @@ function CheckoutPage() {
                         <div className={cx('body-title')}>Các món đã chọn</div>
                         <div className={cx('cart-list')}>
                             {state.cartData &&
-                                state.cartData.products.map((item, index) => (
+                                state.cartData.data.map((item, index) => (
                                     <div key={index} className={cx('cart-item')}>
                                         <div>
                                             <div className={cx('item-name')}>
@@ -108,7 +104,7 @@ function CheckoutPage() {
                                                 {item.toppings.map((item) => item.name).join(', ')}
                                             </div>
                                         </div>
-                                        <div className={cx('item-price')}>{priceFormat(item.totalProduct)}đ</div>
+                                        <div className={cx('item-price')}>{priceFormat(item.price)}đ</div>
                                     </div>
                                 ))}
                         </div>
@@ -140,8 +136,8 @@ function CheckoutPage() {
                             {listCompany.map((item, index) => (
                                 <label key={index} htmlFor={`com-${index}`} className={cx('delivery-company-item')}>
                                     <Form.Check
-                                        value={item.idShipping_company}
-                                        checked={idShipping_company === item.idShipping_company}
+                                        value={item.id}
+                                        checked={shippingCompanyId === item.id}
                                         type="radio"
                                         isValid
                                         id={`com-${index}`}
@@ -166,22 +162,14 @@ function CheckoutPage() {
                             <option value={1}>Thanh toán VNPAY</option>
                             <option value={0}>Thanh toán khi nhận hàng</option>
                         </Form.Select>
-                        {/* {payments.map((item, index) => (
-                            <label key={index} htmlFor={`payment-${index}`} className={cx('payment-item')}>
-                                <Form.Check
-                                    value={item.id}
-                                    checked={payment === item.id}
-                                    type="radio"
-                                    isValid
-                                    id={`payment-${index}`}
-                                    onChange={(e) => setPayment(Number(e.target.value))}
-                                ></Form.Check>
-                                <label htmlFor={`payment-${index}`}>
-                                    {item.name}
-                                    <Image src={item.logo} className={cx('payment-img')} />
-                                </label>
-                            </label>
-                        ))} */}
+                    </div>
+                    <div className={cx('description-wrapper', 'mt-4')}>
+                        <div className={cx('body-title')}>Ghi chú</div>
+                        <TextArea
+                            placeholder="Bạn muốn ghi chú gì nhỉ?"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                        />
                     </div>
                     <div className={cx('checkout-wrapper')}>
                         <div className={cx('body-title')}>Hóa đơn thanh toán</div>

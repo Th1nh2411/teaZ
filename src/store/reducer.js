@@ -3,7 +3,6 @@ import {
     SET_CURRENT_INVOICE,
     SET_DETAIL_ADDRESS,
     SET_DETAIL_ITEM,
-    SET_SHIPPING_FEE,
     SET_SHOP_INFO,
     SET_SHOW_LOGIN,
     SET_TOAST,
@@ -28,8 +27,7 @@ function reducer(state, action) {
             return { ...state, toast: action.payload };
         case SET_SHOP_INFO:
             return { ...state, shopInfo: action.payload };
-        case SET_SHIPPING_FEE:
-            return { ...state, distance: action.payload };
+
         default:
             return state;
     }

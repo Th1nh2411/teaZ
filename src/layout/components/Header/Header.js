@@ -46,7 +46,6 @@ function Header() {
         switch (menuItem.type) {
             case 'history':
                 //change language
-                console.log(menuItem);
                 break;
             case 'logout':
                 Cookies.remove('userInfo');

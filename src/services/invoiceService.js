@@ -14,8 +14,7 @@ export const getShippingCompany = async () => {
     }
 };
 
-export const createInvoice = async (idShipping_company = 1, shippingFee, address, payment_status, token) => {
-    const body = { idShipping_company, shippingFee, address, payment_status };
+export const createInvoice = async (body) => {
     try {
         const res = await httpRequest.post(`invoice/checkout`, body);
         return res;
@@ -43,9 +42,9 @@ export const getCurrentInvoice = async (token) => {
         return error.response && error.response.data;
     }
 };
-export const cancelCurrentInvoice = async (token) => {
+export const cancelCurrentInvoice = async (idInvoice) => {
     try {
-        const res = await httpRequest.del(`order/cancelInvoice`, {});
+        const res = await httpRequest.get(`invoice/cancel/${idInvoice}`);
         return res;
     } catch (error) {
         console.log(error);

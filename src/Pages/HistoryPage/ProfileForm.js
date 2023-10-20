@@ -18,11 +18,10 @@ const cx = classNames.bind(styles);
 function ProfileForm({ data, onCloseModal = () => {} }) {
     const [name, setNameValue] = useState(data ? data.name : '');
     const [phone, setPhoneValue] = useState(data ? data.phone : '');
-    const [address, setAddressValue] = useState(data ? data.address : '');
     const [valueChange, setValueChange] = useState(false);
     const [state, dispatch] = useContext(StoreContext);
     const editProfile = async () => {
-        const results = await authService.editProfile({ name, phone, address });
+        const results = await authService.editProfile({ name, phone });
         if (results) {
             dispatch(
                 actions.setToast({
@@ -31,8 +30,8 @@ function ProfileForm({ data, onCloseModal = () => {} }) {
                     title: 'Thành công',
                 }),
             );
-            Cookies.set('userInfo', JSON.stringify({ ...state.userInfo, name, phone, address }));
-            dispatch(actions.setUserInfo({ ...state.userInfo, name, phone, address }));
+            Cookies.set('userInfo', JSON.stringify({ ...state.userInfo, name, phone }));
+            dispatch(actions.setUserInfo({ ...state.userInfo, name, phone }));
             onCloseModal();
         }
     };
@@ -40,7 +39,6 @@ function ProfileForm({ data, onCloseModal = () => {} }) {
         e.preventDefault();
         setNameValue(data.name);
         setPhoneValue(data.phone);
-        setAddressValue(data.address);
     };
     const handleClickConfirm = (e) => {
         e.preventDefault();
@@ -48,12 +46,12 @@ function ProfileForm({ data, onCloseModal = () => {} }) {
     };
 
     useEffect(() => {
-        if (data.name !== name || data.phone !== phone || data.address !== address) {
+        if (data.name !== name || data.phone !== phone) {
             setValueChange(true);
         } else {
             setValueChange(false);
         }
-    }, [name, phone, address]);
+    }, [name, phone]);
     return (
         <Modal
             handleClickOutside={() => {
@@ -64,15 +62,6 @@ function ProfileForm({ data, onCloseModal = () => {} }) {
             <div className={cx('form-title')}>Cập nhật thông tin cá nhân</div>
 
             <form onSubmit={handleClickConfirm} className={cx('form')}>
-                <Input
-                    className={cx('price-input')}
-                    onChange={(event) => {
-                        setAddressValue(event.target.value);
-                        setValueChange(true);
-                    }}
-                    value={address}
-                    title="Địa chỉ"
-                />
                 <Input
                     onChange={(event) => {
                         setNameValue(event.target.value);

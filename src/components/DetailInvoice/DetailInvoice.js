@@ -10,6 +10,7 @@ import * as invoiceService from '../../services/invoiceService';
 import { BillIcon } from '../Icons';
 import { priceFormat } from '../../utils/format';
 import dayjs from 'dayjs';
+import { Badge } from 'antd';
 
 const cx = classNames.bind(styles);
 
@@ -80,15 +81,30 @@ function DetailInvoice({ idInvoice, onCloseModal = () => {} }) {
                             </div>
                             <div className={cx('info')}>
                                 Trạng thái :{' '}
-                                <span>
-                                    {invoiceInfo.status === 0
-                                        ? 'Chưa thanh toán'
-                                        : invoiceInfo.status === 1
-                                        ? 'Đã xác nhận'
-                                        : invoiceInfo.status === 2
-                                        ? 'Đang giao'
-                                        : 'Đã giao'}
-                                </span>
+                                <Badge
+                                    status={
+                                        invoiceInfo.status === 0
+                                            ? 'error'
+                                            : invoiceInfo.status === 1
+                                            ? 'warning'
+                                            : invoiceInfo.status === 2
+                                            ? 'processing'
+                                            : invoiceInfo.status === 3
+                                            ? 'success'
+                                            : 'default'
+                                    }
+                                    text={
+                                        invoiceInfo.status === 0
+                                            ? 'Chưa thanh toán'
+                                            : invoiceInfo.status === 1
+                                            ? 'Đã xác nhận'
+                                            : invoiceInfo.status === 2
+                                            ? 'Đang giao'
+                                            : invoiceInfo.status === 3
+                                            ? 'Đã giao'
+                                            : 'Đã huỷ đơn'
+                                    }
+                                />
                             </div>
                             <div className={cx('info')}>
                                 Tổng tiền các món : <span>{priceFormat(invoiceInfo.total)}đ</span>

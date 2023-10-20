@@ -21,7 +21,6 @@ function Provider({ children }) {
     };
     const initState = {
         userInfo: JSON.parse(Cookies.get('userInfo') || null),
-        shippingFee: 15,
         showLogin: false,
         detailItem: { show: false, data: null, editing: false },
         detailAddress: { show: false, address: '' },
