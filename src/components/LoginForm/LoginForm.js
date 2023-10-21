@@ -29,13 +29,7 @@ function LoginForm({ onCloseModal = () => {} }) {
             if (results) {
                 Cookies.set('userInfo', JSON.stringify(results.userInfo));
                 dispatch(actions.setUserInfo(results.userInfo));
-                dispatch(
-                    actions.setToast({
-                        show: true,
-                        content: 'Đăng nhập thành công',
-                        title: 'Đăng nhập',
-                    }),
-                );
+                state.showToast('Thành công', results.message);
                 const getNewInvoice = state.getCurrentInvoice();
                 onCloseModal();
             } else {

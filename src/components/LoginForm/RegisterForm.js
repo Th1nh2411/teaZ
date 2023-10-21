@@ -26,13 +26,8 @@ function RegisterForm({ onClickChangeForm = () => {} }) {
         e.preventDefault();
         const results = await authService.register(phone, password, name);
         if (results) {
-            dispatch(
-                actions.setToast({
-                    show: true,
-                    content: 'Đăng kí thành công',
-                    title: 'Đăng kí',
-                }),
-            );
+            state.showToast('Thành công', results.message);
+
             onClickChangeForm();
         }
     };
@@ -53,13 +48,8 @@ function RegisterForm({ onClickChangeForm = () => {} }) {
         signInWithPhoneNumber(authentication, phoneFormat(phone), appVerifier)
             .then((confirmationResult) => {
                 window.confirmationResult = confirmationResult;
-                dispatch(
-                    actions.setToast({
-                        show: true,
-                        content: 'Đã gửi mã OTP đến SĐT đăng ký',
-                        title: 'Gửi SMS',
-                    }),
-                );
+
+                state.showToast('Gửi SMS', 'Đã gửi mã OTP đến SĐT đăng ký');
                 setStep(2);
             })
             .catch((error) => {
@@ -75,25 +65,14 @@ function RegisterForm({ onClickChangeForm = () => {} }) {
             .then((result) => {
                 // User signed in successfully.
                 setStep(3);
-                dispatch(
-                    actions.setToast({
-                        show: true,
-                        content: 'Xác thực số điện thoại thành công',
-                        title: 'Xác thực',
-                    }),
-                );
+                state.showToast('Xác thực', 'Xác thực số điện thoại thành công');
+
                 // ...
             })
             .catch((error) => {
                 // User couldn't sign in (bad verification code?)
                 // ...
-                dispatch(
-                    actions.setToast({
-                        show: true,
-                        content: 'Nhập sai mã xác nhận',
-                        type: 'error',
-                    }),
-                );
+                state.showToast('Nhập sai mã xác nhận', 'error');
             });
     };
     const handleChangePhoneValue = (e) => {

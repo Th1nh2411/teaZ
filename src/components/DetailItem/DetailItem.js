@@ -64,13 +64,7 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
         const recipesID = [detailItem.idProduct[1], ...checkedToppings].join(',');
         const results = await cartService.editCartItem(detailItem.idProduct, recipesID, num, size);
         if (results) {
-            dispatch(
-                actions.setToast({
-                    show: true,
-                    content: results.message,
-                    title: 'Sửa món',
-                }),
-            );
+            state.showToast('Thành công', results.message);
         }
         await onCloseModal(true);
     };
@@ -115,13 +109,7 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
         const recipesID = [detailItem.id, ...checkedToppings].join(',');
         const results = await cartService.addItemToCart(recipesID, num, size);
         if (results) {
-            dispatch(
-                actions.setToast({
-                    show: true,
-                    content: results.message,
-                    title: 'Thêm món',
-                }),
-            );
+            state.showToast('Thành công', results.message);
         }
         // Change ui Num
         cartNum.classList.add('add-item');
@@ -131,13 +119,7 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
         setIsLiked(!isLiked);
         const results = await authService.updateFavor(detailItem.id);
         if (results) {
-            dispatch(
-                actions.setToast({
-                    show: true,
-                    content: results.message,
-                    title: 'Yêu thích',
-                }),
-            );
+            state.showToast('Thành công', results.message);
         }
     };
     return (

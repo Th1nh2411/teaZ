@@ -1,12 +1,8 @@
 import * as httpRequest from '../utils/httpRequest';
 
-export const create_payment_url = async (body, token) => {
-    const config = {
-        headers: { access_token: token },
-    };
-
+export const create_payment_url = async (body) => {
     try {
-        const res = await httpRequest.post('order/create_payment_url', body, config);
+        const res = await httpRequest.post('invoice/payment/init', body);
         return res;
     } catch (error) {
         console.log(error);

@@ -24,45 +24,31 @@ const cx = classNames.bind(styles);
 
 function CheckoutPage() {
     const location = useLocation();
-    const [searchParams, setSearchParams] = useSearchParams();
-    const paymentStatus = searchParams.get('vnp_TransactionStatus');
     const [state, dispatch] = useContext(StoreContext);
     const [showConfirmCancelInvoice, setShowConfirmCancelInvoice] = useState();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const paymentStatus = searchParams.get('vnp_TransactionStatus');
+    const query = Object.fromEntries(searchParams.entries());
     const navigate = useNavigate();
 
     const { invoice, products, user } = state.currentInvoice || {};
     const confirmPaymentInvoice = async () => {
-        const results = await invoiceService.confirmInvoice(invoice.idInvoice, invoice.total);
+        const results = await invoiceService.confirmPayment(query);
         if (results) {
-            dispatch(
-                actions.setToast({ show: true, title: 'Đặt hàng', content: 'Vui lòng chờ nhân viên xác nhận đơn' }),
-            );
+            state.showToast('Đặt hàng thành công', 'Vui lòng chờ nhân viên xác nhận đơn');
             const getCurrentInvoice = await state.getCurrentInvoice();
         }
     };
     useEffect(() => {
-        if (paymentStatus === '00' && invoice && invoice.status === 0) {
+        if (paymentStatus === '00') {
             confirmPaymentInvoice();
         } else if (paymentStatus === '02') {
-            dispatch(
-                actions.setToast({
-                    show: true,
-                    title: 'Thất bại',
-                    content: 'Khách hàng huỷ giao dịch',
-                    type: 'error',
-                }),
-            );
+            state.showToast('Thất bại', 'Khách hàng huỷ giao dịch', 'error');
         } else if (invoice === null) {
-            dispatch(
-                actions.setToast({
-                    show: true,
-                    title: 'Đơn hàng',
-                    content: 'Đơn hàng đã hoàn thành hoặc được huỷ',
-                }),
-            );
+            state.showToast('Đơn hàng', 'Đơn hàng đã hoàn thành hoặc được huỷ', 'info');
             navigate(config.routes.history);
         }
-    }, [invoice]);
+    }, []);
     // useEffect(() => {
     //     if (!products) {
     //         dispatch(actions.setToast({ show: true, title: 'Giao hàng', content: 'Đơn hàng đã được giao' }));
@@ -74,15 +60,15 @@ function CheckoutPage() {
             id_order: state.currentInvoice.invoice.id,
         });
         if (results) {
-            window.location.replace(results.url);
+            window.location.replace(results.data);
         }
     };
 
     const handleCancelInvoice = async () => {
         const results = await invoiceService.cancelCurrentInvoice(state.currentInvoice.invoice.id);
         if (results) {
-            dispatch(actions.setToast({ show: true, title: 'Hủy đơn', content: results.message }));
-            dispatch(actions.setCurrentInvoice({ invoice: null }));
+            state.showToast('Hủy đơn', results.message);
+            dispatch(actions.setCurrentInvoice(null));
             navigate(config.routes.home);
         }
     };
@@ -179,7 +165,7 @@ function CheckoutPage() {
                         </div>
                     </div>
                     <div className={cx('qr-scan-wrapper')}>
-                        {invoice && invoice.status === 0 ? (
+                        {invoice && invoice.isPaid === 0 && invoice.paymentMethod === 'Vnpay' ? (
                             <>
                                 <div className={cx('qr-scan-title')}>Trạng thái đơn hàng</div>
                                 <Image src={images.payment} className={cx('qr-img')} />
@@ -196,9 +182,11 @@ function CheckoutPage() {
                                     </div>
                                 </div>
                             </>
-                        ) : invoice && invoice.status === 1 ? (
+                        ) : invoice && invoice.status < 2 ? (
                             <>
-                                <div className={cx('qr-scan-title')}>Đơn hàng đang chờ xác nhận</div>
+                                <div className={cx('qr-scan-title')}>
+                                    {!invoice.status ? 'Đơn hàng đang chờ xác nhận' : 'Đơn hàng đang được chuẩn bị'}
+                                </div>
                                 <Image src={images.barista} className={cx('qr-img')} />
                                 <div className={cx('actions-wrapper')}>
                                     <div

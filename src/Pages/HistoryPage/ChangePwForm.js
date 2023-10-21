@@ -22,36 +22,17 @@ function ChangePwForm({ onCloseModal = () => {} }) {
     const [state, dispatch] = useContext(StoreContext);
     const editProfile = async () => {
         if (newPassword && newPassword !== repeatPassword) {
-            dispatch(
-                actions.setToast({
-                    show: true,
-                    content: 'Vui lòng điền đúng thông tin',
-                    title: 'Thất bại',
-                    type: 'error',
-                }),
-            );
+            state.showToast('Thất bại', 'Vui lòng điền đúng thông tin', 'error');
             return;
         }
         if (newPassword.length < 6) {
-            dispatch(
-                actions.setToast({
-                    show: true,
-                    content: 'Vui lòng điền đúng thông tin',
-                    title: 'Thất bại',
-                    type: 'error',
-                }),
-            );
+            state.showToast('Thất bại', 'Mật khẩu không ngắn hơn 6 kí tự', 'error');
             return;
         }
         const results = await authService.changePassword({ oldPassword, newPassword, repeatPassword });
         if (results) {
-            dispatch(
-                actions.setToast({
-                    show: true,
-                    content: 'Đổi mật khẩu thành công',
-                    title: 'Thành công',
-                }),
-            );
+            state.showToast('Thành công', results.message);
+
             onCloseModal(true);
         }
     };

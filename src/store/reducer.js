@@ -23,8 +23,6 @@ function reducer(state, action) {
             return { ...state, cartData: action.payload };
         case SET_CURRENT_INVOICE:
             return { ...state, currentInvoice: action.payload };
-        case SET_TOAST:
-            return { ...state, toast: action.payload };
         case SET_SHOP_INFO:
             return { ...state, shopInfo: action.payload };
 

@@ -23,10 +23,10 @@ export const createInvoice = async (body) => {
         return error.response && error.response.data;
     }
 };
-export const confirmInvoice = async (idInvoice, total, token) => {
-    const body = { idInvoice, total };
+export const confirmPayment = async (params) => {
+    const config = { params };
     try {
-        const res = await httpRequest.put(`order/confirmInvoice`, body);
+        const res = await httpRequest.get(`invoice/payment/return`, config);
         return res;
     } catch (error) {
         console.log(error);
@@ -44,7 +44,7 @@ export const getCurrentInvoice = async (token) => {
 };
 export const cancelCurrentInvoice = async (idInvoice) => {
     try {
-        const res = await httpRequest.get(`invoice/cancel/${idInvoice}`);
+        const res = await httpRequest.del(`invoice/cancel/${idInvoice}`);
         return res;
     } catch (error) {
         console.log(error);

@@ -23,13 +23,7 @@ function ProfileForm({ data, onCloseModal = () => {} }) {
     const editProfile = async () => {
         const results = await authService.editProfile({ name, phone });
         if (results) {
-            dispatch(
-                actions.setToast({
-                    show: true,
-                    content: 'Cập nhật thông tin cá nhân thành công',
-                    title: 'Thành công',
-                }),
-            );
+            state.showToast('Thành công', results.message);
             Cookies.set('userInfo', JSON.stringify({ ...state.userInfo, name, phone }));
             dispatch(actions.setUserInfo({ ...state.userInfo, name, phone }));
             onCloseModal();

@@ -5,6 +5,7 @@ import { actions } from '.';
 import * as invoiceService from '../services/invoiceService';
 import * as cartService from '../services/cartService';
 import Cookies from 'js-cookie';
+import { notification } from 'antd';
 
 function Provider({ children }) {
     const getCurrentInvoice = async () => {
@@ -12,6 +13,14 @@ function Provider({ children }) {
         if (results) {
             dispatch(actions.setCurrentInvoice(results.data));
         }
+    };
+    const [api, contextHolder] = notification.useNotification();
+    const showToast = (message = '', description = '', type = 'success') => {
+        api[type]({
+            message,
+            description,
+            placement: 'bottomRight',
+        });
     };
     const getCurrentCart = async () => {
         const results = await cartService.getCartItem();
@@ -24,7 +33,7 @@ function Provider({ children }) {
         showLogin: false,
         detailItem: { show: false, data: null, editing: false },
         detailAddress: { show: false, address: '' },
-        cartData: null,
+        showToast,
         shopInfo: {},
         currentInvoice: null,
         toast: { show: false, content: '', title: '' },
@@ -51,7 +60,12 @@ function Provider({ children }) {
         }
         return () => clearInterval(getCurrentInvoiceInterval);
     }, [state.currentInvoice]);
-    return <UserContext.Provider value={[state, dispatch]}>{children}</UserContext.Provider>;
+    return (
+        <UserContext.Provider value={[state, dispatch]}>
+            {contextHolder}
+            {children}
+        </UserContext.Provider>
+    );
 }
 
 export default Provider;

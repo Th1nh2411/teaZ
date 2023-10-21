@@ -10,16 +10,11 @@ import { BiArrowToTop } from 'react-icons/bi';
 import { StoreContext, actions } from '../../store';
 import DetailItem from '../../components/DetailItem/DetailItem';
 import LoginForm from '../../components/LoginForm/LoginForm';
-import Toast from '../../components/Toast/Toast';
-import * as cartService from '../../services/cartService';
 import config from '../../config';
 import { useLocation } from 'react-router';
-import DetailChange from '../../components/DetailChange/DetailChange';
 import * as mapService from '../../services/mapService';
 import * as shopService from '../../services/shopService';
 import DetailAddress from '../../components/DetailAddress';
-import Cookies from 'js-cookie';
-import { setUserInfo } from '../../store/actions';
 const cx = classNames.bind(styles);
 function DefaultLayout({ children }) {
     const [showCart, setShowCart] = useState(false);
@@ -107,15 +102,6 @@ function DefaultLayout({ children }) {
                 </div>
                 <Footer />
             </div>
-
-            {state.toast.show && (
-                <Toast
-                    content={state.toast.content}
-                    title={state.toast.title}
-                    type={state.toast.type}
-                    onClose={() => dispatch(actions.setToast({ show: false }))}
-                />
-            )}
 
             {backToTop && (
                 <div onClick={scrollUp} className={cx('back-top-btn')}>

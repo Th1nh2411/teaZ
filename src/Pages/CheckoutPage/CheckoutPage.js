@@ -16,6 +16,7 @@ import Image from '../../components/Image/Image';
 import { useNavigate } from 'react-router-dom';
 import config from '../../config';
 import TextArea from 'antd/es/input/TextArea';
+import Cookies from 'js-cookie';
 const cx = classNames.bind(styles);
 
 function CheckoutPage() {
@@ -58,6 +59,8 @@ function CheckoutPage() {
         await authService.editProfile({
             address: state.detailAddress.address,
         });
+        Cookies.set('userInfo', JSON.stringify({ ...state.userInfo, address: state.detailAddress.address }));
+        dispatch(actions.setUserInfo({ ...state.userInfo, address: state.detailAddress.address }));
         const results = await invoiceService.createInvoice({
             shippingCompanyId,
             shippingFee,
@@ -69,19 +72,14 @@ function CheckoutPage() {
                 id_order: results.data.id,
             });
             if (results2) {
-                window.location.replace(results2.url);
+                window.location.replace(results2.data);
             }
         } else if (results && paymentMethod === 0) {
-            dispatch(
-                actions.setToast({
-                    show: true,
-                    title: 'Đặt hàng',
-                    content: 'Đặt hàng thành công.',
-                }),
-            );
-            const getCurrentInvoice = await state.getCurrentInvoice();
-            navigate(config.routes.payment + '?vnp_TransactionStatus=00');
+            state.showToast('Đặt hàng', results.message);
+
+            navigate(config.routes.payment);
         }
+        const getCurrentInvoice = await state.getCurrentInvoice();
     };
     return (
         <div className={cx('wrapper')}>
@@ -94,6 +92,7 @@ function CheckoutPage() {
                         <div className={cx('body-title')}>Các món đã chọn</div>
                         <div className={cx('cart-list')}>
                             {state.cartData &&
+                                state.cartData.data &&
                                 state.cartData.data.map((item, index) => (
                                     <div key={index} className={cx('cart-item')}>
                                         <div>
