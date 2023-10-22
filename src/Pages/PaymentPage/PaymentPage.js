@@ -23,7 +23,6 @@ import { useSearchParams } from 'react-router-dom';
 const cx = classNames.bind(styles);
 
 function CheckoutPage() {
-    const location = useLocation();
     const [state, dispatch] = useContext(StoreContext);
     const [showConfirmCancelInvoice, setShowConfirmCancelInvoice] = useState();
     const [searchParams, setSearchParams] = useSearchParams();
@@ -188,15 +187,17 @@ function CheckoutPage() {
                                     {!invoice.status ? 'Đơn hàng đang chờ xác nhận' : 'Đơn hàng đang được chuẩn bị'}
                                 </div>
                                 <Image src={images.barista} className={cx('qr-img')} />
-                                <div className={cx('actions-wrapper')}>
-                                    <div
-                                        onClick={() => setShowConfirmCancelInvoice(true)}
-                                        className={cx('actions-back')}
-                                    >
-                                        <RiRefund2Line className={cx('refund-icon')} />
-                                        Hủy đơn hàng
+                                {invoice.status === 0 && (
+                                    <div className={cx('actions-wrapper')}>
+                                        <div
+                                            onClick={() => setShowConfirmCancelInvoice(true)}
+                                            className={cx('actions-back')}
+                                        >
+                                            <RiRefund2Line className={cx('refund-icon')} />
+                                            Hủy đơn hàng
+                                        </div>
                                     </div>
-                                </div>
+                                )}
                             </>
                         ) : (
                             <>

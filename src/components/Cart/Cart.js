@@ -27,9 +27,7 @@ function Cart({ cart = {}, onCloseModal = () => {}, onDelItem = () => {} }) {
         onCloseModal();
     };
     const handleCheckoutOldInvoice = () => {
-        navigate(config.routes.payment, {
-            state: { ...state.currentInvoice.invoice, cartInvoice: state.currentInvoice.products },
-        });
+        navigate(config.routes.payment);
         onCloseModal();
     };
     return (

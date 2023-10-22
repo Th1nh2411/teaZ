@@ -72,7 +72,7 @@ function ProfileForm({ data, onCloseModal = () => {} }) {
             }}
             className={cx('edit-form-wrapper')}
         >
-            <div className={cx('form-title')}>Cập nhật thông tin cá nhân</div>
+            <div className={cx('form-title')}>{step === 1 ? 'Cập nhật thông tin cá nhân' : 'Xác thực mã OTP'}</div>
 
             <form onSubmit={handleClickConfirm} className={cx('form')}>
                 {step === 1 ? (

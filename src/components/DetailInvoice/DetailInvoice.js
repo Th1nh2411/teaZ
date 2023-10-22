@@ -1,6 +1,6 @@
 import styles from './DetailInvoice.module.scss';
 import classNames from 'classnames/bind';
-import { memo, useEffect, useMemo, useState } from 'react';
+import { memo, useContext, useEffect, useMemo, useState } from 'react';
 import Modal from '../Modal/Modal';
 import Input from '../Input';
 import Button from '../Button';
@@ -11,10 +11,15 @@ import { BillIcon } from '../Icons';
 import { priceFormat } from '../../utils/format';
 import dayjs from 'dayjs';
 import { Badge } from 'antd';
+import config from '../../config';
+import { useNavigate } from 'react-router';
+import { StoreContext } from '../../store';
 
 const cx = classNames.bind(styles);
 
 function DetailInvoice({ idInvoice, onCloseModal = () => {} }) {
+    const navigate = useNavigate();
+    const [state, dispatch] = useContext(StoreContext);
     const [invoiceInfo, setInvoiceInfo] = useState();
     const [invoiceCart, setInvoiceCart] = useState();
     const [loading, setLoading] = useState();
@@ -26,6 +31,10 @@ function DetailInvoice({ idInvoice, onCloseModal = () => {} }) {
             setInvoiceCart(results.data.products);
         }
         setLoading(false);
+    };
+    const handleCheckoutOldInvoice = () => {
+        navigate(config.routes.payment);
+        onCloseModal();
     };
     useEffect(() => {
         getListInvoice();
@@ -91,8 +100,10 @@ function DetailInvoice({ idInvoice, onCloseModal = () => {} }) {
                                             : 'default'
                                     }
                                     text={
-                                        invoiceInfo.status === 0
+                                        invoiceInfo.isPaid && invoiceInfo.paymentMethod === 'Vnpay'
                                             ? 'Chưa thanh toán'
+                                            : invoiceInfo.status === 0
+                                            ? 'Chưa xác nhận'
                                             : invoiceInfo.status === 1
                                             ? 'Đã xác nhận'
                                             : invoiceInfo.status === 2
@@ -115,6 +126,11 @@ function DetailInvoice({ idInvoice, onCloseModal = () => {} }) {
                         </div>
                     )}
                 </div>
+            )}
+            {invoiceInfo && invoiceInfo.status < 3 && (
+                <Button onClick={handleCheckoutOldInvoice} primary>
+                    Xem trạng thái đơn
+                </Button>
             )}
         </Modal>
     );

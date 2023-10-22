@@ -152,8 +152,10 @@ function HistoryPage() {
                                                                         : 'default'
                                                                 }
                                                                 text={
-                                                                    item.status === 0
+                                                                    item.isPaid && item.paymentMethod === 'Vnpay'
                                                                         ? 'Chưa thanh toán'
+                                                                        : item.status === 0
+                                                                        ? 'Chưa xác nhận'
                                                                         : item.status === 1
                                                                         ? 'Đã xác nhận'
                                                                         : item.status === 2
