@@ -128,7 +128,7 @@ export const sendOTP = async (phone) => {
         notification.open({
             description: 'Đã gửi mã OTP đến SĐT đăng ký',
             message: 'Gửi SMS',
-            placement: 'bottomRight',
+            placement: 'bottomLeft',
             type: 'success',
         });
 
@@ -137,7 +137,7 @@ export const sendOTP = async (phone) => {
         notification.open({
             description: error.message ? error.message.replace('_', ' ') : 'Lỗi hệ thống',
             message: 'Send SMS',
-            placement: 'bottomRight',
+            placement: 'bottomLeft',
             type: 'error',
         });
 
@@ -153,7 +153,7 @@ export const ValidateOTP = async (otp) => {
         notification.open({
             description: 'Xác thực số điện thoại thành công',
             message: 'Xác thực',
-            placement: 'bottomRight',
+            placement: 'bottomLeft',
             type: 'success',
         });
 
@@ -163,7 +163,7 @@ export const ValidateOTP = async (otp) => {
         notification.open({
             description: error.message ? error.message.replace('_', ' ') : 'Lỗi hệ thống',
             message: 'Authenticate',
-            placement: 'bottomRight',
+            placement: 'bottomLeft',
             type: 'error',
         });
 

@@ -19,7 +19,7 @@ function Provider({ children }) {
         api[type]({
             message,
             description,
-            placement: 'bottomRight',
+            placement: 'bottomLeft',
         });
     };
     const getCurrentCart = async () => {

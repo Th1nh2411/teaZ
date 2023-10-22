@@ -74,10 +74,7 @@ function DetailInvoice({ idInvoice, onCloseModal = () => {} }) {
                             <div className={cx('body-title')}>Thông tin đơn hàng</div>
                             <div className={cx('info')}>
                                 Ngày đặt :{' '}
-                                <span>
-                                    {dayjs(invoiceInfo.date).format('HH:mm')} ngày{' '}
-                                    {dayjs(invoiceInfo.date).format('DD/MM/YYYY')}
-                                </span>
+                                <span>{dayjs(invoiceInfo.date).subtract(7, 'hours').format('HH:mm DD/MM/YYYY')}</span>
                             </div>
                             <div className={cx('info')}>
                                 Trạng thái :{' '}

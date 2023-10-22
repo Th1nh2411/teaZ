@@ -132,8 +132,10 @@ function HistoryPage() {
                                                     )}
                                                     <div className={cx('invoice-body')}>
                                                         <div className={cx('invoice-title')}>
-                                                            Đơn hàng {dayjs(item.date).format('HH:mm')} ngày{' '}
-                                                            {dayjs(item.date).format('DD/MM/YYYY')}
+                                                            Đơn hàng{' '}
+                                                            {dayjs(item.date)
+                                                                .subtract(7, 'hours')
+                                                                .format('HH:mm DD/MM/YYYY')}
                                                         </div>
                                                         <div className={cx('invoice-info')}>
                                                             Trạng thái :{' '}

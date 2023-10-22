@@ -56,9 +56,7 @@ function CheckoutPage() {
         }
     };
     const handleClickCheckout = async () => {
-        await authService.editProfile({
-            address: state.detailAddress.address,
-        });
+        await authService.editProfile({ ...state.userInfo, address: state.detailAddress.address });
         Cookies.set('userInfo', JSON.stringify({ ...state.userInfo, address: state.detailAddress.address }));
         dispatch(actions.setUserInfo({ ...state.userInfo, address: state.detailAddress.address }));
         const results = await invoiceService.createInvoice({
