@@ -1,4 +1,8 @@
+import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
 import * as httpRequest from '../utils/httpRequest';
+import { authentication } from '../utils/firebase';
+import { phoneFormat } from '../utils/format';
+import { notification } from 'antd';
 
 export const login = async (phone, password) => {
     // const config = {
@@ -17,17 +21,22 @@ export const login = async (phone, password) => {
     }
 };
 
-export const register = async (phone, password, name) => {
+export const register = async (body) => {
     // const config = {
     //     headers: { access_token: token },
     // };
-    const body = {
-        phone,
-        password,
-        name,
-    };
+
     try {
         const res = await httpRequest.post('auth/register', body);
+        return res;
+    } catch (error) {
+        console.log(error);
+        return error.response && error.response.data;
+    }
+};
+export const checkPhone = async (phone) => {
+    try {
+        const res = await httpRequest.get(`auth/check-phone/${phone}`);
         return res;
     } catch (error) {
         console.log(error);
@@ -95,5 +104,69 @@ export const updateFavor = async (idRecipe) => {
     } catch (error) {
         console.log(error);
         return error.response && error.response.data;
+    }
+};
+
+const generateCaptcha = () => {
+    window.recaptchaVerifier = new RecaptchaVerifier(
+        'recaptcha-container',
+        {
+            size: 'invisible',
+            callback: (response) => {},
+        },
+        authentication,
+    );
+};
+export const sendOTP = async (phone) => {
+    generateCaptcha();
+    let appVerifier = window.recaptchaVerifier;
+    try {
+        const confirmationResult = await signInWithPhoneNumber(authentication, phoneFormat(phone), appVerifier);
+
+        window.confirmationResult = confirmationResult;
+
+        notification.open({
+            description: 'Đã gửi mã OTP đến SĐT đăng ký',
+            message: 'Gửi SMS',
+            placement: 'bottomRight',
+            type: 'success',
+        });
+
+        return true;
+    } catch (error) {
+        notification.open({
+            description: error.message ? error.message.replace('_', ' ') : 'Lỗi hệ thống',
+            message: 'Send SMS',
+            placement: 'bottomRight',
+            type: 'error',
+        });
+
+        console.error(error);
+    }
+};
+export const ValidateOTP = async (otp) => {
+    try {
+        let confirmationResult = window.confirmationResult;
+        const result = await confirmationResult.confirm(otp);
+
+        // User signed in successfully.
+        notification.open({
+            description: 'Xác thực số điện thoại thành công',
+            message: 'Xác thực',
+            placement: 'bottomRight',
+            type: 'success',
+        });
+
+        return true;
+    } catch (error) {
+        // User couldn't sign in (bad verification code?)
+        notification.open({
+            description: error.message ? error.message.replace('_', ' ') : 'Lỗi hệ thống',
+            message: 'Authenticate',
+            placement: 'bottomRight',
+            type: 'error',
+        });
+
+        console.error(error);
     }
 };

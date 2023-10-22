@@ -1,16 +1,12 @@
 import styles from './LoginForm.module.scss';
 import classNames from 'classnames/bind';
 import { memo, useContext, useEffect, useMemo, useState } from 'react';
-import Modal from '../Modal/Modal';
 import Input from '../Input';
 import Button from '../Button';
 import images from '../../assets/images';
 import Image from '../Image/Image';
 import * as authService from '../../services/authService';
 import { StoreContext, actions } from '../../store';
-import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
-import { authentication } from '../../utils/firebase';
-import { phoneFormat } from '../../utils/format';
 import OTPInput from 'react-otp-input';
 
 const cx = classNames.bind(styles);
@@ -30,46 +26,20 @@ function ForgotForm({ onClickChangeForm = () => {} }) {
 
         step === 1 ? sendOTP() : step === 2 ? confirmOTP() : changePassword();
     };
-    const generateCaptcha = () => {
-        window.recaptchaVerifier = new RecaptchaVerifier(
-            'recaptcha-container',
-            {
-                size: 'invisible',
-                callback: (response) => {},
-            },
-            authentication,
-        );
-    };
-    const sendOTP = async () => {
-        generateCaptcha();
-        let appVerifier = window.recaptchaVerifier;
-        signInWithPhoneNumber(authentication, phoneFormat(phone), appVerifier)
-            .then((confirmationResult) => {
-                window.confirmationResult = confirmationResult;
-                state.showToast('Gửi SMS', 'Đã gửi mã OTP đến SĐT đăng ký');
-                setStep(2);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    };
-    const confirmOTP = async () => {
-        if (!otp) return;
-        let confirmationResult = window.confirmationResult;
-        confirmationResult
-            .confirm(otp)
-            .then((result) => {
-                // User signed in successfully.
-                setStep(3);
 
-                state.showToast('Xác thực', 'Xác thực số điện thoại thành công');
-                // ...
-            })
-            .catch((error) => {
-                // User couldn't sign in (bad verification code?)
-                // ...
-                state.showToast('Nhập sai mã xác nhận', 'error');
-            });
+    const sendOTP = async (e) => {
+        e.preventDefault();
+        const res1 = await authService.checkPhone(phone);
+        if (res1) {
+            const res2 = await authService.sendOTP(phone);
+            if (res2) setStep(2);
+        }
+    };
+    const confirmOTP = async (e) => {
+        e.preventDefault();
+        if (!otp) return;
+        const res = await authService.ValidateOTP(otp);
+        if (res) setStep(3);
     };
     const changePassword = async () => {
         const results = await authService.changePasswordForgot({ phone, newPassword, repeatPassword });

@@ -12,6 +12,7 @@ import { MdOutlineInfo } from 'react-icons/md';
 import { onlyNumber } from '../../utils/format';
 import { StoreContext, actions } from '../../store';
 import Cookies from 'js-cookie';
+import OTPInput from 'react-otp-input';
 
 const cx = classNames.bind(styles);
 
@@ -20,6 +21,8 @@ function ProfileForm({ data, onCloseModal = () => {} }) {
     const [phone, setPhoneValue] = useState(data ? data.phone : '');
     const [valueChange, setValueChange] = useState(false);
     const [state, dispatch] = useContext(StoreContext);
+    const [otp, setOtp] = useState('');
+    const [step, setStep] = useState(1);
     const editProfile = async () => {
         const results = await authService.editProfile({ name, phone });
         if (results) {
@@ -29,14 +32,30 @@ function ProfileForm({ data, onCloseModal = () => {} }) {
             onCloseModal();
         }
     };
+    const sendOTP = async (e) => {
+        const res1 = await authService.checkPhone(phone);
+        if (res1) {
+            const res2 = await authService.sendOTP(phone);
+            if (res2) setStep(2);
+        }
+    };
+    const ValidateOTP = async (e) => {
+        if (!otp) return;
+        const res = await authService.ValidateOTP(otp);
+        if (res) await editProfile();
+    };
     const handleCancelEdit = (e) => {
         e.preventDefault();
         setNameValue(data.name);
         setPhoneValue(data.phone);
     };
-    const handleClickConfirm = (e) => {
+    const handleClickConfirm = async (e) => {
         e.preventDefault();
-        editProfile();
+        if (data.phone !== phone) {
+            step === 1 ? await sendOTP() : await ValidateOTP();
+        } else {
+            await editProfile();
+        }
     };
 
     useEffect(() => {
@@ -56,33 +75,53 @@ function ProfileForm({ data, onCloseModal = () => {} }) {
             <div className={cx('form-title')}>Cập nhật thông tin cá nhân</div>
 
             <form onSubmit={handleClickConfirm} className={cx('form')}>
-                <Input
-                    onChange={(event) => {
-                        setNameValue(event.target.value);
-                        setValueChange(true);
-                    }}
-                    value={name}
-                    title="Tên hiển thị"
-                    type="text"
-                />
-                <Input
-                    onChange={(event) => {
-                        if (onlyNumber(event.target.value)) {
-                            setPhoneValue(event.target.value);
-                            setValueChange(true);
-                        }
-                    }}
-                    value={phone}
-                    title="Số điện thoại"
-                    type="text"
-                />
+                {step === 1 ? (
+                    <>
+                        <Input
+                            onChange={(event) => {
+                                setNameValue(event.target.value);
+                                setValueChange(true);
+                            }}
+                            value={name}
+                            title="Tên hiển thị"
+                            type="text"
+                        />
+                        <Input
+                            onChange={(event) => {
+                                if (onlyNumber(event.target.value)) {
+                                    setPhoneValue(event.target.value);
+                                    setValueChange(true);
+                                }
+                            }}
+                            value={phone}
+                            title="Số điện thoại"
+                            type="text"
+                        />
+                    </>
+                ) : (
+                    <OTPInput
+                        containerStyle={{ margin: '10px 0 20px', justifyContent: 'space-between' }}
+                        inputStyle={{
+                            textAlign: 'center',
+                            border: '1px solid',
+                            width: '40px',
+                            height: '40px',
+                            margin: '0 5px',
+                        }}
+                        value={otp}
+                        onChange={setOtp}
+                        numInputs={6}
+                        renderInput={(props) => <input {...props} />}
+                    />
+                )}
 
                 <div className={cx('form-actions')}>
-                    {valueChange && <Button onClick={handleCancelEdit}>Đặt lại</Button>}
+                    {valueChange && step === 1 && <Button onClick={handleCancelEdit}>Đặt lại</Button>}
                     <Button className={cx('confirm-btn')} primary disable={!valueChange}>
-                        Cập nhật
+                        {step === 1 ? 'Cập nhật' : 'Xác thực'}
                     </Button>
                 </div>
+                <div id="recaptcha-container" className={cx('justify-center flex')}></div>
             </form>
         </Modal>
     );

@@ -18,62 +18,33 @@ function RegisterForm({ onClickChangeForm = () => {} }) {
     const [phone, setPhoneNumber] = useState('');
     const [password, setPassword] = useState('');
     const [name, setName] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
+    const [repeatPassword, setRepeatPassword] = useState('');
     const [otp, setOtp] = useState('');
     const [step, setStep] = useState(1);
     const [state, dispatch] = useContext(StoreContext);
     const postRegister = async (e) => {
         e.preventDefault();
-        const results = await authService.register(phone, password, name);
+        const results = await authService.register({ phone, password, repeatPassword, name });
         if (results) {
             state.showToast('Thành công', results.message);
 
             onClickChangeForm();
         }
     };
-    const generateCaptcha = () => {
-        window.recaptchaVerifier = new RecaptchaVerifier(
-            'recaptcha-container',
-            {
-                size: 'invisible',
-                callback: (response) => {},
-            },
-            authentication,
-        );
-    };
-    const sendOTP = (e) => {
-        e.preventDefault();
-        generateCaptcha();
-        let appVerifier = window.recaptchaVerifier;
-        signInWithPhoneNumber(authentication, phoneFormat(phone), appVerifier)
-            .then((confirmationResult) => {
-                window.confirmationResult = confirmationResult;
 
-                state.showToast('Gửi SMS', 'Đã gửi mã OTP đến SĐT đăng ký');
-                setStep(2);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+    const sendOTP = async (e) => {
+        e.preventDefault();
+        const res1 = await authService.checkPhone(phone);
+        if (res1) {
+            const res2 = await authService.sendOTP(phone);
+            if (res2) setStep(2);
+        }
     };
     const ValidateOTP = async (e) => {
         e.preventDefault();
         if (!otp) return;
-        let confirmationResult = window.confirmationResult;
-        confirmationResult
-            .confirm(otp)
-            .then((result) => {
-                // User signed in successfully.
-                setStep(3);
-                state.showToast('Xác thực', 'Xác thực số điện thoại thành công');
-
-                // ...
-            })
-            .catch((error) => {
-                // User couldn't sign in (bad verification code?)
-                // ...
-                state.showToast('Nhập sai mã xác nhận', 'error');
-            });
+        const res = await authService.ValidateOTP(otp);
+        if (res) setStep(3);
     };
     const handleChangePhoneValue = (e) => {
         if (onlyNumber(e.target.value)) {
@@ -108,7 +79,7 @@ function RegisterForm({ onClickChangeForm = () => {} }) {
                     onChange={setOtp}
                     numInputs={6}
                     renderInput={(props) => <input {...props} />}
-                ></OtpInput>
+                />
             ) : (
                 <>
                     <Input onChange={(e) => setName(e.target.value)} value={name} type="text" title="Tên người dùng" />
@@ -121,12 +92,12 @@ function RegisterForm({ onClickChangeForm = () => {} }) {
                         errorCondition={password.length < 6 && password.length !== 0}
                     />
                     <Input
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        value={confirmPassword}
+                        onChange={(e) => setRepeatPassword(e.target.value)}
+                        value={repeatPassword}
                         type="password"
                         title="Xác nhận mật khẩu"
                         errorMessage="Xác nhận không trùng với mật khẩu trên"
-                        errorCondition={confirmPassword !== password && confirmPassword !== ''}
+                        errorCondition={repeatPassword !== password && repeatPassword !== ''}
                     />
                 </>
             )}
