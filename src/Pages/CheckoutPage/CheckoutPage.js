@@ -17,6 +17,7 @@ import { useNavigate } from 'react-router-dom';
 import config from '../../config';
 import TextArea from 'antd/es/input/TextArea';
 import Cookies from 'js-cookie';
+import { Alert } from 'antd';
 const cx = classNames.bind(styles);
 
 function CheckoutPage() {
@@ -29,7 +30,6 @@ function CheckoutPage() {
     const [shippingFee, setShippingFee] = useState(15);
     const location = state.detailAddress.location || {};
     const navigate = useNavigate();
-
     const getShippingCompany = async () => {
         const results = await invoiceService.getShippingCompany();
         if (results) {
@@ -111,7 +111,11 @@ function CheckoutPage() {
                         <div onClick={() => dispatch(actions.setDetailAddress({ show: true }))} className={cx('info')}>
                             <div className={cx('info-body')}>
                                 <IoLocationSharp className={cx('info-icon')} />
-                                <div className={cx('info-detail')}>{state.detailAddress.address}</div>
+                                {state.detailAddress.address ? (
+                                    <div className={cx('info-detail')}>{state.detailAddress.address}</div>
+                                ) : (
+                                    <Alert showIcon type="error" message="Bạn cần phải điền địa chỉ để đặt hàng" />
+                                )}
                             </div>
                             <AiOutlineRight className={cx('info-actions')} />
                         </div>
@@ -202,7 +206,7 @@ function CheckoutPage() {
                         <Button
                             onClick={handleClickCheckout}
                             className={cx('checkout-btn')}
-                            disable={!checkPolicy}
+                            disable={!checkPolicy || !state.detailAddress.address}
                             primary
                         >
                             Tiến hành thanh toán

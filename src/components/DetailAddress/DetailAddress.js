@@ -23,12 +23,20 @@ function DetailAddress({ data = {}, onCloseModal = () => {}, onChangeLocation = 
     const debouncedValue = useDebounce(searchValue, 500);
     const [state, dispatch] = useContext(StoreContext);
     const getCurrentLocation = () => {
-        navigator.geolocation.getCurrentPosition(async (position) => {
-            const { latitude, longitude } = position.coords;
-            onChangeLocation(latitude, longitude);
-        });
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(getSuccessLocation, getFailLocation);
+        } else {
+            console.log('Geolocation not supported');
+        }
     };
-
+    const getSuccessLocation = async (position) => {
+        console.log(position.coords);
+        const { latitude, longitude } = position.coords;
+        onChangeLocation(latitude, longitude);
+    };
+    const getFailLocation = async (position) => {
+        state.showToast('Bạn cần cấp quyền cho trang web lấy vị trí hiện tại!', '', 'error');
+    };
     useEffect(() => {
         if (!debouncedValue.trim()) {
             setSearchResult([]);
@@ -57,9 +65,6 @@ function DetailAddress({ data = {}, onCloseModal = () => {}, onChangeLocation = 
         setSearchResult([]);
         setSearchValue('');
         onChangeLocation(latitude, longitude);
-    };
-    const handleClickCurrentLocation = () => {
-        getCurrentLocation();
     };
 
     return (
@@ -119,7 +124,7 @@ function DetailAddress({ data = {}, onCloseModal = () => {}, onChangeLocation = 
                     <div className={cx('chosen-address')}>
                         <span>Địa chỉ đã chọn :</span> {state.detailAddress.address}
                     </div>
-                    <div onClick={handleClickCurrentLocation} className={cx('current-address')}>
+                    <div onClick={getCurrentLocation} className={cx('current-address')}>
                         <BiTargetLock className={cx('icon')} />
                         Lấy vị trí hiện tại
                     </div>

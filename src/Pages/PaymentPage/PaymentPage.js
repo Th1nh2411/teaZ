@@ -39,21 +39,19 @@ function CheckoutPage() {
         }
     };
     useEffect(() => {
+        if (!invoice) {
+            state.showToast('Đơn hàng', 'Đơn hàng đã hoàn thành hoặc được huỷ', 'info');
+            navigate(config.routes.history);
+        }
+    }, [invoice]);
+    useEffect(() => {
         if (paymentStatus === '00') {
             confirmPaymentInvoice();
         } else if (paymentStatus === '02') {
             state.showToast('Thất bại', 'Khách hàng huỷ giao dịch', 'error');
-        } else if (invoice === null) {
-            state.showToast('Đơn hàng', 'Đơn hàng đã hoàn thành hoặc được huỷ', 'info');
-            navigate(config.routes.history);
         }
     }, []);
-    // useEffect(() => {
-    //     if (!products) {
-    //         dispatch(actions.setToast({ show: true, title: 'Giao hàng', content: 'Đơn hàng đã được giao' }));
-    //         navigate(config.routes.home);
-    //     }
-    // }, [products]);
+
     const paymentVNPay = async () => {
         const results = await paymentService.create_payment_url({
             id_order: state.currentInvoice.invoice.id,
