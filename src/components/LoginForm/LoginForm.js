@@ -60,7 +60,7 @@ function LoginForm({ onCloseModal = () => {} }) {
             </div>
             {form === 'login' ? (
                 <form onSubmit={handleSubmitLogin}>
-                    <Input onChange={handleChangePhoneValue} value={phoneNumber} title="Số điện thoại hoặc gmail" />
+                    <Input onChange={handleChangePhoneValue} value={phoneNumber} title="Số điện thoại" />
 
                     <Input
                         onChange={handleChangePasswordValue}
