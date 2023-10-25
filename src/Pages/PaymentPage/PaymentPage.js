@@ -39,11 +39,11 @@ function CheckoutPage() {
         }
     };
     useEffect(() => {
-        if (!invoice) {
+        if (!state.currentInvoice) {
             state.showToast('Đơn hàng', 'Đơn hàng đã hoàn thành hoặc được huỷ', 'info');
             navigate(config.routes.history);
         }
-    }, [invoice]);
+    }, [state.currentInvoice]);
     useEffect(() => {
         if (paymentStatus === '00') {
             confirmPaymentInvoice();
