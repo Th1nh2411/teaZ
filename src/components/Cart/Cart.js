@@ -18,7 +18,7 @@ import { RiFileWarningLine } from 'react-icons/ri';
 
 const cx = classNames.bind(styles);
 
-function Cart({ cart = {}, onCloseModal = () => {}, onDelItem = () => {} }) {
+function Cart({ onCloseModal = () => {}, onDelItem = () => {} }) {
     const navigate = useNavigate();
     const [state, dispatch] = useContext(StoreContext);
 
@@ -30,6 +30,7 @@ function Cart({ cart = {}, onCloseModal = () => {}, onDelItem = () => {} }) {
         navigate(config.routes.payment);
         onCloseModal();
     };
+    const cartData = state.cartData && state.cartData.data;
     return (
         <>
             <Modal
@@ -43,15 +44,14 @@ function Cart({ cart = {}, onCloseModal = () => {}, onDelItem = () => {} }) {
                         <HiShoppingBag className={cx('icon')} />
                         <div className={cx('title')}>
                             Giỏ hàng của bạn (
-                            {cart.products ? cart.products.reduce((total, current) => current.quantity + total, 0) : 0}{' '}
-                            món)
+                            {cartData ? cartData.reduce((total, current) => current.quantity + total, 0) : 0} món)
                         </div>
                     </div>
                     <AiOutlineClose onClick={onCloseModal} className={cx('close-icon')} />
                 </div>
                 <div className={cx('body')}>
-                    {cart.data && cart.data.length !== 0 ? (
-                        cart.data.map((item, index) => <CartItem onDelItem={onDelItem} data={item} key={index} />)
+                    {cartData && cartData.length !== 0 ? (
+                        cartData.map((item, index) => <CartItem onDelItem={onDelItem} data={item} key={index} />)
                     ) : (
                         <div className={cx('empty-cart-wrapper')}>
                             <Image src={images.emptyCart} className={cx('empty-cart-img')} />
@@ -89,10 +89,12 @@ function Cart({ cart = {}, onCloseModal = () => {}, onDelItem = () => {} }) {
                     ) : (
                         <div className={cx('total')}>
                             <div className={cx('total-title')}>Tổng tiền tạm tính:</div>
-                            <div className={cx('total-num')}>{cart.total ? priceFormat(cart.total) : 0}đ</div>
+                            <div className={cx('total-num')}>
+                                {state.cartData.total ? priceFormat(state.cartData.total) : 0}đ
+                            </div>
                         </div>
                     )}
-                    {cart.data && cart.data.length !== 0 ? (
+                    {cartData && cartData.length !== 0 ? (
                         <Button
                             onClick={handleClickCheckout}
                             disable={!!state.currentInvoice || !state.shopInfo.isActive}
