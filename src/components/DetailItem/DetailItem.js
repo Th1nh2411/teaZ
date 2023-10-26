@@ -23,7 +23,7 @@ const sizeOrders = [
 function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false }) {
     const detailItem = data;
     const [toppings, setToppings] = useState([]);
-    const [num, setNum] = useState(data.quantity || 1);
+    const [quantity, setQuantity] = useState(data.quantity || 1);
     const [size, setSize] = useState(data.size || 0);
     const [isLiked, setIsLiked] = useState(data.isLiked || false);
     const [checkedToppings, setCheckedToppings] = useState(data.toppings ? data.toppings.map((item) => item.id) : []);
@@ -54,15 +54,15 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
                     return toppingPrice.price + total;
                 }
             }, 0) || 0;
-        return ((detailItem.price * data.discount) / 100 + size + checkedToppingPrice) * num;
-    }, [num, size, checkedToppings, toppings]);
+        return ((detailItem.price * data.discount) / 100 + size + checkedToppingPrice) * quantity;
+    }, [quantity, size, checkedToppings, toppings]);
 
     const cart = document.querySelector('#show-cart-btn');
     const cartNum = document.querySelector('#num-item-cart');
     const imageRef = useRef(null);
     const handleEditItemCart = async () => {
-        const recipesID = [detailItem.idProduct[1], ...checkedToppings].join(',');
-        const results = await cartService.editCartItem(detailItem.idProduct, recipesID, num, size);
+        const productString = [detailItem.id, ...checkedToppings].join(',');
+        const results = await cartService.editCartItem(detailItem.productId, { productString, quantity, size });
         if (results) {
             state.showToast('Thành công', results.message);
         }
@@ -107,7 +107,7 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
 
     const storeItems = async () => {
         const recipesID = [detailItem.id, ...checkedToppings].join(',');
-        const results = await cartService.addItemToCart(recipesID, num, size);
+        const results = await cartService.addItemToCart(recipesID, quantity, size);
         if (results) {
             state.showToast('Thành công', results.message);
         }
@@ -122,6 +122,13 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
             state.showToast('Thành công', results.message);
         }
     };
+    const cartQuantity = useMemo(
+        () =>
+            state.cartData &&
+            state.cartData.data &&
+            state.cartData.data.reduce((total, current) => current.quantity + total, 0),
+        [state.cartData],
+    );
     return (
         <Modal
             className={cx('detail-wrapper')}
@@ -163,15 +170,24 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
                             </div>
                             <div className={cx('order-quantity-wrapper')}>
                                 <HiMinusCircle
-                                    className={cx('order-minus', { disable: num === 1 })}
+                                    className={cx('order-minus', { disable: quantity === 1 })}
                                     onClick={() => {
-                                        if (num !== 1) {
-                                            setNum((prev) => prev - 1);
+                                        if (quantity !== 1) {
+                                            setQuantity((prev) => prev - 1);
                                         }
                                     }}
                                 />
-                                <div className={cx('order-quantity')}>{num}</div>
-                                <HiPlusCircle className={cx('order-add')} onClick={() => setNum((prev) => prev + 1)} />
+                                <div className={cx('order-quantity')}>{quantity}</div>
+                                <HiPlusCircle
+                                    className={cx('order-add', {
+                                        disable: cartQuantity + quantity > 20,
+                                    })}
+                                    onClick={() => {
+                                        if (cartQuantity + quantity <= 20) {
+                                            setQuantity((prev) => prev + 1);
+                                        }
+                                    }}
+                                />
                             </div>
                         </div>
                         <div className={cx('order-title')}>Chọn size (bắt buộc)</div>
@@ -225,19 +241,23 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
                     </div>
                 </Col>
             </Row>
-            <div
-                onClick={() => {
-                    if (editing) {
-                        handleEditItemCart();
-                    } else {
-                        handleAddItemCart();
-                    }
-                }}
-                className={cx('order-add-btn')}
-            >
-                {priceFormat(total)}₫ - {editing ? 'Cập nhật sản phẩm' : 'Thêm vào giỏ hàng'}
-                <MdOutlineAddShoppingCart className={cx('add-icon')} />
-            </div>
+            <Tooltip title={cartQuantity + quantity > 20 && 'Số lượng sản phẩm quá lớn!'}>
+                <div
+                    onClick={() => {
+                        if (cartQuantity + quantity <= 20) {
+                            if (editing) {
+                                handleEditItemCart();
+                            } else {
+                                handleAddItemCart();
+                            }
+                        }
+                    }}
+                    className={cx('order-add-btn', { disable: cartQuantity + quantity > 20 })}
+                >
+                    {priceFormat(total)}₫ - {editing ? 'Cập nhật sản phẩm' : 'Thêm vào giỏ hàng'}
+                    <MdOutlineAddShoppingCart className={cx('add-icon')} />
+                </div>
+            </Tooltip>
         </Modal>
     );
 }

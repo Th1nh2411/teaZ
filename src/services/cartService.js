@@ -1,12 +1,8 @@
 import * as httpRequest from '../utils/httpRequest';
 
-export const getCartItem = async (token) => {
-    const config = {
-        headers: { access_token: token },
-    };
-
+export const getCartItem = async () => {
     try {
-        const res = await httpRequest.get(`cart-product`, config);
+        const res = await httpRequest.get(`cart-product`);
         return res;
     } catch (error) {
         console.log(error);
@@ -14,56 +10,40 @@ export const getCartItem = async (token) => {
     }
 };
 
-export const addItemToCart = async (productString = 1, quantity = 1, size = 0, token) => {
-    const config = {
-        headers: { access_token: token },
-    };
+export const addItemToCart = async (productString = 1, quantity = 1, size = 0) => {
     const body = {
         productString,
         quantity,
         size,
     };
     try {
-        const res = await httpRequest.post('cart-product', body, config);
+        const res = await httpRequest.post('cart-product', body);
         return res;
     } catch (error) {
         console.log(error);
         return error.response && error.response.data;
     }
 };
-export const editCartItem = async (idProduct, idRecipe = 1, quantityProduct = 1, sizeProduct = 0, token) => {
-    const config = {
-        headers: { access_token: token },
-    };
-    const body = {
-        idRecipe,
-        quantityProduct,
-        sizeProduct,
-    };
+export const editCartItem = async (idProduct, body) => {
     try {
-        const res = await httpRequest.patch(`cart-product/${idProduct}`, body, config);
+        const res = await httpRequest.patch(`cart-product/${idProduct}`, body);
         return res;
     } catch (error) {
         console.log(error);
         return error.response && error.response.data;
     }
 };
-export const delCartItem = async (idProduct, token) => {
-    const config = {
-        headers: { access_token: token },
-    };
-
+export const delCartItem = async (idProduct) => {
     try {
-        const res = await httpRequest.del(`cart-product/${idProduct}`, {}, config);
+        const res = await httpRequest.del(`cart-product/${idProduct}`, {});
         return res;
     } catch (error) {
         console.log(error);
         return error.response && error.response.data;
     }
 };
-export const delUnavailableItem = async (listIdProduct, token) => {
+export const delUnavailableItem = async (listIdProduct) => {
     const config = {
-        headers: { access_token: token },
         data: {
             listIdProduct,
         },

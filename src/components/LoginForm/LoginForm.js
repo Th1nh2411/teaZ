@@ -32,9 +32,6 @@ function LoginForm({ onCloseModal = () => {} }) {
                 state.showToast('Thành công', results.message);
                 const getNewInvoice = state.getCurrentInvoice();
                 onCloseModal();
-            } else {
-                setLoginStatus('Số điện thoại hoặc mật khẩu chưa đúng');
-                setPassword('');
             }
         };
         postLogin();
