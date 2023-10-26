@@ -8,6 +8,7 @@ import Image from '../Image/Image';
 import * as authService from '../../services/authService';
 import { StoreContext, actions } from '../../store';
 import OTPInput from 'react-otp-input';
+import { onlyPhoneNumVN } from '../../utils/format';
 
 const cx = classNames.bind(styles);
 
@@ -19,7 +20,7 @@ function ForgotForm({ onClickChangeForm = () => {} }) {
     const [step, setStep] = useState(1);
 
     const [state, dispatch] = useContext(StoreContext);
-    const handleSubmitLogin = (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
 
         // fetch api
@@ -27,21 +28,25 @@ function ForgotForm({ onClickChangeForm = () => {} }) {
         step === 1 ? sendOTP() : step === 2 ? confirmOTP() : changePassword();
     };
 
-    const sendOTP = async (e) => {
-        e.preventDefault();
-        const res1 = await authService.checkPhone(phone);
-        if (res1) {
-            const res2 = await authService.sendOTP(phone);
-            if (res2) setStep(2);
+    const sendOTP = async () => {
+        if (!onlyPhoneNumVN(phone) && phone.length !== 0) {
+            return;
         }
+        const res = await authService.sendOTP(phone);
+        if (res) setStep(2);
     };
-    const confirmOTP = async (e) => {
-        e.preventDefault();
+    const confirmOTP = async () => {
         if (!otp) return;
         const res = await authService.ValidateOTP(otp);
         if (res) setStep(3);
     };
     const changePassword = async () => {
+        if (
+            (newPassword.length < 6 && newPassword.length !== 0) ||
+            (repeatPassword !== newPassword && repeatPassword !== '')
+        ) {
+            return;
+        }
         const results = await authService.changePasswordForgot({ phone, newPassword, repeatPassword });
         if (results) {
             state.showToast('Thành công', results.message);
@@ -50,7 +55,7 @@ function ForgotForm({ onClickChangeForm = () => {} }) {
     };
 
     return (
-        <form onSubmit={handleSubmitLogin}>
+        <form onSubmit={handleSubmit}>
             {step === 1 && (
                 <Input
                     onChange={(e) => {
@@ -58,6 +63,8 @@ function ForgotForm({ onClickChangeForm = () => {} }) {
                     }}
                     value={phone}
                     title="Điền số điện thoại đăng ký"
+                    errorMessage={'Vui lòng nhập đúng định dạng số điện thoại'}
+                    errorCondition={!onlyPhoneNumVN(phone) && phone.length !== 0}
                 />
             )}
             {step === 2 && (

@@ -37,6 +37,7 @@ function Provider({ children }) {
         shopInfo: {},
         currentInvoice: {},
         toast: { show: false, content: '', title: '' },
+        cartData: {},
         getCurrentCart,
         getCurrentInvoice,
     };

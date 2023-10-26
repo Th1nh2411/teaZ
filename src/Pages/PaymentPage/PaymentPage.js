@@ -25,6 +25,7 @@ const cx = classNames.bind(styles);
 function CheckoutPage() {
     const [state, dispatch] = useContext(StoreContext);
     const [showConfirmCancelInvoice, setShowConfirmCancelInvoice] = useState();
+    const [shippingLogo, setShippingLogo] = useState([]);
     const [searchParams, setSearchParams] = useSearchParams();
     const paymentStatus = searchParams.get('vnp_TransactionStatus');
     const query = Object.fromEntries(searchParams.entries());
@@ -73,6 +74,16 @@ function CheckoutPage() {
         () => (invoice && invoice.date ? dayjs(invoice.date).format('HH:mm DD/MM/YYYY') : 'Vừa lên đơn'),
         [],
     );
+    const getShippingCompany = async () => {
+        const results = await invoiceService.getShippingCompany();
+        if (results) {
+            const shippingCompany = results.data.find((item) => invoice && item.id === invoice.idShipping_company);
+            setShippingLogo(shippingCompany && shippingCompany.image);
+        }
+    };
+    useEffect(() => {
+        getShippingCompany();
+    }, []);
     return (
         <>
             {showConfirmCancelInvoice && (
@@ -116,20 +127,7 @@ function CheckoutPage() {
                         </div>
                         <div className={cx('delivery-wrapper')}>
                             <div className={cx('body-title')}>
-                                Giao hàng{' '}
-                                {invoice && invoice.idShipping_company === 1 ? (
-                                    <Image
-                                        src={'https://thicao.com/wp-content/uploads/2019/07/logo-moi-cua-grab.jpg'}
-                                        className={cx('delivery-company-img')}
-                                    />
-                                ) : (
-                                    <Image
-                                        src={
-                                            'https://images.squarespace-cdn.com/content/v1/5f9bdbe0209d9a7ee6ea8797/1612706541953-M447AAUK2JK58U0K8B4N/now+food+logo.jpeg'
-                                        }
-                                        className={cx('delivery-company-img')}
-                                    />
-                                )}
+                                Giao hàng <Image src={shippingLogo} className={cx('delivery-company-img')} />,
                             </div>
                             <div className={cx('info')}>
                                 <div className={cx('info-body')}>
@@ -164,7 +162,7 @@ function CheckoutPage() {
                     <div className={cx('qr-scan-wrapper')}>
                         {invoice && invoice.isPaid === 0 && invoice.paymentMethod === 'Vnpay' ? (
                             <>
-                                <div className={cx('qr-scan-title')}>Trạng thái đơn hàng</div>
+                                <div className={cx('qr-scan-title')}>Đơn hàng chưa được thanh toán</div>
                                 <Image src={images.payment} className={cx('qr-img')} />
                                 <div className={cx('actions-wrapper')}>
                                     <div

@@ -36,15 +36,16 @@ function CheckoutPage() {
             setListCompany(results.data);
         }
     };
+    useEffect(() => {
+        getShippingCompany();
+    }, []);
     const getShippingFee = async () => {
         const results = await shopService.getShippingFee(location.latitude, location.longitude, shippingCompanyId);
         if (results) {
             setShippingFee(results.data);
         }
     };
-    useEffect(() => {
-        getShippingCompany();
-    }, []);
+
     useEffect(() => {
         getShippingFee();
     }, [shippingCompanyId]);
@@ -75,9 +76,10 @@ function CheckoutPage() {
         } else if (results && paymentMethod === 0) {
             state.showToast('Đặt hàng', results.message);
 
+            await state.getCurrentInvoice();
+            await state.getCurrentCart();
             navigate(config.routes.payment);
         }
-        const getCurrentInvoice = await state.getCurrentInvoice();
     };
     return (
         <div className={cx('wrapper')}>

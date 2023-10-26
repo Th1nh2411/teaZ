@@ -12,7 +12,7 @@ import * as authService from '../../services/authService';
 import { StoreContext, actions } from '../../store';
 import { priceFormat } from '../../utils/format';
 import { RiHeartFill, RiHeartAddLine } from 'react-icons/ri';
-import { Tooltip } from 'antd';
+import { Alert, Tooltip } from 'antd';
 
 const cx = classNames.bind(styles);
 const sizeOrders = [
@@ -95,11 +95,11 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
             flyingItem.style.left = `${cart.offsetLeft}px`;
             flyingItem.style.transform = 'scale(0)';
 
-            await onCloseModal(true);
             setTimeout(async () => {
                 flyingItem.remove();
                 await storeItems();
             }, speed * 1.5);
+            await onCloseModal(true);
         } else {
             dispatch(actions.setShowLogin(true));
         }
@@ -190,6 +190,14 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
                                 />
                             </div>
                         </div>
+                        {cartQuantity + quantity > 20 && (
+                            <Alert
+                                style={{ margin: '15px auto 0px', width: 'fit-content' }}
+                                showIcon
+                                type="error"
+                                message="Số lượng sản phẩm trong giỏ đã quá lớn!"
+                            />
+                        )}
                         <div className={cx('order-title')}>Chọn size (bắt buộc)</div>
                         <div className={cx('order-size-list')}>
                             <Form>
@@ -241,23 +249,22 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
                     </div>
                 </Col>
             </Row>
-            <Tooltip title={cartQuantity + quantity > 20 && 'Số lượng sản phẩm quá lớn!'}>
-                <div
-                    onClick={() => {
-                        if (cartQuantity + quantity <= 20) {
-                            if (editing) {
-                                handleEditItemCart();
-                            } else {
-                                handleAddItemCart();
-                            }
+
+            <div
+                onClick={() => {
+                    if (cartQuantity + quantity <= 20) {
+                        if (editing) {
+                            handleEditItemCart();
+                        } else {
+                            handleAddItemCart();
                         }
-                    }}
-                    className={cx('order-add-btn', { disable: cartQuantity + quantity > 20 })}
-                >
-                    {priceFormat(total)}₫ - {editing ? 'Cập nhật sản phẩm' : 'Thêm vào giỏ hàng'}
-                    <MdOutlineAddShoppingCart className={cx('add-icon')} />
-                </div>
-            </Tooltip>
+                    }
+                }}
+                className={cx('order-add-btn', { disable: cartQuantity + quantity > 20 })}
+            >
+                {priceFormat(total)}₫ - {editing ? 'Cập nhật sản phẩm' : 'Thêm vào giỏ hàng'}
+                <MdOutlineAddShoppingCart className={cx('add-icon')} />
+            </div>
         </Modal>
     );
 }
