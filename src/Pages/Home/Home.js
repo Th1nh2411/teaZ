@@ -26,7 +26,7 @@ function Home() {
         setLoading(true);
         const results = await shopService.getItemByType(orderType, state.userInfo && state.userInfo.userId);
         if (results) {
-            setMenu(results.data);
+            setMenu(results.data && results.data.filter((item) => item.isActive !== 0));
         }
         setLoading(false);
     };
@@ -63,19 +63,20 @@ function Home() {
                     </div>
                 ) : (
                     <Row className={cx('order-list')}>
-                        {menu.map((item, index) => (
-                            <Col
-                                key={index}
-                                md="3"
-                                onClick={() => {
-                                    if (item.isActive === 1) {
-                                        dispatch(actions.setDetailItem({ show: true, data: item }));
-                                    }
-                                }}
-                            >
-                                <OrderItem data={item} key={index} />
-                            </Col>
-                        ))}
+                        {menu &&
+                            menu.map((item, index) => (
+                                <Col
+                                    key={index}
+                                    md="3"
+                                    onClick={() => {
+                                        if (item.isActive === 1) {
+                                            dispatch(actions.setDetailItem({ show: true, data: item }));
+                                        }
+                                    }}
+                                >
+                                    <OrderItem data={item} key={index} />
+                                </Col>
+                            ))}
                     </Row>
                 )}
             </section>

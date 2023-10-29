@@ -35,7 +35,7 @@ function Provider({ children }) {
         detailAddress: { show: false, address: '' },
         showToast,
         shopInfo: {},
-        currentInvoice: {},
+        currentInvoice: 0,
         toast: { show: false, content: '', title: '' },
         cartData: {},
         getCurrentCart,
@@ -54,7 +54,10 @@ function Provider({ children }) {
         }
     }, [state.userInfo]);
     useEffect(() => {
-        if (state.currentInvoice && state.currentInvoice.status !== 0) {
+        if (
+            state.currentInvoice &&
+            (state.currentInvoice.invoice.isPaid === 1 || state.currentInvoice.invoice.paymentMethod !== 'Vnpay')
+        ) {
             var getCurrentInvoiceInterval = setInterval(() => {
                 getCurrentInvoice();
             }, 10000);

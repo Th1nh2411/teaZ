@@ -39,7 +39,7 @@ function CheckoutPage() {
         }
     };
     useEffect(() => {
-        if (!state.currentInvoice) {
+        if (state.currentInvoice === null) {
             state.showToast('Đơn hàng', 'Đơn hàng đã hoàn thành hoặc được huỷ', 'info');
             navigate(config.routes.history);
         }
