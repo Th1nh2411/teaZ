@@ -25,7 +25,6 @@ const cx = classNames.bind(styles);
 function CheckoutPage() {
     const [state, dispatch] = useContext(StoreContext);
     const [showConfirmCancelInvoice, setShowConfirmCancelInvoice] = useState();
-    const [shippingLogo, setShippingLogo] = useState([]);
     const [searchParams, setSearchParams] = useSearchParams();
     const paymentStatus = searchParams.get('vnp_TransactionStatus');
     const query = Object.fromEntries(searchParams.entries());
@@ -74,16 +73,7 @@ function CheckoutPage() {
         () => (invoice && invoice.date ? dayjs(invoice.date).format('HH:mm DD/MM/YYYY') : 'Vừa lên đơn'),
         [],
     );
-    const getShippingCompany = async () => {
-        const results = await invoiceService.getShippingCompany();
-        if (results) {
-            const shippingCompany = results.data.find((item) => invoice && item.id === invoice.idShipping_company);
-            setShippingLogo(shippingCompany && shippingCompany.image);
-        }
-    };
-    useEffect(() => {
-        getShippingCompany();
-    }, []);
+
     return (
         <>
             {showConfirmCancelInvoice && (
@@ -127,7 +117,12 @@ function CheckoutPage() {
                         </div>
                         <div className={cx('delivery-wrapper')}>
                             <div className={cx('body-title')}>
-                                Giao hàng <Image src={shippingLogo} className={cx('delivery-company-img')} />,
+                                Giao hàng{' '}
+                                <Image
+                                    src={invoice && invoice.shippingCompany && invoice.shippingCompany.image}
+                                    className={cx('delivery-company-img')}
+                                />
+                                ,
                             </div>
                             <div className={cx('info')}>
                                 <div className={cx('info-body')}>

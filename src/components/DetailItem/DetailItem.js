@@ -124,10 +124,14 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
     };
     const cartQuantity = useMemo(
         () =>
-            state.cartData &&
-            state.cartData.data &&
-            state.cartData.data.reduce((total, current) => current.quantity + total, 0),
+            state.cartData && state.cartData.data
+                ? state.cartData.data.reduce((total, current) => current.quantity + total, 0)
+                : 0,
         [state.cartData],
+    );
+    const isReachMax = useMemo(
+        () => (data.quantity ? cartQuantity + quantity - data.quantity >= 20 : cartQuantity + quantity >= 20),
+        [quantity, cartQuantity],
     );
     return (
         <Modal
@@ -180,17 +184,17 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
                                 <div className={cx('order-quantity')}>{quantity}</div>
                                 <HiPlusCircle
                                     className={cx('order-add', {
-                                        disable: cartQuantity + quantity > 20,
+                                        disable: isReachMax,
                                     })}
                                     onClick={() => {
-                                        if (cartQuantity + quantity <= 20) {
+                                        if (!isReachMax) {
                                             setQuantity((prev) => prev + 1);
                                         }
                                     }}
                                 />
                             </div>
                         </div>
-                        {cartQuantity + quantity > 20 && (
+                        {isReachMax && (
                             <Alert
                                 style={{ margin: '15px auto 0px', width: 'fit-content' }}
                                 showIcon
@@ -252,15 +256,13 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
 
             <div
                 onClick={() => {
-                    if (cartQuantity + quantity <= 20) {
-                        if (editing) {
-                            handleEditItemCart();
-                        } else {
-                            handleAddItemCart();
-                        }
+                    if (editing) {
+                        handleEditItemCart();
+                    } else {
+                        handleAddItemCart();
                     }
                 }}
-                className={cx('order-add-btn', { disable: cartQuantity + quantity > 20 })}
+                className={cx('order-add-btn')}
             >
                 {priceFormat(total)}₫ - {editing ? 'Cập nhật sản phẩm' : 'Thêm vào giỏ hàng'}
                 <MdOutlineAddShoppingCart className={cx('add-icon')} />
