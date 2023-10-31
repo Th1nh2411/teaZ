@@ -17,6 +17,7 @@ import { MdEdit, MdLock } from 'react-icons/md';
 import ChangePwForm from './ChangePwForm';
 import { Alert, Badge, Col, Row } from 'antd';
 import CropperImage from '../../components/CropperImage/CropperImage';
+import { useTranslation } from 'react-i18next';
 const cx = classNames.bind(styles);
 
 function HistoryPage() {
@@ -26,6 +27,7 @@ function HistoryPage() {
     const [showChangePw, setShowChangePw] = useState();
     const [loading, setLoading] = useState();
     const [state, dispatch] = useContext(StoreContext);
+    const { t } = useTranslation();
 
     const uploadRef = useRef(null);
     const [avatarSrc, setAvatarSrc] = useState(null);

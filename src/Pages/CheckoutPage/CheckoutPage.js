@@ -76,10 +76,10 @@ function CheckoutPage() {
         } else if (results && paymentMethod === 0) {
             state.showToast('Đặt hàng', results.message);
 
-            await state.getCurrentInvoice();
-            await state.getCurrentCart();
             navigate(config.routes.payment);
         }
+        await state.getCurrentInvoice();
+        await state.getCurrentCart();
     };
     return (
         <div className={cx('wrapper')}>

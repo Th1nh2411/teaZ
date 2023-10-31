@@ -16,7 +16,7 @@ import { useContext, useEffect, useState } from 'react';
 import { StoreContext, actions } from '../../../store';
 import Cookies from 'js-cookie';
 import { useTranslation } from 'react-i18next';
-import { Select } from 'antd';
+import { Avatar, Divider, Dropdown, Select } from 'antd';
 import i18n from '../../../locales/translation/i18n';
 const cx = classNames.bind(styles);
 
@@ -27,59 +27,35 @@ function Header() {
     const { t } = useTranslation();
     const USER_MENU = [
         {
-            icon: <MdOutlineHistoryEdu />,
-            title: t('header.historyPage'),
-            to: config.routes.history,
-            type: 'history',
+            icon: <MdOutlineHistoryEdu style={{ fontSize: 20 }} />,
+            label: <span style={{ fontSize: 16 }}>{t('header.historyPage')}</span>,
+            key: 1,
         },
         {
-            icon: <BiBookHeart />,
-            title: t('header.wishlistPage'),
-            to: config.routes.favor,
-            type: 'favor',
+            icon: <BiBookHeart style={{ fontSize: 20 }} />,
+            label: <span style={{ fontSize: 16 }}> {t('header.wishlistPage')}</span>,
+            key: 2,
         },
         {
-            icon: <IoLogOutOutline />,
-            title: t('header.logout'),
-            separate: true,
-            type: 'logout',
-        },
-    ];
-    const LANGUAGES_MENU = [
-        {
-            value: 'VI',
-            label: (
-                <div className={cx('flag-wrapper')}>
-                    <img
-                        className={cx('flag-icon')}
-                        alt="flag"
-                        src="https://cdn-icons-png.flaticon.com/512/323/323319.png"
-                    />
-                    {t('header.viLg')}
-                </div>
-            ),
+            type: 'divider',
         },
         {
-            value: 'EN',
-            label: (
-                <div className={cx('flag-wrapper')}>
-                    <img
-                        className={cx('flag-icon')}
-                        alt="flag"
-                        src="https://cdn-icons-png.flaticon.com/512/197/197374.png"
-                    />
-                    {t('header.enLg')}
-                </div>
-            ),
+            icon: <IoLogOutOutline style={{ fontSize: 20 }} />,
+            label: <span style={{ fontSize: 16 }}>{t('header.logout')}</span>,
+            key: 3,
         },
     ];
 
-    const handleOnchangeMenu = (menuItem) => {
-        switch (menuItem.type) {
-            case 'history':
-                //change language
+    const handleOnchangeMenu = ({ key }) => {
+        console.log(key);
+        switch (key) {
+            case '1':
+                navigate(config.routes.history);
                 break;
-            case 'logout':
+            case '2':
+                navigate(config.routes.favor);
+                break;
+            case '3':
                 Cookies.remove('userInfo');
                 dispatch(actions.setUserInfo(null));
                 dispatch(actions.setCurrentInvoice({}));
@@ -92,9 +68,36 @@ function Header() {
                 console.log('default');
         }
     };
+    const LANGUAGES_MENU = [
+        {
+            value: 'VI',
+            label: (
+                <div className={cx('flag-wrapper')}>
+                    <img
+                        className={cx('flag-icon')}
+                        alt="flag"
+                        src="https://cdn-icons-png.flaticon.com/512/323/323319.png"
+                    />
+                    Tiếng Việt
+                </div>
+            ),
+        },
+        {
+            value: 'EN',
+            label: (
+                <div className={cx('flag-wrapper')}>
+                    <img
+                        className={cx('flag-icon')}
+                        alt="flag"
+                        src="https://cdn-icons-png.flaticon.com/512/197/197374.png"
+                    />
+                    English
+                </div>
+            ),
+        },
+    ];
     const onChangeLanguage = (value) => {
         i18n.changeLanguage(value);
-        console.log(i18n.language);
     };
     return (
         <>
@@ -119,6 +122,7 @@ function Header() {
                             }}
                             className="header-select"
                         />
+                        <Divider type="vertical" style={{ backgroundColor: '#ffffff80', height: 30, top: 0 }} />
                         <div
                             onClick={() => {
                                 if (currentPath !== config.routes.payment) {
@@ -145,11 +149,16 @@ function Header() {
                         <div className={cx('actions')}>
                             {state.userInfo ? (
                                 <>
-                                    <Menu items={USER_MENU} onChange={handleOnchangeMenu}>
+                                    <Dropdown
+                                        menu={{
+                                            items: USER_MENU,
+                                            onClick: handleOnchangeMenu,
+                                        }}
+                                    >
                                         <div className={cx('action-icon')}>
-                                            <HiUserCircle />
+                                            <Avatar src={state.userInfo.photo} />
                                         </div>
-                                    </Menu>
+                                    </Dropdown>
                                 </>
                             ) : (
                                 <Button

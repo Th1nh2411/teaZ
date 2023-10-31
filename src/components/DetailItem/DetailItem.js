@@ -13,12 +13,9 @@ import { StoreContext, actions } from '../../store';
 import { priceFormat } from '../../utils/format';
 import { RiHeartFill, RiHeartAddLine } from 'react-icons/ri';
 import { Alert, Tooltip } from 'antd';
+import { useTranslation } from 'react-i18next';
 
 const cx = classNames.bind(styles);
-const sizeOrders = [
-    { price: 0, name: 'Nhỏ' },
-    { price: 10, name: 'Lớn ' },
-];
 
 function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false }) {
     const detailItem = data;
@@ -28,6 +25,11 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
     const [isLiked, setIsLiked] = useState(data.isLiked || false);
     const [checkedToppings, setCheckedToppings] = useState(data.toppings ? data.toppings.map((item) => item.id) : []);
     const [state, dispatch] = useContext(StoreContext);
+    const { t } = useTranslation();
+    const sizeOrders = [
+        { price: 0, name: t('smallSize') },
+        { price: 10, name: t('largeSize') },
+    ];
     const getToppingList = async (e) => {
         const results = await shopService.getToppingList(data.id);
         if (results) {
@@ -145,11 +147,11 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
                     <div className={cx('order-img-wrapper')}>
                         <Image ref={imageRef} src={detailItem.image} className={cx('order-img')} />
                         {isLiked ? (
-                            <Tooltip title="Bỏ yêu thích">
+                            <Tooltip title={t('unfavorite')}>
                                 <RiHeartFill className={cx('heart-icon')} onClick={handleClickFavor} />
                             </Tooltip>
                         ) : (
-                            <Tooltip title="Yêu thích">
+                            <Tooltip title={t('favorite')}>
                                 <RiHeartAddLine className={cx('heart-icon')} onClick={handleClickFavor} />
                             </Tooltip>
                         )}
@@ -199,10 +201,10 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
                                 style={{ margin: '15px auto 0px', width: 'fit-content' }}
                                 showIcon
                                 type="error"
-                                message="Số lượng sản phẩm trong giỏ đã quá lớn!"
+                                message={t('overSizeCart')}
                             />
                         )}
-                        <div className={cx('order-title')}>Chọn size (bắt buộc)</div>
+                        <div className={cx('order-title')}>{t('chooseSize')}</div>
                         <div className={cx('order-size-list')}>
                             <Form>
                                 <div className="d-flex justify-content-between">
@@ -225,7 +227,7 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
                                 </div>
                             </Form>
                         </div>
-                        <div className={cx('order-title')}>Chọn topping (tùy chọn)</div>
+                        <div className={cx('order-title')}>{t('chooseTopping')}</div>
                         <div className={cx('order-topping-list')}>
                             {toppings &&
                                 toppings.map((topping, index) => (
@@ -262,9 +264,9 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
                         handleAddItemCart();
                     }
                 }}
-                className={cx('order-add-btn')}
+                className={cx('order-add-btn', { disable: isReachMax })}
             >
-                {priceFormat(total)}₫ - {editing ? 'Cập nhật sản phẩm' : 'Thêm vào giỏ hàng'}
+                {priceFormat(total)}₫ - {editing ? t('editCartItem') : t('addToCart')}
                 <MdOutlineAddShoppingCart className={cx('add-icon')} />
             </div>
         </Modal>
