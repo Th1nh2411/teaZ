@@ -132,7 +132,7 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
         [state.cartData],
     );
     const isReachMax = useMemo(
-        () => (data.quantity ? cartQuantity + quantity - data.quantity >= 20 : cartQuantity + quantity >= 20),
+        () => (data.quantity ? cartQuantity + quantity - data.quantity > 20 : cartQuantity + quantity > 20),
         [quantity, cartQuantity],
     );
     return (

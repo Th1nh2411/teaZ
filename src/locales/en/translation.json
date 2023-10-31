@@ -23,7 +23,7 @@
     "smallSize": "Small",
     "largeSize": "Large",
     "chooseTopping": "Choose topping (Optional)",
-    "overSizeCart": "The number of products in cart is too large!",
+    "overSizeCart": "Your cart has exceeded the number of products allowed!",
     "emptyProduct": "Cart is empty",
     "yourCart": "Your cart",
     "item": "item",
