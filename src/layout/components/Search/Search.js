@@ -12,6 +12,7 @@ import OrderItem from '../../../components/OrderItem/OrderItem';
 import Image from '../../../components/Image/Image';
 import { MdOutlineAddShoppingCart } from 'react-icons/md';
 import { priceFormat } from '../../../utils/format';
+import { useTranslation } from 'react-i18next';
 
 const cx = classNames.bind(styles);
 function Search() {
@@ -21,9 +22,8 @@ function Search() {
     const [loading, setLoading] = useState(false);
     const debouncedValue = useDebounce(searchValue, 500);
     const inputRef = useRef();
-    const [showDetailRecipe, setShowDetailRecipe] = useState(false);
-    const [detailRecipe, setDetailRecipe] = useState({});
     const [state, dispatch] = useContext(StoreContext);
+    const { t } = useTranslation();
     useEffect(() => {
         if (!debouncedValue.trim()) {
             setSearchResult([]);
@@ -113,7 +113,7 @@ function Search() {
                         ref={inputRef}
                         onChange={handleChangeInput}
                         value={searchValue}
-                        placeholder="Bạn muốn đặt gì..."
+                        placeholder={t('header.searchInput')}
                         onFocus={() => setShowResult(true)}
                     />
                     {loading ||

@@ -56,6 +56,7 @@ function Provider({ children }) {
     useEffect(() => {
         if (
             state.currentInvoice &&
+            state.currentInvoice.invoice &&
             (state.currentInvoice.invoice.isPaid === 1 || state.currentInvoice.invoice.paymentMethod !== 'Vnpay')
         ) {
             var getCurrentInvoiceInterval = setInterval(() => {

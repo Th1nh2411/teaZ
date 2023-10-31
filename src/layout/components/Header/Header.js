@@ -15,30 +15,62 @@ import { useContext, useEffect, useState } from 'react';
 
 import { StoreContext, actions } from '../../../store';
 import Cookies from 'js-cookie';
+import { useTranslation } from 'react-i18next';
+import { Select } from 'antd';
+import i18n from '../../../locales/translation/i18n';
 const cx = classNames.bind(styles);
 
 function Header() {
     const [state, dispatch] = useContext(StoreContext);
     const currentPath = useLocation().pathname;
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const USER_MENU = [
         {
             icon: <MdOutlineHistoryEdu />,
-            title: 'Lịch sử đặt hàng',
+            title: t('header.historyPage'),
             to: config.routes.history,
             type: 'history',
         },
         {
             icon: <BiBookHeart />,
-            title: 'Danh sách yêu thích',
+            title: t('header.wishlistPage'),
             to: config.routes.favor,
             type: 'favor',
         },
         {
             icon: <IoLogOutOutline />,
-            title: 'Đăng xuất',
+            title: t('header.logout'),
             separate: true,
             type: 'logout',
+        },
+    ];
+    const LANGUAGES_MENU = [
+        {
+            value: 'VI',
+            label: (
+                <div className={cx('flag-wrapper')}>
+                    <img
+                        className={cx('flag-icon')}
+                        alt="flag"
+                        src="https://cdn-icons-png.flaticon.com/512/323/323319.png"
+                    />
+                    {t('header.viLg')}
+                </div>
+            ),
+        },
+        {
+            value: 'EN',
+            label: (
+                <div className={cx('flag-wrapper')}>
+                    <img
+                        className={cx('flag-icon')}
+                        alt="flag"
+                        src="https://cdn-icons-png.flaticon.com/512/197/197374.png"
+                    />
+                    {t('header.enLg')}
+                </div>
+            ),
         },
     ];
 
@@ -60,7 +92,10 @@ function Header() {
                 console.log('default');
         }
     };
-
+    const onChangeLanguage = (value) => {
+        i18n.changeLanguage(value);
+        console.log(i18n.language);
+    };
     return (
         <>
             <header className={cx('wrapper')}>
@@ -74,6 +109,16 @@ function Header() {
                         <Search />
                     </div>
                     <div className={cx('side-group')}>
+                        <Select
+                            onChange={onChangeLanguage}
+                            defaultValue="VI"
+                            options={LANGUAGES_MENU}
+                            bordered={false}
+                            style={{
+                                minWidth: 125,
+                            }}
+                            className="header-select"
+                        />
                         <div
                             onClick={() => {
                                 if (currentPath !== config.routes.payment) {
@@ -89,13 +134,11 @@ function Header() {
                             <div className={cx('delivery-body')}>
                                 {state.detailAddress.address ? (
                                     <>
-                                        <div className={cx('delivery-title')}>Giao hàng</div>{' '}
+                                        <div className={cx('delivery-title')}>{t('header.delivery')}</div>{' '}
                                         <div className={cx('delivery-subtitle')}>{state.detailAddress.address}</div>
                                     </>
                                 ) : (
-                                    <div className={cx('delivery-no-address')}>
-                                        Chọn địa chỉ giao, quán để xem chính xác các món ăn
-                                    </div>
+                                    <div className={cx('delivery-no-address')}>{t('header.chooseAddress')}</div>
                                 )}
                             </div>
                         </div>
@@ -114,7 +157,7 @@ function Header() {
                                     className={cx('login-btn')}
                                     leftIcon={<IoLogInOutline />}
                                 >
-                                    Đăng nhập
+                                    {t('loginTitle')}
                                 </Button>
                             )}
                         </div>

@@ -2,6 +2,7 @@ import { Modal, notification } from 'antd';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router';
+import i18n from '../locales/translation/i18n';
 const httpRequest = axios.create({
     baseURL: 'http://localhost:4000/api/v1/',
     withCredentials: true,
@@ -9,6 +10,10 @@ const httpRequest = axios.create({
     credentials: 'include',
 });
 export const get = async (path, config = {}) => {
+    config.params = {
+        ...config.params,
+        language: i18n.language,
+    };
     try {
         const response = await httpRequest.get(path, config);
         return response.data;
@@ -32,6 +37,10 @@ export const get = async (path, config = {}) => {
     }
 };
 export const post = async (path, body = {}, config = {}) => {
+    config.params = {
+        ...config.params,
+        language: i18n.language,
+    };
     try {
         const response = await httpRequest.post(path, body, config);
         return response.data;
@@ -55,6 +64,10 @@ export const post = async (path, body = {}, config = {}) => {
     }
 };
 export const del = async (path, config = {}) => {
+    config.params = {
+        ...config.params,
+        language: i18n.language,
+    };
     try {
         const response = await httpRequest.delete(path, config);
         return response.data;
@@ -78,6 +91,10 @@ export const del = async (path, config = {}) => {
     }
 };
 export const put = async (path, body = {}, config = {}) => {
+    config.params = {
+        ...config.params,
+        language: i18n.language,
+    };
     try {
         const response = await httpRequest.put(path, body, config);
         return response.data;
@@ -101,6 +118,10 @@ export const put = async (path, body = {}, config = {}) => {
     }
 };
 export const patch = async (path, body = {}, config = {}) => {
+    config.params = {
+        ...config.params,
+        language: i18n.language,
+    };
     try {
         const response = await httpRequest.patch(path, body, config);
         return response.data;

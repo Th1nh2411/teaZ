@@ -64,7 +64,7 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
         const productString = [detailItem.id, ...checkedToppings].join(',');
         const results = await cartService.editCartItem(detailItem.productId, { productString, quantity, size });
         if (results) {
-            state.showToast('Thành công', results.message);
+            state.showToast(results.message);
         }
         await onCloseModal(true);
     };
@@ -109,7 +109,7 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
         const recipesID = [detailItem.id, ...checkedToppings].join(',');
         const results = await cartService.addItemToCart(recipesID, quantity, size);
         if (results) {
-            state.showToast('Thành công', results.message);
+            state.showToast(results.message);
         }
         // Change ui Num
         cartNum.classList.add('add-item');
@@ -119,7 +119,7 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
         setIsLiked(!isLiked);
         const results = await authService.updateFavor(detailItem.id);
         if (results) {
-            state.showToast('Thành công', results.message);
+            state.showToast(results.message);
         }
     };
     const cartQuantity = useMemo(

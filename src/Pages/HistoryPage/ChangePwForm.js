@@ -31,7 +31,7 @@ function ChangePwForm({ onCloseModal = () => {} }) {
         }
         const results = await authService.changePassword({ oldPassword, newPassword, repeatPassword });
         if (results) {
-            state.showToast('Thành công', results.message);
+            state.showToast(results.message);
 
             onCloseModal(true);
         }

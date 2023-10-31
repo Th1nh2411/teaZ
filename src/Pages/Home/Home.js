@@ -8,20 +8,15 @@ import OrderItem from '../../components/OrderItem/OrderItem';
 import { useContext, useEffect, useState } from 'react';
 import * as shopService from '../../services/shopService';
 import { StoreContext, actions } from '../../store';
+import { useTranslation } from 'react-i18next';
 const cx = classNames.bind(styles);
-
-const orderTypes = [
-    { img: images.drink, name: 'Trà sữa' },
-    { img: images.coffee, name: 'Cà phê' },
-    { img: images.tea, name: 'Trà trái cây' },
-    { img: images.bakery, name: 'Bakery' },
-];
 
 function Home() {
     const [orderType, setOrderType] = useState(1);
     const [menu, setMenu] = useState([]);
     const [loading, setLoading] = useState();
     const [state, dispatch] = useContext(StoreContext);
+    const { t } = useTranslation();
     const getListItem = async () => {
         setLoading(true);
         const results = await shopService.getItemByType(orderType, state.userInfo && state.userInfo.userId);
@@ -33,6 +28,12 @@ function Home() {
     useEffect(() => {
         getListItem();
     }, [orderType, state.userInfo]);
+    const orderTypes = [
+        { img: images.drink, name: t('home.drink') },
+        { img: images.coffee, name: t('home.coffee') },
+        { img: images.tea, name: t('home.tea') },
+        { img: images.bakery, name: t('home.bakery') },
+    ];
     return (
         <div className={cx('wrapper')}>
             <Slider />
@@ -51,11 +52,7 @@ function Home() {
                         </div>
                     ))}
                 </div>
-                <div className={cx('order-subtitle')}>
-                    Chúng tôi tin rằng từng sản phẩm trà và cà phê sẽ càng thêm hảo hạng khi được tạo ra từ sự phấn đấu
-                    không ngừng cùng niềm đam mê. Và chính kết nối dựa trên niềm tin, sự trung thực và tin yêu sẽ góp
-                    phần mang đến những nét đẹp trong văn hóa thưởng trà và cà phê ngày càng bay cao, vươn xa.
-                </div>
+                <div className={cx('order-subtitle')}>{t('home.slogan')}</div>
                 {loading ? (
                     <div className={cx('loader')}>
                         <span></span>

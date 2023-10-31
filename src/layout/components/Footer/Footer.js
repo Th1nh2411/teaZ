@@ -2,25 +2,27 @@ import styles from './Footer.module.scss';
 import classNames from 'classnames/bind';
 import images from '../../../assets/images';
 import Image from '../../../components/Image/Image';
+import { useTranslation } from 'react-i18next';
 
 const cx = classNames.bind(styles);
 
-function Header() {
+function Footer() {
+    const { t } = useTranslation();
     return (
         <footer className={cx('wrapper')}>
             <div className={cx('inner')}>
                 <div className={cx('company-info')}>
-                    <div className={cx('text')}>© Công ty CP Panda Heritage 2023</div>
+                    <div className={cx('text')}>© {t('footer.company')}</div>
                     <div className={cx('text')}>
-                        <span className={cx('highlight')}>Mã số DN:</span>0316 871719 do sở KHĐT TPHCM cấp lần đầu ngày
-                        21/05/2021
+                        <span className={cx('highlight')}>{t('footer.DNTitle')}:</span>
+                        {t('footer.DN')}
                     </div>
                     <div className={cx('text')}>
-                        <span className={cx('highlight')}>Địa chỉ:</span>
-                        Phòng 702, Tầng 7, Tòa nhà Central Plaza, số 17 Lê Duẩn, phường Bến Nghé, quận 1, Hồ Chí Minh.
+                        <span className={cx('highlight')}>{t('addressTitle')}:</span>
+                        {t('footer.address')}
                     </div>
                     <div className={cx('text')}>
-                        <span className={cx('highlight')}>Điện thoại:</span>
+                        <span className={cx('highlight')}>{t('phoneTitle')}:</span>
                         1900234518 (Ext.9100/ 9102)
                     </div>
                     <div className={cx('text')}>
@@ -36,4 +38,4 @@ function Header() {
     );
 }
 
-export default Header;
+export default Footer;
