@@ -258,10 +258,12 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
 
             <div
                 onClick={() => {
-                    if (editing) {
-                        handleEditItemCart();
-                    } else {
-                        handleAddItemCart();
+                    if (!isReachMax) {
+                        if (editing) {
+                            handleEditItemCart();
+                        } else {
+                            handleAddItemCart();
+                        }
                     }
                 }}
                 className={cx('order-add-btn', { disable: isReachMax })}
