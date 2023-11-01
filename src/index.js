@@ -6,7 +6,8 @@ import { BrowserRouter } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import GlobalStyle from './components/GlobalStyles';
 import { StoreProvider } from './store';
-
+import './locales/translation/i18n';
+import { I18nextProvider } from 'react-i18next';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <BrowserRouter>

@@ -1,13 +1,12 @@
 .detail-wrapper {
     width: 750px;
-    height: 580px;
 }
 .header {
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
-    margin: 10px 0 2px;
+    margin: 15px 0;
 }
 .header-logo {
     margin-right: 8px;
@@ -133,7 +132,7 @@
     border: transparent;
 }
 .shop-result {
-    padding: 15px 20px;
+    padding: 12px 20px;
 }
 .shop-title {
     color: var(--primary-color);

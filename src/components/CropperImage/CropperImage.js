@@ -19,7 +19,7 @@ const CropperImage = ({ src, modalOpen, onModalClose = () => {} }) => {
     const editProfile = async (values) => {
         const results = await authService.editProfile(values);
         if (results) {
-            state.showToast('Thành công', results.message);
+            state.showToast(results.message);
         }
     };
     const handleSave = async () => {

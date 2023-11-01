@@ -11,6 +11,8 @@ import { StoreContext, actions } from '../../store';
 import RegisterForm from './RegisterForm';
 import ForgotForm from './ForgotForm';
 import Cookies from 'js-cookie';
+import { useTranslation } from 'react-i18next';
+import { onlyPhoneNumVN } from '../../utils/format';
 
 const cx = classNames.bind(styles);
 
@@ -18,8 +20,8 @@ function LoginForm({ onCloseModal = () => {} }) {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [password, setPassword] = useState('');
     const [form, setForm] = useState('login');
-    const [loginStatus, setLoginStatus] = useState('');
     const [state, dispatch] = useContext(StoreContext);
+    const { t } = useTranslation();
     const handleSubmitLogin = (e) => {
         e.preventDefault();
 
@@ -29,23 +31,18 @@ function LoginForm({ onCloseModal = () => {} }) {
             if (results) {
                 Cookies.set('userInfo', JSON.stringify(results.userInfo));
                 dispatch(actions.setUserInfo(results.userInfo));
-                state.showToast('Thành công', results.message);
+                state.showToast(results.message);
                 const getNewInvoice = state.getCurrentInvoice();
                 onCloseModal();
-            } else {
-                setLoginStatus('Số điện thoại hoặc mật khẩu chưa đúng');
-                setPassword('');
             }
         };
         postLogin();
     };
     const handleChangePhoneValue = (e) => {
         setPhoneNumber(e.target.value);
-        setLoginStatus('');
     };
     const handleChangePasswordValue = (e) => {
         setPassword(e.target.value);
-        setLoginStatus('');
     };
     return (
         <Modal
@@ -56,23 +53,27 @@ function LoginForm({ onCloseModal = () => {} }) {
         >
             {/* <Image src={images.logo} className={cx('logo')} /> */}
             <div className={cx('title')}>
-                {form === 'login' ? 'Đăng nhập' : form === 'register' ? 'Đăng ký' : 'Quên mật khẩu'}{' '}
+                {form === 'login' ? t('loginTitle') : form === 'register' ? t('registerTitle') : t('forgotPWTitle')}{' '}
             </div>
             {form === 'login' ? (
                 <form onSubmit={handleSubmitLogin}>
-                    <Input onChange={handleChangePhoneValue} value={phoneNumber} title="Số điện thoại" />
+                    <Input
+                        onChange={handleChangePhoneValue}
+                        value={phoneNumber}
+                        title={t('phoneTitle')}
+                        errorMessage={t('phoneValidate')}
+                        errorCondition={!onlyPhoneNumVN(phoneNumber) && phoneNumber.length !== 0}
+                    />
 
                     <Input
                         onChange={handleChangePasswordValue}
                         value={password}
-                        title="Mật khẩu"
+                        title={t('passwordTitle')}
                         type="password"
-                        errorMessage={loginStatus}
-                        errorCondition={loginStatus}
                     />
 
                     <Button className={cx('login-btn')} primary>
-                        Đăng nhập
+                        {t('loginTitle')}
                     </Button>
                     <div className={cx('toggle-form')}>
                         <span
@@ -80,17 +81,17 @@ function LoginForm({ onCloseModal = () => {} }) {
                                 setForm('forgot');
                             }}
                         >
-                            Quên mật khẩu?
+                            {t('forgotPWTitle')}
                         </span>
                     </div>
                     <div className={cx('toggle-form')}>
-                        Chưa có tài khoản?{' '}
+                        {t('noAccount')}{' '}
                         <span
                             onClick={() => {
                                 setForm('register');
                             }}
                         >
-                            Đăng ký
+                            {t('registerTitle')}
                         </span>
                     </div>
                 </form>

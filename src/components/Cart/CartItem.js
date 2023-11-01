@@ -7,11 +7,13 @@ import { priceFormat } from '../../utils/format';
 import { StoreContext, actions } from '../../store';
 import * as cartService from '../../services/cartService';
 import { Popconfirm } from 'antd';
+import { useTranslation } from 'react-i18next';
 
 const cx = classNames.bind(styles);
 
 function CartItem({ data = {}, onDelItem = () => {} }) {
     const [state, dispatch] = useContext(StoreContext);
+    const { t } = useTranslation();
     const handleEditItem = () => {
         dispatch(actions.setDetailItem({ show: true, data, editing: true }));
     };
@@ -23,7 +25,7 @@ function CartItem({ data = {}, onDelItem = () => {} }) {
     };
     return (
         <div className={cx('item-wrapper', { disable: data.isActive === 2 })}>
-            <h3 className={cx('disable-title')}>Ngưng bán</h3>
+            <h3 className={cx('disable-title')}>{t('stopSelling')}</h3>
             <div className={cx('item-left-side')}>
                 <div className={cx('item-img-wrapper')}>
                     <Image src={data.image} className={cx('item-img')} />
@@ -45,11 +47,11 @@ function CartItem({ data = {}, onDelItem = () => {} }) {
                     <AiTwotoneEdit />
                 </div>
                 <Popconfirm
-                    title="Xoá món"
-                    description="Xoá món này ra khỏi giỏ hàng?"
+                    title={t('delete')}
+                    description={t('delCartItem')}
                     onConfirm={handleDelItem}
-                    okText="Xoá"
-                    cancelText="Huỷ"
+                    okText={t('delete')}
+                    cancelText={t('cancel')}
                 >
                     <div className={cx('action-del')}>
                         <AiTwotoneDelete />

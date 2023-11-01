@@ -17,6 +17,7 @@ import { MdEdit, MdLock } from 'react-icons/md';
 import ChangePwForm from './ChangePwForm';
 import { Alert, Badge, Col, Row } from 'antd';
 import CropperImage from '../../components/CropperImage/CropperImage';
+import { useTranslation } from 'react-i18next';
 const cx = classNames.bind(styles);
 
 function HistoryPage() {
@@ -26,6 +27,7 @@ function HistoryPage() {
     const [showChangePw, setShowChangePw] = useState();
     const [loading, setLoading] = useState();
     const [state, dispatch] = useContext(StoreContext);
+    const { t } = useTranslation();
 
     const uploadRef = useRef(null);
     const [avatarSrc, setAvatarSrc] = useState(null);
@@ -70,7 +72,8 @@ function HistoryPage() {
                         <Col xs={24} lg={12}>
                             <div className={cx('card')} style={{ backgroundColor: 'rgb(74 96 113)' }}>
                                 <div className={cx('title')} style={{ color: '#26bada' }}>
-                                    <BsPersonCircle className={cx('title-icon')} /> Thông tin cá nhân
+                                    <BsPersonCircle className={cx('title-icon')} />
+                                    {t('history.userInfo')}
                                 </div>
                                 <div className={cx('body')}>
                                     <div className={cx('avatar-wrapper')}>
@@ -87,24 +90,24 @@ function HistoryPage() {
                                     <div className={cx('profile-wrapper')}>
                                         <div className={cx('d-flex')} style={{ margin: '10px 0' }}>
                                             <Button onClick={() => setShowEditProfile(true)} leftIcon={<MdEdit />}>
-                                                Chỉnh sửa
+                                                {t('updateTitle')}
                                             </Button>
                                             <Button
                                                 className={cx('ml-8')}
                                                 onClick={() => setShowChangePw(true)}
                                                 leftIcon={<MdLock />}
                                             >
-                                                Đổi mật khẩu
+                                                {t('passwordTitle')}
                                             </Button>
                                         </div>
                                         <h4 className={cx('profile-info')}>
-                                            Tên người dùng: <span>{state.userInfo && state.userInfo.name}</span>
+                                            {t('userNameTitle')}: <span>{state.userInfo && state.userInfo.name}</span>
                                         </h4>
                                         <h4 className={cx('profile-info')}>
-                                            Số điện thoại: <span>{state.userInfo && state.userInfo.phone}</span>
+                                            {t('phoneTitle')}: <span>{state.userInfo && state.userInfo.phone}</span>
                                         </h4>
                                         <h4 className={cx('profile-info')}>
-                                            Địa chỉ: <span>{state.userInfo && state.userInfo.address}</span>
+                                            {t('addressTitle')}: <span>{state.userInfo && state.userInfo.address}</span>
                                         </h4>
                                     </div>
                                 </div>
@@ -113,7 +116,8 @@ function HistoryPage() {
                         <Col xs={24} lg={12}>
                             <div className={cx('card')}>
                                 <div className={cx('title')}>
-                                    <BsFillClipboard2Fill className={cx('title-icon')} /> Lịch sử đặt hàng
+                                    <BsFillClipboard2Fill className={cx('title-icon')} />
+                                    {t('history.orderHistory')}
                                 </div>
                                 <div className={cx('body', 'invoice-list')}>
                                     {listInvoice && listInvoice.length !== 0 ? (
@@ -132,13 +136,13 @@ function HistoryPage() {
                                                     )}
                                                     <div className={cx('invoice-body')}>
                                                         <div className={cx('invoice-title')}>
-                                                            Đơn hàng{' '}
+                                                            {t('order')}{' '}
                                                             {dayjs(item.date)
                                                                 .subtract(7, 'hours')
                                                                 .format('HH:mm DD/MM/YYYY')}
                                                         </div>
                                                         <div className={cx('invoice-info')}>
-                                                            Trạng thái :{' '}
+                                                            {t('statusTitle')} :{' '}
                                                             <Badge
                                                                 status={
                                                                     item.status === 0
@@ -152,22 +156,22 @@ function HistoryPage() {
                                                                         : 'default'
                                                                 }
                                                                 text={
-                                                                    item.isPaid && item.paymentMethod === 'Vnpay'
-                                                                        ? 'Chưa thanh toán'
+                                                                    !item.isPaid && item.paymentMethod === 'Vnpay'
+                                                                        ? t('unpaid')
                                                                         : item.status === 0
-                                                                        ? 'Chưa xác nhận'
+                                                                        ? t('status0')
                                                                         : item.status === 1
-                                                                        ? 'Đã xác nhận'
+                                                                        ? t('status1')
                                                                         : item.status === 2
-                                                                        ? 'Đang giao'
+                                                                        ? t('status2')
                                                                         : item.status === 3
-                                                                        ? 'Đã giao'
-                                                                        : 'Đã huỷ đơn'
+                                                                        ? t('status3')
+                                                                        : t('status4')
                                                                 }
                                                             />
                                                         </div>
                                                         <div className={cx('invoice-info')}>
-                                                            Tổng tiền :{' '}
+                                                            {t('totalTitle')} :{' '}
                                                             <span>{priceFormat(item.shippingFee + item.total)}đ</span>
                                                         </div>
                                                     </div>
@@ -176,12 +180,12 @@ function HistoryPage() {
                                                     onClick={() => handleShowDetailInvoice(item.id)}
                                                     className={cx('invoice-actions')}
                                                 >
-                                                    Chi tiết
+                                                    {t('detail')}
                                                 </div>
                                             </div>
                                         ))
                                     ) : (
-                                        <Alert message="Bạn chưa đặt đơn nào cả" showIcon type="info" />
+                                        <Alert message={t('emptyOrder')} showIcon type="info" />
                                     )}
                                 </div>
                             </div>

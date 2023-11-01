@@ -11,6 +11,7 @@ import Tippy from '@tippyjs/react';
 import { MdOutlineInfo } from 'react-icons/md';
 import { onlyNumber } from '../../utils/format';
 import { StoreContext, actions } from '../../store';
+import { useTranslation } from 'react-i18next';
 
 const cx = classNames.bind(styles);
 
@@ -20,6 +21,7 @@ function ChangePwForm({ onCloseModal = () => {} }) {
     const [repeatPassword, setRepeatPw] = useState('');
     const [valueChange, setValueChange] = useState(false);
     const [state, dispatch] = useContext(StoreContext);
+    const { t } = useTranslation();
     const editProfile = async () => {
         if (newPassword && newPassword !== repeatPassword) {
             state.showToast('Thất bại', 'Vui lòng điền đúng thông tin', 'error');
@@ -31,7 +33,7 @@ function ChangePwForm({ onCloseModal = () => {} }) {
         }
         const results = await authService.changePassword({ oldPassword, newPassword, repeatPassword });
         if (results) {
-            state.showToast('Thành công', results.message);
+            state.showToast(results.message);
 
             onCloseModal(true);
         }
@@ -61,7 +63,7 @@ function ChangePwForm({ onCloseModal = () => {} }) {
             }}
             className={cx('edit-form-wrapper')}
         >
-            <div className={cx('form-title')}>Đổi mật khẩu</div>
+            <div className={cx('form-title')}>{t('changePWTitle')}</div>
 
             <form onSubmit={handleClickConfirm} className={cx('form')}>
                 <Input
@@ -71,7 +73,7 @@ function ChangePwForm({ onCloseModal = () => {} }) {
                         setValueChange(true);
                     }}
                     value={oldPassword}
-                    title="Mật khẩu cũ"
+                    title={t('oldPasswordTitle')}
                     type="password"
                 />
 
@@ -82,9 +84,9 @@ function ChangePwForm({ onCloseModal = () => {} }) {
                         setValueChange(true);
                     }}
                     errorCondition={newPassword.length < 6 && newPassword.length !== 0}
-                    errorMessage="Mật khẩu phải lớn hơn 6 kí tự"
+                    errorMessage={t('passwordValidate')}
                     value={newPassword}
-                    title="Mật khẩu mới"
+                    title={t('newPasswordTitle')}
                     type="password"
                 />
                 <Input
@@ -94,15 +96,15 @@ function ChangePwForm({ onCloseModal = () => {} }) {
                         setValueChange(true);
                     }}
                     errorCondition={newPassword !== repeatPassword && repeatPassword.length !== 0}
-                    errorMessage="Xác nhận phải trùng với mật khẩu đã nhập"
+                    errorMessage={t('confirmPWValidate')}
                     value={repeatPassword}
-                    title="Xác nhận mật khẩu"
+                    title={t('confirmPasswordTitle')}
                     type="password"
                 />
                 <div className={cx('form-actions')}>
-                    {valueChange && <Button onClick={handleCancelEdit}>Đặt lại</Button>}
+                    {valueChange && <Button onClick={handleCancelEdit}>{t('undo')}</Button>}
                     <Button className={cx('confirm-btn')} primary disable={!valueChange}>
-                        Đổi mật khẩu
+                        {t('confirm')}
                     </Button>
                 </div>
             </form>

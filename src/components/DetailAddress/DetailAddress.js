@@ -13,6 +13,7 @@ import { AiFillCloseCircle, AiOutlineClose, AiOutlineLoading3Quarters } from 're
 import images from '../../assets/images';
 import { StoreContext, actions } from '../../store';
 import { Skeleton } from 'antd';
+import { useTranslation } from 'react-i18next';
 
 const cx = classNames.bind(styles);
 
@@ -22,6 +23,7 @@ function DetailAddress({ data = {}, onCloseModal = () => {}, onChangeLocation = 
     const [searchLoading, setSearchLoading] = useState(false);
     const debouncedValue = useDebounce(searchValue, 500);
     const [state, dispatch] = useContext(StoreContext);
+    const { t } = useTranslation();
     const getCurrentLocation = () => {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(getSuccessLocation, getFailLocation);
@@ -79,7 +81,7 @@ function DetailAddress({ data = {}, onCloseModal = () => {}, onChangeLocation = 
                     src="https://order.phuclong.com.vn/_next/static/images/delivery-686d7142750173aa8bc5f1d11ea195e4.png"
                     className={cx('header-logo')}
                 />
-                <div className={cx('header-title')}>Giao hàng</div>
+                <div className={cx('header-title')}>{t('delivery')}</div>
                 <AiOutlineClose
                     onClick={() => {
                         onCloseModal();
@@ -91,7 +93,7 @@ function DetailAddress({ data = {}, onCloseModal = () => {}, onChangeLocation = 
                 <div className={cx('search-icon')}>
                     <IoSearch />
                 </div>
-                <input onChange={handleChangeInput} value={searchValue} placeholder="Vui lòng nhập địa chỉ" />
+                <input onChange={handleChangeInput} value={searchValue} placeholder={t('header.addressInput')} />
                 {searchLoading ||
                     (!!searchValue && (
                         <button onClick={handleClearSearch} className={cx('clear')}>
@@ -121,29 +123,33 @@ function DetailAddress({ data = {}, onCloseModal = () => {}, onChangeLocation = 
                 </div>
             ) : (
                 <>
-                    <div className={cx('chosen-address')}>
-                        <span>Địa chỉ đã chọn :</span> {state.detailAddress.address}
-                    </div>
+                    {state.detailAddress.address && (
+                        <div className={cx('chosen-address')}>
+                            <span>{t('header.selectedAddress')} :</span> {state.detailAddress.address}
+                        </div>
+                    )}
                     <div onClick={getCurrentLocation} className={cx('current-address')}>
                         <BiTargetLock className={cx('icon')} />
-                        Lấy vị trí hiện tại
+                        {t('header.getCurrentLocation')}
                     </div>
                     <div className={cx('divider')}></div>
                     <div className={cx('shop-result')}>
                         <h2 className={cx('shop-title')}>
-                            Thông tin cửa hàng
+                            {t('header.shopInfo')}
                             <BiStore className={cx('icon')} />
                         </h2>
                         {state.shopInfo && (
                             <div className={cx('shop-item', 'active')}>
                                 <Image src={state.shopInfo.image} className={cx('shop-img')} />
                                 <div className={cx('shop-info')}>
-                                    <div className={cx('shop-address')}>Địa chỉ : {state.shopInfo.address}</div>
-                                    <div className={cx('shop-desc')}>
-                                        <span>Khoảng cách tới quán :</span> {data.distance} km
+                                    <div className={cx('shop-address')}>
+                                        {t('addressTitle')} : {state.shopInfo.address}
                                     </div>
                                     <div className={cx('shop-desc')}>
-                                        <span>Giờ hoạt động :</span> 07:00am - 21:00pm
+                                        <span>{t('header.distanceToShop')} :</span> {data.distance} km
+                                    </div>
+                                    <div className={cx('shop-desc')}>
+                                        <span>{t('header.operationTime')} :</span> 07:00am - 21:00pm
                                     </div>
                                     <div
                                         className={cx('shop-desc', {
@@ -151,8 +157,10 @@ function DetailAddress({ data = {}, onCloseModal = () => {}, onChangeLocation = 
                                             close: !state.shopInfo.isActive,
                                         })}
                                     >
-                                        <span>Trạng thái hoạt động :</span>{' '}
-                                        {state.shopInfo.isActive ? 'Đang mở cửa' : 'Đã đóng cửa'}
+                                        <span>{t('header.shopStatusTitle')} :</span>{' '}
+                                        {state.shopInfo.isActive
+                                            ? t('header.shopActiveStatus')
+                                            : t('header.shopInactiveStatus')}
                                     </div>
                                 </div>
                             </div>

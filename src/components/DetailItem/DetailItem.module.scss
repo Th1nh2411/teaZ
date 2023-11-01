@@ -100,6 +100,10 @@
         color: #e4e4e4;
         pointer-events: none;
     }
+    .order-add.disable {
+        color: #e4e4e4;
+        pointer-events: none;
+    }
     .order-quantity {
         font-size: 1.8rem;
         margin: 0 15px;
@@ -159,6 +163,9 @@
     .add-icon {
         margin-left: 4px;
     }
+}
+.order-add-btn.disable {
+    opacity: 0.6;
 }
 .detail-wrapper ::-webkit-scrollbar {
     border-radius: 0;

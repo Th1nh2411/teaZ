@@ -12,22 +12,24 @@ import * as authService from '../../services/authService';
 import { StoreContext, actions } from '../../store';
 import { priceFormat } from '../../utils/format';
 import { RiHeartFill, RiHeartAddLine } from 'react-icons/ri';
-import { Tooltip } from 'antd';
+import { Alert, Tooltip } from 'antd';
+import { useTranslation } from 'react-i18next';
 
 const cx = classNames.bind(styles);
-const sizeOrders = [
-    { price: 0, name: 'Nhỏ' },
-    { price: 10, name: 'Lớn ' },
-];
 
 function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false }) {
     const detailItem = data;
     const [toppings, setToppings] = useState([]);
-    const [num, setNum] = useState(data.quantity || 1);
+    const [quantity, setQuantity] = useState(data.quantity || 1);
     const [size, setSize] = useState(data.size || 0);
     const [isLiked, setIsLiked] = useState(data.isLiked || false);
     const [checkedToppings, setCheckedToppings] = useState(data.toppings ? data.toppings.map((item) => item.id) : []);
     const [state, dispatch] = useContext(StoreContext);
+    const { t } = useTranslation();
+    const sizeOrders = [
+        { price: 0, name: t('smallSize') },
+        { price: 10, name: t('largeSize') },
+    ];
     const getToppingList = async (e) => {
         const results = await shopService.getToppingList(data.id);
         if (results) {
@@ -54,17 +56,17 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
                     return toppingPrice.price + total;
                 }
             }, 0) || 0;
-        return ((detailItem.price * data.discount) / 100 + size + checkedToppingPrice) * num;
-    }, [num, size, checkedToppings, toppings]);
+        return ((detailItem.price * data.discount) / 100 + size + checkedToppingPrice) * quantity;
+    }, [quantity, size, checkedToppings, toppings]);
 
     const cart = document.querySelector('#show-cart-btn');
     const cartNum = document.querySelector('#num-item-cart');
     const imageRef = useRef(null);
     const handleEditItemCart = async () => {
-        const recipesID = [detailItem.idProduct[1], ...checkedToppings].join(',');
-        const results = await cartService.editCartItem(detailItem.idProduct, recipesID, num, size);
+        const productString = [detailItem.id, ...checkedToppings].join(',');
+        const results = await cartService.editCartItem(detailItem.productId, { productString, quantity, size });
         if (results) {
-            state.showToast('Thành công', results.message);
+            state.showToast(results.message);
         }
         await onCloseModal(true);
     };
@@ -95,11 +97,11 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
             flyingItem.style.left = `${cart.offsetLeft}px`;
             flyingItem.style.transform = 'scale(0)';
 
-            await onCloseModal(true);
             setTimeout(async () => {
                 flyingItem.remove();
                 await storeItems();
             }, speed * 1.5);
+            await onCloseModal(true);
         } else {
             dispatch(actions.setShowLogin(true));
         }
@@ -107,9 +109,9 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
 
     const storeItems = async () => {
         const recipesID = [detailItem.id, ...checkedToppings].join(',');
-        const results = await cartService.addItemToCart(recipesID, num, size);
+        const results = await cartService.addItemToCart(recipesID, quantity, size);
         if (results) {
-            state.showToast('Thành công', results.message);
+            state.showToast(results.message);
         }
         // Change ui Num
         cartNum.classList.add('add-item');
@@ -119,9 +121,20 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
         setIsLiked(!isLiked);
         const results = await authService.updateFavor(detailItem.id);
         if (results) {
-            state.showToast('Thành công', results.message);
+            state.showToast(results.message);
         }
     };
+    const cartQuantity = useMemo(
+        () =>
+            state.cartData && state.cartData.data
+                ? state.cartData.data.reduce((total, current) => current.quantity + total, 0)
+                : 0,
+        [state.cartData],
+    );
+    const isReachMax = useMemo(
+        () => (data.quantity ? cartQuantity + quantity - data.quantity > 20 : cartQuantity + quantity > 20),
+        [quantity, cartQuantity],
+    );
     return (
         <Modal
             className={cx('detail-wrapper')}
@@ -134,11 +147,11 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
                     <div className={cx('order-img-wrapper')}>
                         <Image ref={imageRef} src={detailItem.image} className={cx('order-img')} />
                         {isLiked ? (
-                            <Tooltip title="Bỏ yêu thích">
+                            <Tooltip title={t('unfavorite')}>
                                 <RiHeartFill className={cx('heart-icon')} onClick={handleClickFavor} />
                             </Tooltip>
                         ) : (
-                            <Tooltip title="Yêu thích">
+                            <Tooltip title={t('favorite')}>
                                 <RiHeartAddLine className={cx('heart-icon')} onClick={handleClickFavor} />
                             </Tooltip>
                         )}
@@ -163,18 +176,35 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
                             </div>
                             <div className={cx('order-quantity-wrapper')}>
                                 <HiMinusCircle
-                                    className={cx('order-minus', { disable: num === 1 })}
+                                    className={cx('order-minus', { disable: quantity === 1 })}
                                     onClick={() => {
-                                        if (num !== 1) {
-                                            setNum((prev) => prev - 1);
+                                        if (quantity !== 1) {
+                                            setQuantity((prev) => prev - 1);
                                         }
                                     }}
                                 />
-                                <div className={cx('order-quantity')}>{num}</div>
-                                <HiPlusCircle className={cx('order-add')} onClick={() => setNum((prev) => prev + 1)} />
+                                <div className={cx('order-quantity')}>{quantity}</div>
+                                <HiPlusCircle
+                                    className={cx('order-add', {
+                                        disable: isReachMax,
+                                    })}
+                                    onClick={() => {
+                                        if (!isReachMax) {
+                                            setQuantity((prev) => prev + 1);
+                                        }
+                                    }}
+                                />
                             </div>
                         </div>
-                        <div className={cx('order-title')}>Chọn size (bắt buộc)</div>
+                        {isReachMax && (
+                            <Alert
+                                style={{ margin: '15px auto 0px', width: 'fit-content' }}
+                                showIcon
+                                type="error"
+                                message={t('overSizeCart')}
+                            />
+                        )}
+                        <div className={cx('order-title')}>{t('chooseSize')}</div>
                         <div className={cx('order-size-list')}>
                             <Form>
                                 <div className="d-flex justify-content-between">
@@ -197,7 +227,7 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
                                 </div>
                             </Form>
                         </div>
-                        <div className={cx('order-title')}>Chọn topping (tùy chọn)</div>
+                        <div className={cx('order-title')}>{t('chooseTopping')}</div>
                         <div className={cx('order-topping-list')}>
                             {toppings &&
                                 toppings.map((topping, index) => (
@@ -225,17 +255,20 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
                     </div>
                 </Col>
             </Row>
+
             <div
                 onClick={() => {
-                    if (editing) {
-                        handleEditItemCart();
-                    } else {
-                        handleAddItemCart();
+                    if (!isReachMax) {
+                        if (editing) {
+                            handleEditItemCart();
+                        } else {
+                            handleAddItemCart();
+                        }
                     }
                 }}
-                className={cx('order-add-btn')}
+                className={cx('order-add-btn', { disable: isReachMax })}
             >
-                {priceFormat(total)}₫ - {editing ? 'Cập nhật sản phẩm' : 'Thêm vào giỏ hàng'}
+                {priceFormat(total)}₫ - {editing ? t('editCartItem') : t('addToCart')}
                 <MdOutlineAddShoppingCart className={cx('add-icon')} />
             </div>
         </Modal>

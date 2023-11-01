@@ -12,6 +12,7 @@ import { onlyNumber, onlyPhoneNumVN, phoneFormat } from '../../utils/format';
 import OtpInput from 'react-otp-input';
 import { RecaptchaVerifier, getAuth, signInWithPhoneNumber } from 'firebase/auth';
 import { authentication } from '../../utils/firebase';
+import { useTranslation } from 'react-i18next';
 const cx = classNames.bind(styles);
 
 function RegisterForm({ onClickChangeForm = () => {} }) {
@@ -22,11 +23,12 @@ function RegisterForm({ onClickChangeForm = () => {} }) {
     const [otp, setOtp] = useState('');
     const [step, setStep] = useState(1);
     const [state, dispatch] = useContext(StoreContext);
+    const { t } = useTranslation();
     const postRegister = async (e) => {
         e.preventDefault();
         const results = await authService.register({ phone, password, repeatPassword, name });
         if (results) {
-            state.showToast('Thành công', results.message);
+            state.showToast(results.message);
 
             onClickChangeForm();
         }
@@ -61,8 +63,8 @@ function RegisterForm({ onClickChangeForm = () => {} }) {
                 <Input
                     onChange={handleChangePhoneValue}
                     value={phone}
-                    title="Số điện thoại"
-                    errorMessage={'Vui lòng nhập đúng định dạng số điện thoại'}
+                    title={t('phoneTitle')}
+                    errorMessage={t('phoneValidate')}
                     errorCondition={!onlyPhoneNumVN(phone) && phone.length !== 0}
                 />
             ) : step === 2 ? (
@@ -82,31 +84,36 @@ function RegisterForm({ onClickChangeForm = () => {} }) {
                 />
             ) : (
                 <>
-                    <Input onChange={(e) => setName(e.target.value)} value={name} type="text" title="Tên người dùng" />
+                    <Input
+                        onChange={(e) => setName(e.target.value)}
+                        value={name}
+                        type="text"
+                        title={t('userNameTitle')}
+                    />
                     <Input
                         onChange={handleChangePasswordValue}
                         value={password}
-                        title="Mật khẩu"
                         type="password"
-                        errorMessage={'Mật khẩu phải lớn hơn 6 kí tự'}
+                        title={t('passwordTitle')}
+                        errorMessage={t('passwordValidate')}
                         errorCondition={password.length < 6 && password.length !== 0}
                     />
                     <Input
                         onChange={(e) => setRepeatPassword(e.target.value)}
                         value={repeatPassword}
                         type="password"
-                        title="Xác nhận mật khẩu"
-                        errorMessage="Xác nhận không trùng với mật khẩu trên"
+                        title={t('confirmPasswordTitle')}
+                        errorMessage={t('confirmPWValidate')}
                         errorCondition={repeatPassword !== password && repeatPassword !== ''}
                     />
                 </>
             )}
 
             <Button className={cx('login-btn')} primary>
-                {step === 1 ? 'Gửi mã xác thực SMS' : step === 2 ? 'Xác thực mã OTP' : 'Tạo tài khoản'}
+                {step === 1 ? t('sendSMS') : step === 2 ? t('confirmSMS') : t('registerTitle')}
             </Button>
             <div className={cx('toggle-form')}>
-                <span onClick={() => onClickChangeForm()}>Đăng nhập</span>
+                <span onClick={() => onClickChangeForm()}>{t('loginTitle')}</span>
             </div>
             <div id="recaptcha-container" className={cx('justify-center flex')}></div>
         </form>

@@ -8,6 +8,8 @@ import Image from '../Image/Image';
 import * as authService from '../../services/authService';
 import { StoreContext, actions } from '../../store';
 import OTPInput from 'react-otp-input';
+import { onlyPhoneNumVN } from '../../utils/format';
+import { useTranslation } from 'react-i18next';
 
 const cx = classNames.bind(styles);
 
@@ -19,7 +21,8 @@ function ForgotForm({ onClickChangeForm = () => {} }) {
     const [step, setStep] = useState(1);
 
     const [state, dispatch] = useContext(StoreContext);
-    const handleSubmitLogin = (e) => {
+    const { t } = useTranslation();
+    const handleSubmit = (e) => {
         e.preventDefault();
 
         // fetch api
@@ -27,37 +30,43 @@ function ForgotForm({ onClickChangeForm = () => {} }) {
         step === 1 ? sendOTP() : step === 2 ? confirmOTP() : changePassword();
     };
 
-    const sendOTP = async (e) => {
-        e.preventDefault();
-        const res1 = await authService.checkPhone(phone);
-        if (res1) {
-            const res2 = await authService.sendOTP(phone);
-            if (res2) setStep(2);
+    const sendOTP = async () => {
+        if (!onlyPhoneNumVN(phone) && phone.length !== 0) {
+            return;
         }
+        const res = await authService.sendOTP(phone);
+        if (res) setStep(2);
     };
-    const confirmOTP = async (e) => {
-        e.preventDefault();
+    const confirmOTP = async () => {
         if (!otp) return;
         const res = await authService.ValidateOTP(otp);
         if (res) setStep(3);
     };
     const changePassword = async () => {
+        if (
+            (newPassword.length < 6 && newPassword.length !== 0) ||
+            (repeatPassword !== newPassword && repeatPassword !== '')
+        ) {
+            return;
+        }
         const results = await authService.changePasswordForgot({ phone, newPassword, repeatPassword });
         if (results) {
-            state.showToast('Thành công', results.message);
+            state.showToast(results.message);
             onClickChangeForm();
         }
     };
 
     return (
-        <form onSubmit={handleSubmitLogin}>
+        <form onSubmit={handleSubmit}>
             {step === 1 && (
                 <Input
                     onChange={(e) => {
                         setPhone(e.target.value);
                     }}
                     value={phone}
-                    title="Điền số điện thoại đăng ký"
+                    title={t('phoneTitle')}
+                    errorMessage={t('phoneValidate')}
+                    errorCondition={!onlyPhoneNumVN(phone) && phone.length !== 0}
                 />
             )}
             {step === 2 && (
@@ -83,27 +92,27 @@ function ForgotForm({ onClickChangeForm = () => {} }) {
                             setPassword(e.target.value);
                         }}
                         value={newPassword}
-                        title="Mật khẩu"
                         type="password"
-                        errorMessage={'Mật khẩu phải lớn hơn 6 kí tự'}
+                        title={t('newPasswordTitle')}
+                        errorMessage={t('passwordValidate')}
                         errorCondition={newPassword.length < 6 && newPassword.length !== 0}
                     />
                     <Input
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         value={repeatPassword}
                         type="password"
-                        title="Xác nhận mật khẩu"
-                        errorMessage="Xác nhận không trùng với mật khẩu trên"
+                        title={t('confirmPasswordTitle')}
+                        errorMessage={t('confirmPWValidate')}
                         errorCondition={repeatPassword !== newPassword && repeatPassword !== ''}
                     />
                 </>
             )}
 
             <Button className={cx('login-btn')} primary>
-                {step === 1 ? 'Gửi OTP đến SDT đăng ký' : step === 2 ? 'Xác nhận mã OTP' : 'Đổi mật khẩu'}
+                {step === 1 ? t('sendSMS') : step === 2 ? t('confirmSMS') : t('changePWTitle')}
             </Button>
             <div className={cx('toggle-form')}>
-                <span onClick={() => onClickChangeForm()}>Đăng nhập</span>
+                <span onClick={() => onClickChangeForm()}>{t('loginTitle')}</span>
             </div>
             <div id="recaptcha-container" className={cx('justify-center flex')}></div>
         </form>

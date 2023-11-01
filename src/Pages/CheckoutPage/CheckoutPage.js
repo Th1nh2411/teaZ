@@ -36,15 +36,16 @@ function CheckoutPage() {
             setListCompany(results.data);
         }
     };
+    useEffect(() => {
+        getShippingCompany();
+    }, []);
     const getShippingFee = async () => {
         const results = await shopService.getShippingFee(location.latitude, location.longitude, shippingCompanyId);
         if (results) {
             setShippingFee(results.data);
         }
     };
-    useEffect(() => {
-        getShippingCompany();
-    }, []);
+
     useEffect(() => {
         getShippingFee();
     }, [shippingCompanyId]);
@@ -65,6 +66,8 @@ function CheckoutPage() {
             paymentMethod: paymentMethod ? 'Vnpay' : 'Thanh toan khi nhan hang',
             description,
         });
+        await state.getCurrentInvoice();
+        await state.getCurrentCart();
         if (results && paymentMethod === 1) {
             const results2 = await paymentService.create_payment_url({
                 id_order: results.data.id,
@@ -73,11 +76,10 @@ function CheckoutPage() {
                 window.location.replace(results2.data);
             }
         } else if (results && paymentMethod === 0) {
-            state.showToast('Đặt hàng', results.message);
+            state.showToast(results.message);
 
             navigate(config.routes.payment);
         }
-        const getCurrentInvoice = await state.getCurrentInvoice();
     };
     return (
         <div className={cx('wrapper')}>
