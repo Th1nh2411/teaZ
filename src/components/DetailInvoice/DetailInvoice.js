@@ -14,6 +14,7 @@ import { Badge } from 'antd';
 import config from '../../config';
 import { useNavigate } from 'react-router';
 import { StoreContext } from '../../store';
+import { useTranslation } from 'react-i18next';
 
 const cx = classNames.bind(styles);
 
@@ -23,6 +24,7 @@ function DetailInvoice({ idInvoice, onCloseModal = () => {} }) {
     const [invoiceInfo, setInvoiceInfo] = useState();
     const [invoiceCart, setInvoiceCart] = useState();
     const [loading, setLoading] = useState();
+    const { t } = useTranslation();
     const getListInvoice = async () => {
         setLoading(true);
         const results = await invoiceService.getDetailInvoice(idInvoice);
@@ -47,7 +49,7 @@ function DetailInvoice({ idInvoice, onCloseModal = () => {} }) {
             }}
         >
             <div className={cx('title')}>
-                <BillIcon height="3rem" width="3rem" className={cx('title-icon')} /> Chi tiết đơn hàng
+                <BillIcon height="3rem" width="3rem" className={cx('title-icon')} /> {t('detailOrder')}
             </div>
             {loading ? (
                 <div className={cx('loader')}>
@@ -57,7 +59,7 @@ function DetailInvoice({ idInvoice, onCloseModal = () => {} }) {
             ) : (
                 <div className={cx('body')}>
                     <div className={cx('left-section')}>
-                        <div className={cx('body-title')}>Các món đã đặt</div>
+                        <div className={cx('body-title')}>{t('itemInOrder')}</div>
                         <div className={cx('cart-list')}>
                             {invoiceCart &&
                                 invoiceCart.map((item, index) => (
@@ -80,13 +82,13 @@ function DetailInvoice({ idInvoice, onCloseModal = () => {} }) {
                     </div>
                     {invoiceInfo && (
                         <div className={cx('right-section')}>
-                            <div className={cx('body-title')}>Thông tin đơn hàng</div>
+                            <div className={cx('body-title')}>{t('orderInfo')}</div>
                             <div className={cx('info')}>
-                                Ngày đặt :{' '}
+                                {t('orderDate')} :{' '}
                                 <span>{dayjs(invoiceInfo.date).subtract(7, 'hours').format('HH:mm DD/MM/YYYY')}</span>
                             </div>
                             <div className={cx('info')}>
-                                Trạng thái :{' '}
+                                {t('statusTitle')} :{' '}
                                 <Badge
                                     status={
                                         invoiceInfo.status === 0
@@ -100,28 +102,29 @@ function DetailInvoice({ idInvoice, onCloseModal = () => {} }) {
                                             : 'default'
                                     }
                                     text={
-                                        invoiceInfo.isPaid && invoiceInfo.paymentMethod === 'Vnpay'
-                                            ? 'Chưa thanh toán'
+                                        !invoiceInfo.isPaid && invoiceInfo.paymentMethod === 'Vnpay'
+                                            ? t('unpaid')
                                             : invoiceInfo.status === 0
-                                            ? 'Chưa xác nhận'
+                                            ? t('status0')
                                             : invoiceInfo.status === 1
-                                            ? 'Đã xác nhận'
+                                            ? t('status1')
                                             : invoiceInfo.status === 2
-                                            ? 'Đang giao'
+                                            ? t('status2')
                                             : invoiceInfo.status === 3
-                                            ? 'Đã giao'
-                                            : 'Đã huỷ đơn'
+                                            ? t('status3')
+                                            : t('status4')
                                     }
                                 />
                             </div>
                             <div className={cx('info')}>
-                                Tổng tiền các món : <span>{priceFormat(invoiceInfo.total)}đ</span>
+                                {t('totalProduct')} : <span>{priceFormat(invoiceInfo.total)}đ</span>
                             </div>
                             <div className={cx('info')}>
-                                Phí ship : <span>{priceFormat(invoiceInfo.shippingFee)}đ</span>
+                                {t('shippingFee')} : <span>{priceFormat(invoiceInfo.shippingFee)}đ</span>
                             </div>
                             <div className={cx('info')}>
-                                Thành tiền : <span>{priceFormat(invoiceInfo.total + invoiceInfo.shippingFee)}đ</span>
+                                {t('totalTitle')} :{' '}
+                                <span>{priceFormat(invoiceInfo.total + invoiceInfo.shippingFee)}đ</span>
                             </div>
                         </div>
                     )}
@@ -129,7 +132,7 @@ function DetailInvoice({ idInvoice, onCloseModal = () => {} }) {
             )}
             {invoiceInfo && invoiceInfo.status < 3 && (
                 <Button onClick={handleCheckoutOldInvoice} primary>
-                    Xem trạng thái đơn
+                    {t('viewOrderStatus')}
                 </Button>
             )}
         </Modal>

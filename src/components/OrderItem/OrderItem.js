@@ -5,13 +5,15 @@ import { Col } from 'react-bootstrap';
 import { MdOutlineAddShoppingCart } from 'react-icons/md';
 import { priceFormat } from '../../utils/format';
 import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
+import { useTranslation } from 'react-i18next';
 
 const cx = classNames.bind(styles);
 
 function OrderItem({ data = {} }) {
+    const { t } = useTranslation();
     return (
         <div className={cx('order-item', { disable: data.isActive === 2 })}>
-            <h3 className={cx('disable-title')}>Ngưng bán</h3>
+            <h3 className={cx('disable-title')}>{t('stopSelling')}</h3>
             <div>
                 <div className={cx('order-img-wrapper')}>
                     <Image src={data.image} className={cx('order-img')} />
@@ -27,7 +29,7 @@ function OrderItem({ data = {} }) {
             <div className={cx('order-footer')}>
                 <div className={cx('order-price')}>{priceFormat((data.price * data.discount) / 100)}₫</div>
                 <div className={cx('order-add-btn')}>
-                    Đặt món
+                    {t('order')}
                     <MdOutlineAddShoppingCart className={cx('add-icon')} />
                 </div>
             </div>

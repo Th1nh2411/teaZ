@@ -52,7 +52,7 @@ function Home() {
                         </div>
                     ))}
                 </div>
-                <div className={cx('order-subtitle')}>{t('home.slogan')}</div>
+                <div className={cx('order-subtitle')}>{t('shopSlogan')}</div>
                 {loading ? (
                     <div className={cx('loader')}>
                         <span></span>

@@ -1,4 +1,5 @@
 {
+    "updateTitle": "Cập nhật",
     "addressTitle": "Địa chỉ",
     "phoneTitle": "Số điện thoại",
     "loginTitle": "Đăng nhập",
@@ -6,6 +7,8 @@
     "forgotPWTitle": "Quên mật khẩu",
     "changePWTitle": "Đổi mật khẩu",
     "passwordTitle": "Mật khẩu",
+    "oldPasswordTitle": "Mật khẩu cũ",
+    "newPasswordTitle": "Mật khẩu mới",
     "confirmPasswordTitle": "Xác nhận mật khẩu",
     "noAccount": "Chưa có tài khoản?",
     "phoneValidate": "Vui lòng nhập đúng định dạng số điện thoại",
@@ -15,10 +18,11 @@
     "sendSMS": "Gửi mã xác nhận",
     "confirmSMS": "Xác thực mã OTP",
     "order": "Đặt món",
+    "orderItem": "Đơn hàng",
     "favorite": "Yêu thích",
     "unfavorite": "Bỏ yêu thích",
     "addToCart": "Thêm món vào giỏ hàng",
-    "editCartItem": "Cập nhật sản phẩm",
+    "updateCartItem": "Cập nhật sản phẩm",
     "chooseSize": "Chọn size (Bắt buộc)",
     "smallSize": "Nhỏ",
     "largeSize": "Lớn",
@@ -30,6 +34,7 @@
     "totalCart": "Tổng tiền tạm tính",
     "checkout": "Thanh toán",
     "return": "Quay lại",
+    "undo": "Đặt lại",
     "detail": "Chi tiết",
     "inactiveShop": "Quán chưa mở cửa",
     "unpaidBillAlert": "Bạn có đơn hàng chưa thanh toán",
@@ -37,7 +42,25 @@
     "stopSelling": "Ngưng bán",
     "delCartItem": "Xoá món này ra giỏ hàng?",
     "delete": "Xoá",
+    "confirm": "Xác nhận",
     "cancel": "Huỷ",
+    "totalTitle": "Tổng tiền",
+    "statusTitle": "Trạng thái",
+    "unpaid": "Chưa thanh toán",
+    "status0": "Chưa xác nhận",
+    "status1": "Đã xác nhận",
+    "status2": "Đang giao hàng",
+    "status3": "Đã giao",
+    "status4": "Đã huỷ",
+    "detailOrder": "Chi tiết đơn hàng",
+    "itemInOrder": "Các món đã đặt",
+    "orderInfo": "Thông tin đơn hàng",
+    "orderDate": "Ngày đặt",
+    "totalProduct": "Tổng tiền các món",
+    "shippingFee": "Phí ship",
+    "emptyOrder": "Bạn chưa đặt đơn nào cả",
+    "viewOrderStatus": "Xem trạng thái đơn",
+    "shopSlogan": "Chúng tôi tin rằng từng sản phẩm trà và cà phê sẽ càng thêm hảo hạng khi được tạo ra từ sự phấn đấu không ngừng cùng niềm đam mê. Và chính kết nối dựa trên niềm tin, sự trung thực và tin yêu sẽ góp phần mang đến những nét đẹp trong văn hóa thưởng trà và cà phê ngày càng bay cao, vươn xa.",
     "header": {
         "searchInput": "Bạn muốn đặt gì?",
         "delivery": "Giao hàng",
@@ -65,13 +88,12 @@
         "drink": "Trà sữa",
         "coffee": "Cà phê",
         "tea": "Trà trái cây",
-        "bakery": "Bánh",
-        "slogan": "Chúng tôi tin rằng từng sản phẩm trà và cà phê sẽ càng thêm hảo hạng khi được tạo ra từ sự phấn đấu không ngừng cùng niềm đam mê. Và chính kết nối dựa trên niềm tin, sự trung thực và tin yêu sẽ góp phần mang đến những nét đẹp trong văn hóa thưởng trà và cà phê ngày càng bay cao, vươn xa."
+        "bakery": "Bánh"
     },
     "history": {
         "userInfo": "Thông tin cá nhân",
         "orderHistory": "Lịch sử đặt hàng",
-        "editProfileBtn": "Trà trái cây",
-        "editPwBtn": "Bánh"
+        "updateProfileTitle": "Cập nhật thông tin cá nhân",
+        "updateAvatarTitle": "Cập nhật ảnh đại diện"
     }
 }

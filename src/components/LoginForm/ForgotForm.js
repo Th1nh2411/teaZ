@@ -93,7 +93,7 @@ function ForgotForm({ onClickChangeForm = () => {} }) {
                         }}
                         value={newPassword}
                         type="password"
-                        title={t('passwordTitle')}
+                        title={t('newPasswordTitle')}
                         errorMessage={t('passwordValidate')}
                         errorCondition={newPassword.length < 6 && newPassword.length !== 0}
                     />

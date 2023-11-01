@@ -13,6 +13,7 @@ import { onlyNumber } from '../../utils/format';
 import { StoreContext, actions } from '../../store';
 import Cookies from 'js-cookie';
 import OTPInput from 'react-otp-input';
+import { useTranslation } from 'react-i18next';
 
 const cx = classNames.bind(styles);
 
@@ -23,6 +24,7 @@ function ProfileForm({ data, onCloseModal = () => {} }) {
     const [state, dispatch] = useContext(StoreContext);
     const [otp, setOtp] = useState('');
     const [step, setStep] = useState(1);
+    const { t } = useTranslation();
     const editProfile = async () => {
         const results = await authService.editProfile({ name, phone });
         if (results) {
@@ -72,7 +74,7 @@ function ProfileForm({ data, onCloseModal = () => {} }) {
             }}
             className={cx('edit-form-wrapper')}
         >
-            <div className={cx('form-title')}>{step === 1 ? 'Cập nhật thông tin cá nhân' : 'Xác thực mã OTP'}</div>
+            <div className={cx('form-title')}>{step === 1 ? t('history.updateProfileTitle') : t('confirmSMS')}</div>
 
             <form onSubmit={handleClickConfirm} className={cx('form')}>
                 {step === 1 ? (
@@ -83,7 +85,7 @@ function ProfileForm({ data, onCloseModal = () => {} }) {
                                 setValueChange(true);
                             }}
                             value={name}
-                            title="Tên hiển thị"
+                            title={t('userNameTitle')}
                             type="text"
                         />
                         <Input
@@ -94,7 +96,7 @@ function ProfileForm({ data, onCloseModal = () => {} }) {
                                 }
                             }}
                             value={phone}
-                            title="Số điện thoại"
+                            title={t('phoneTitle')}
                             type="text"
                         />
                     </>
@@ -116,9 +118,9 @@ function ProfileForm({ data, onCloseModal = () => {} }) {
                 )}
 
                 <div className={cx('form-actions')}>
-                    {valueChange && step === 1 && <Button onClick={handleCancelEdit}>Đặt lại</Button>}
+                    {valueChange && step === 1 && <Button onClick={handleCancelEdit}> {t('undo')}</Button>}
                     <Button className={cx('confirm-btn')} primary disable={!valueChange}>
-                        {step === 1 ? 'Cập nhật' : 'Xác thực'}
+                        {step === 1 ? t('update') : t('confirm')}
                     </Button>
                 </div>
                 <div id="recaptcha-container" className={cx('justify-center flex')}></div>
