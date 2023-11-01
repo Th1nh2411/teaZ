@@ -42,7 +42,7 @@ function CheckoutPage() {
     };
     useEffect(() => {
         if (state.currentInvoice === null) {
-            state.showToast('Đơn hàng đã hoàn thành hoặc được huỷ', '', 'info');
+            state.showToast(t('completedOrderNoti'), '', 'info');
             navigate(config.routes.history);
         }
     }, [state.currentInvoice]);
@@ -50,7 +50,7 @@ function CheckoutPage() {
         if (paymentStatus === '00') {
             confirmPaymentInvoice();
         } else if (paymentStatus === '02') {
-            state.showToast('Khách hàng huỷ giao dịch', '', 'error');
+            state.showToast(t('cancelOrderNoti'), '', 'error');
         }
     }, []);
 

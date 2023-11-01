@@ -37,7 +37,7 @@ function DetailAddress({ data = {}, onCloseModal = () => {}, onChangeLocation = 
         onChangeLocation(latitude, longitude);
     };
     const getFailLocation = async (position) => {
-        state.showToast('Bạn cần cấp quyền cho trang web lấy vị trí hiện tại!', '', 'error');
+        state.showToast(t('locationPermission'), '', 'error');
     };
     useEffect(() => {
         if (!debouncedValue.trim()) {

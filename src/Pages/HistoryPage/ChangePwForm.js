@@ -23,14 +23,6 @@ function ChangePwForm({ onCloseModal = () => {} }) {
     const [state, dispatch] = useContext(StoreContext);
     const { t } = useTranslation();
     const editProfile = async () => {
-        if (newPassword && newPassword !== repeatPassword) {
-            state.showToast('Thất bại', 'Vui lòng điền đúng thông tin', 'error');
-            return;
-        }
-        if (newPassword.length < 6) {
-            state.showToast('Thất bại', 'Mật khẩu không ngắn hơn 6 kí tự', 'error');
-            return;
-        }
         const results = await authService.changePassword({ oldPassword, newPassword, repeatPassword });
         if (results) {
             state.showToast(results.message);
