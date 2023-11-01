@@ -20,9 +20,11 @@ import { BsFillPhoneFill } from 'react-icons/bs';
 import { RiRefund2Line } from 'react-icons/ri';
 import images from '../../assets/images';
 import { useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 const cx = classNames.bind(styles);
 
 function CheckoutPage() {
+    const { t } = useTranslation();
     const [state, dispatch] = useContext(StoreContext);
     const [showConfirmCancelInvoice, setShowConfirmCancelInvoice] = useState();
     const [searchParams, setSearchParams] = useSearchParams();
@@ -34,13 +36,13 @@ function CheckoutPage() {
     const confirmPaymentInvoice = async () => {
         const results = await invoiceService.confirmPayment(query);
         if (results) {
-            state.showToast('Đặt hàng thành công', 'Vui lòng chờ nhân viên xác nhận đơn');
+            state.showToast(results.message);
             const getCurrentInvoice = await state.getCurrentInvoice();
         }
     };
     useEffect(() => {
         if (state.currentInvoice === null) {
-            state.showToast('Đơn hàng', 'Đơn hàng đã hoàn thành hoặc được huỷ', 'info');
+            state.showToast('Đơn hàng đã hoàn thành hoặc được huỷ', '', 'info');
             navigate(config.routes.history);
         }
     }, [state.currentInvoice]);
@@ -48,7 +50,7 @@ function CheckoutPage() {
         if (paymentStatus === '00') {
             confirmPaymentInvoice();
         } else if (paymentStatus === '02') {
-            state.showToast('Thất bại', 'Khách hàng huỷ giao dịch', 'error');
+            state.showToast('Khách hàng huỷ giao dịch', '', 'error');
         }
     }, []);
 
@@ -64,15 +66,11 @@ function CheckoutPage() {
     const handleCancelInvoice = async () => {
         const results = await invoiceService.cancelCurrentInvoice(state.currentInvoice.invoice.id);
         if (results) {
-            state.showToast('Hủy đơn', results.message);
+            state.showToast(results.message);
             dispatch(actions.setCurrentInvoice(null));
             navigate(config.routes.home);
         }
     };
-    const orderTime = useMemo(
-        () => (invoice && invoice.date ? dayjs(invoice.date).format('HH:mm DD/MM/YYYY') : 'Vừa lên đơn'),
-        [],
-    );
 
     return (
         <>
@@ -80,7 +78,7 @@ function CheckoutPage() {
                 <Modal handleClickOutside={() => setShowConfirmCancelInvoice(false)} className={cx('confirm-wrapper')}>
                     <div className={cx('confirm-title')}>Bạn chắc chắn muốn hủy đơn ?</div>
                     <div className={cx('confirm-actions')}>
-                        <Button onClick={() => setShowConfirmCancelInvoice(false)}>Trở lại</Button>
+                        <Button onClick={() => setShowConfirmCancelInvoice(false)}>{t('return')}</Button>
                         <Button onClick={handleCancelInvoice} primary>
                             Xác nhận
                         </Button>
@@ -90,12 +88,12 @@ function CheckoutPage() {
             <div className={cx('wrapper')}>
                 <div className={cx('title')}>
                     <BillIcon className={cx('title-icon')} />
-                    Đơn hàng hiện tại
+                    {t('payment.currentInvoice')}
                 </div>
                 <div className={cx('body')}>
                     <div className={cx('delivery-section')}>
                         <div className={cx('cart-list-wrapper')}>
-                            <div className={cx('body-title')}>Các món đã chọn</div>
+                            <div className={cx('body-title')}>{t('itemInOrder')}</div>
                             <div className={cx('cart-list')}>
                                 {products &&
                                     products.map((item, index) => (
@@ -117,12 +115,11 @@ function CheckoutPage() {
                         </div>
                         <div className={cx('delivery-wrapper')}>
                             <div className={cx('body-title')}>
-                                Giao hàng{' '}
+                                {t('delivery')}{' '}
                                 <Image
                                     src={invoice && invoice.shippingCompany && invoice.shippingCompany.image}
                                     className={cx('delivery-company-img')}
                                 />
-                                ,
                             </div>
                             <div className={cx('info')}>
                                 <div className={cx('info-body')}>
@@ -137,27 +134,28 @@ function CheckoutPage() {
                                         <div>
                                             <div className={cx('info-title')}>{user && user.name}</div>
                                             <div className={cx('info-detail')}>
-                                                Số điện thoại : {(user && user.phone) || '09999999'}
+                                                {t('phoneTitle')} : {(user && user.phone) || '09999999'}
                                             </div>
                                         </div>
                                     )}
                                 </div>
                             </div>
                             <div className={cx('delivery-subtitle')}>
-                                Thời gian đặt đơn : <span>{orderTime}</span>
+                                {t('orderTime')} : <span>{invoice && dayjs(invoice.date).format('HH:mm DD/MM')}</span>
                             </div>
                             <div className={cx('delivery-subtitle')}>
-                                Phí giao hàng : <span>{invoice && priceFormat(invoice.shippingFee)}đ</span>
+                                {t('shippingFee')} : <span>{invoice && priceFormat(invoice.shippingFee)}đ</span>
                             </div>
                             <div className={cx('delivery-subtitle')}>
-                                Tổng cộng : <span>{invoice && priceFormat(invoice.total + invoice.shippingFee)}đ</span>
+                                {t('totalTitle')} :{' '}
+                                <span>{invoice && priceFormat(invoice.total + invoice.shippingFee)}đ</span>
                             </div>
                         </div>
                     </div>
                     <div className={cx('qr-scan-wrapper')}>
                         {invoice && invoice.isPaid === 0 && invoice.paymentMethod === 'Vnpay' ? (
                             <>
-                                <div className={cx('qr-scan-title')}>Đơn hàng chưa được thanh toán</div>
+                                <div className={cx('qr-scan-title')}>{t('payment.unpaidTitle')}</div>
                                 <Image src={images.payment} className={cx('qr-img')} />
                                 <div className={cx('actions-wrapper')}>
                                     <div
@@ -165,17 +163,17 @@ function CheckoutPage() {
                                         className={cx('actions-back')}
                                     >
                                         <RiRefund2Line className={cx('refund-icon')} />
-                                        Hủy đơn
+                                        {t('payment.cancelInvoice')}
                                     </div>
                                     <div onClick={() => paymentVNPay()} className={cx('actions-paid')}>
-                                        Thanh toán
+                                        {t('checkout')}
                                     </div>
                                 </div>
                             </>
                         ) : invoice && invoice.status < 2 ? (
                             <>
                                 <div className={cx('qr-scan-title')}>
-                                    {!invoice.status ? 'Đơn hàng đang chờ xác nhận' : 'Đơn hàng đang được chuẩn bị'}
+                                    {!invoice.status ? t('payment.status0Title') : t('payment.status1Title')}
                                 </div>
                                 <Image src={images.barista} className={cx('qr-img')} />
                                 {invoice.status === 0 && (
@@ -185,14 +183,14 @@ function CheckoutPage() {
                                             className={cx('actions-back')}
                                         >
                                             <RiRefund2Line className={cx('refund-icon')} />
-                                            Hủy đơn hàng
+                                            {t('payment.cancelInvoice')}
                                         </div>
                                     </div>
                                 )}
                             </>
                         ) : (
                             <>
-                                <div className={cx('qr-scan-title')}>Đơn hàng đang được giao đến</div>
+                                <div className={cx('qr-scan-title')}>{t('payment.status2Title')}</div>
                                 <Image
                                     src={
                                         'https://order.phuclong.com.vn/_next/static/images/delivery-686d7142750173aa8bc5f1d11ea195e4.png'

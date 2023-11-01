@@ -84,7 +84,7 @@ function DetailInvoice({ idInvoice, onCloseModal = () => {} }) {
                         <div className={cx('right-section')}>
                             <div className={cx('body-title')}>{t('orderInfo')}</div>
                             <div className={cx('info')}>
-                                {t('orderDate')} :{' '}
+                                {t('orderTime')} :{' '}
                                 <span>{dayjs(invoiceInfo.date).subtract(7, 'hours').format('HH:mm DD/MM/YYYY')}</span>
                             </div>
                             <div className={cx('info')}>

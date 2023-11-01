@@ -152,7 +152,7 @@
     width: 320px;
     margin: 10px 0;
     .actions-back {
-        color: #fff;
+        color: #333;
         transition: 0.1s all ease-in-out;
         display: flex;
         align-items: center;
@@ -163,7 +163,7 @@
     }
     .actions-paid {
         // margin-left: 30px;
-        color: #092c1a;
+        color: #fff;
         transition: 0.1s all ease-in-out;
         &:hover {
             cursor: pointer;

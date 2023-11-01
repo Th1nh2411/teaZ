@@ -55,18 +55,18 @@
     "detailOrder": "Chi tiết đơn hàng",
     "itemInOrder": "Các món đã đặt",
     "orderInfo": "Thông tin đơn hàng",
-    "orderDate": "Ngày đặt",
+    "orderTime": "Thời gian đặt",
     "totalProduct": "Tổng tiền các món",
     "shippingFee": "Phí ship",
     "emptyOrder": "Bạn chưa đặt đơn nào cả",
     "viewOrderStatus": "Xem trạng thái đơn",
     "shopSlogan": "Chúng tôi tin rằng từng sản phẩm trà và cà phê sẽ càng thêm hảo hạng khi được tạo ra từ sự phấn đấu không ngừng cùng niềm đam mê. Và chính kết nối dựa trên niềm tin, sự trung thực và tin yêu sẽ góp phần mang đến những nét đẹp trong văn hóa thưởng trà và cà phê ngày càng bay cao, vươn xa.",
+    "wishlist": "Danh sách yêu thích",
+    "delivery": "Giao hàng",
     "header": {
         "searchInput": "Bạn muốn đặt gì?",
-        "delivery": "Giao hàng",
         "chooseAddress": "Chọn địa chỉ giao hàng để xem khoảng cách tới quán",
         "historyPage": "Lịch sử đặt hàng",
-        "wishlistPage": "Danh sách yêu thích",
         "logout": "Đăng xuất",
         "addressInput": "Nhập địa chỉ giao hàng của bạn",
         "getCurrentLocation": "Lấy vị trí hiện tại",
@@ -95,5 +95,13 @@
         "orderHistory": "Lịch sử đặt hàng",
         "updateProfileTitle": "Cập nhật thông tin cá nhân",
         "updateAvatarTitle": "Cập nhật ảnh đại diện"
+    },
+    "payment": {
+        "currentInvoice": "Đơn hàng hiện tại",
+        "unpaidTitle": "Đơn hàng chưa được thanh toán",
+        "status0Title": "Đơn hàng đang chờ xác nhận",
+        "status1Title": "Đơn hàng đang được chuẩn bị",
+        "status2Title": "Đơn hàng đang được giao đến",
+        "cancelInvoice": "Huỷ đơn"
     }
 }

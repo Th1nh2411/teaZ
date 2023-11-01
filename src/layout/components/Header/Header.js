@@ -33,7 +33,7 @@ function Header() {
         },
         {
             icon: <BiBookHeart style={{ fontSize: 20 }} />,
-            label: <span style={{ fontSize: 16 }}> {t('header.wishlistPage')}</span>,
+            label: <span style={{ fontSize: 16 }}> {t('wishlist')}</span>,
             key: 2,
         },
         {
@@ -138,7 +138,7 @@ function Header() {
                             <div className={cx('delivery-body')}>
                                 {state.detailAddress.address ? (
                                     <>
-                                        <div className={cx('delivery-title')}>{t('header.delivery')}</div>{' '}
+                                        <div className={cx('delivery-title')}>{t('delivery')}</div>{' '}
                                         <div className={cx('delivery-subtitle')}>{state.detailAddress.address}</div>
                                     </>
                                 ) : (

@@ -97,7 +97,7 @@ function HistoryPage() {
                                                 onClick={() => setShowChangePw(true)}
                                                 leftIcon={<MdLock />}
                                             >
-                                                {t('changePWTitle')}
+                                                {t('passwordTitle')}
                                             </Button>
                                         </div>
                                         <h4 className={cx('profile-info')}>

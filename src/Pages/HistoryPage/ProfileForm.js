@@ -35,11 +35,12 @@ function ProfileForm({ data, onCloseModal = () => {} }) {
         }
     };
     const sendOTP = async (e) => {
-        const res1 = await authService.checkPhone(phone);
-        if (res1) {
-            const res2 = await authService.sendOTP(phone);
-            if (res2) setStep(2);
-        }
+        // const res1 = await authService.checkPhone(phone);
+        // if (res1) {
+        //     const res2 = await authService.sendOTP(phone);
+        //     if (res2)
+        // }
+        setStep(2);
     };
     const ValidateOTP = async (e) => {
         if (!otp) return;
@@ -120,7 +121,7 @@ function ProfileForm({ data, onCloseModal = () => {} }) {
                 <div className={cx('form-actions')}>
                     {valueChange && step === 1 && <Button onClick={handleCancelEdit}> {t('undo')}</Button>}
                     <Button className={cx('confirm-btn')} primary disable={!valueChange}>
-                        {step === 1 ? t('update') : t('confirm')}
+                        {step === 1 ? t('updateTitle') : t('confirm')}
                     </Button>
                 </div>
                 <div id="recaptcha-container" className={cx('justify-center flex')}></div>

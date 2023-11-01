@@ -81,7 +81,7 @@ function DetailAddress({ data = {}, onCloseModal = () => {}, onChangeLocation = 
                     src="https://order.phuclong.com.vn/_next/static/images/delivery-686d7142750173aa8bc5f1d11ea195e4.png"
                     className={cx('header-logo')}
                 />
-                <div className={cx('header-title')}>{t('header.delivery')}</div>
+                <div className={cx('header-title')}>{t('delivery')}</div>
                 <AiOutlineClose
                     onClick={() => {
                         onCloseModal();

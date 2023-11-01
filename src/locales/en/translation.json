@@ -55,18 +55,18 @@
     "detailOrder": "Order details",
     "itemInOrder": "Ordered items",
     "orderInfo": "Order info",
-    "orderDate": "Order date",
+    "orderTime": "Order time",
     "totalProduct": "Total cost of items",
     "shippingFee": "Shipping Fee",
     "emptyOrder": "You haven't placed any orders yet",
     "viewOrderStatus": "View order status",
     "shopSlogan": "We believe that each tea and coffee product will be even more premium when created from constant striving and passion. And it is the connection based on trust, honesty and love that will contribute to bringing the beauty of tea and coffee enjoyment culture higher and farther.",
+    "wishlist": "Favorites list",
+    "delivery": "Delivery",
     "header": {
         "searchInput": "What do you want to order?",
-        "delivery": "Delivery",
         "chooseAddress": "Select the delivery address to see the distance to the restaurant",
         "historyPage": "Order history",
-        "wishlistPage": "Favorites list",
         "logout": "Logout",
         "addressInput": "Enter your address for delivery",
         "getCurrentLocation": "Get current location",
@@ -95,5 +95,13 @@
         "orderHistory": "Order history",
         "updateProfileTitle": "Update profile",
         "updateAvatarTitle": "Update Avatar"
+    },
+    "payment": {
+        "currentInvoice": "Current Order",
+        "unpaidTitle": "Order has not been paid",
+        "status0Title": "Order is awaiting confirmation",
+        "status1Title": "Order is being prepared",
+        "status2Title": "Orders are being delivered",
+        "cancelInvoice": "Cancel order"
     }
 }
