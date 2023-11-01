@@ -75,6 +75,8 @@
     "locationPermission": "Bạn cần cấp quyền cho trang web lấy vị trí hiện tại",
     "completedOrderNoti": "Đơn hàng đã hoàn thành hoặc được huỷ",
     "cancelOrderNoti": "Khách hàng đã huỷ giao dịch",
+    "sendOTPSuccess": "Đã gửi mã OTP đến SĐT đăng ký",
+    "authenOTPSuccess": "Xác thực số điện thoại thành công",
     "header": {
         "searchInput": "Bạn muốn đặt gì?",
         "chooseAddress": "Chọn địa chỉ giao hàng để xem khoảng cách tới quán",

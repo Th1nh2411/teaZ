@@ -98,6 +98,7 @@ function Header() {
     ];
     const onChangeLanguage = (value) => {
         i18n.changeLanguage(value);
+        Cookies.set('language', value);
     };
     return (
         <>
@@ -114,7 +115,7 @@ function Header() {
                     <div className={cx('side-group')}>
                         <Select
                             onChange={onChangeLanguage}
-                            defaultValue="VI"
+                            defaultValue={i18n.language}
                             options={LANGUAGES_MENU}
                             bordered={false}
                             style={{

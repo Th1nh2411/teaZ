@@ -76,8 +76,8 @@
     "completedOrderNoti": "The order has been completed or canceled",
     "cancelOrderNoti": "The customer has canceled the transaction",
     "header": {
-        "searchInput": "What do you want to order?",
-        "chooseAddress": "Select the delivery address to see the distance to the restaurant",
+        "searchInput": "Order something?",
+        "chooseAddress": "Select your delivery address to view the shipping distance",
         "historyPage": "Order history",
         "logout": "Logout",
         "addressInput": "Enter your address for delivery",

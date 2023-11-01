@@ -25,7 +25,7 @@ function CheckoutPage() {
     const [checkPolicy, setCheckPolicy] = useState(false);
     const [shippingCompanyId, setIdShippingCompany] = useState(1);
     const [listCompany, setListCompany] = useState([]);
-    const [paymentMethod, setPayment] = useState(1);
+    const [paymentMethod, setPayment] = useState(0);
     const [description, setDescription] = useState('');
     const [state, dispatch] = useContext(StoreContext);
     const [shippingFee, setShippingFee] = useState(15);
@@ -49,8 +49,10 @@ function CheckoutPage() {
     };
 
     useEffect(() => {
-        getShippingFee();
-    }, [shippingCompanyId]);
+        if (shippingCompanyId && location) {
+            getShippingFee();
+        }
+    }, [shippingCompanyId, location]);
     const handleCheckBoxPolicy = (e) => {
         if (e.target.checked) {
             setCheckPolicy(true);

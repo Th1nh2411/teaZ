@@ -22,6 +22,7 @@
 .side-group {
     display: flex;
     align-items: center;
+    gap: 10px;
 }
 
 .flag-wrapper {
@@ -85,7 +86,6 @@
     line-height: 1.2;
 }
 .actions {
-    margin-left: 8px;
     display: flex;
     align-items: center;
     position: relative;
@@ -105,7 +105,7 @@
     margin-left: 10px;
     flex-shrink: 0;
 }
-@media (max-width: 600px) {
+@media (max-width: 900px) {
     .logo-wrapper {
         width: auto;
     }

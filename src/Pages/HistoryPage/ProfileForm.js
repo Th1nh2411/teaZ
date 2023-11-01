@@ -35,12 +35,11 @@ function ProfileForm({ data, onCloseModal = () => {} }) {
         }
     };
     const sendOTP = async (e) => {
-        // const res1 = await authService.checkPhone(phone);
-        // if (res1) {
-        //     const res2 = await authService.sendOTP(phone);
-        //     if (res2)
-        // }
-        setStep(2);
+        const res1 = await authService.checkPhone(phone);
+        if (res1) {
+            const res2 = await authService.sendOTP(phone);
+            if (res2) setStep(2);
+        }
     };
     const ValidateOTP = async (e) => {
         if (!otp) return;

@@ -62,63 +62,66 @@ function HistoryPage() {
             {showEditProfile && <ProfileForm data={state.userInfo} onCloseModal={() => setShowEditProfile(false)} />}
             {showChangePw && <ChangePwForm onCloseModal={() => setShowChangePw(false)} />}
             <div className={cx('wrapper')}>
-                {loading ? (
-                    <div className={cx('loader')}>
-                        <span></span>
-                        <span></span>
-                    </div>
-                ) : (
-                    <Row gutter={[40, 40]}>
-                        <Col xs={24} lg={12}>
-                            <div className={cx('card')} style={{ backgroundColor: 'rgb(74 96 113)' }}>
-                                <div className={cx('title')} style={{ color: '#26bada' }}>
-                                    <BsPersonCircle className={cx('title-icon')} />
-                                    {t('history.userInfo')}
+                <Row gutter={[40, 40]}>
+                    <Col xs={24} lg={12}>
+                        <div className={cx('card')} style={{ backgroundColor: 'rgb(74 96 113)' }}>
+                            <div className={cx('title')} style={{ color: '#26bada' }}>
+                                <BsPersonCircle className={cx('title-icon')} />
+                                {t('history.userInfo')}
+                            </div>
+                            <div className={cx('body')}>
+                                <div className={cx('avatar-wrapper')}>
+                                    <BsCameraFill onClick={handleInputClick} className={cx('camera-icon')} />
+                                    <Image src={state.userInfo && state.userInfo.photo} className={cx('avatar')} />
+                                    <input
+                                        hidden
+                                        type="file"
+                                        accept="image/*"
+                                        ref={uploadRef}
+                                        onChange={handleImgChange}
+                                    />
                                 </div>
-                                <div className={cx('body')}>
-                                    <div className={cx('avatar-wrapper')}>
-                                        <BsCameraFill onClick={handleInputClick} className={cx('camera-icon')} />
-                                        <Image src={state.userInfo && state.userInfo.photo} className={cx('avatar')} />
-                                        <input
-                                            hidden
-                                            type="file"
-                                            accept="image/*"
-                                            ref={uploadRef}
-                                            onChange={handleImgChange}
-                                        />
+                                <div className={cx('profile-wrapper')}>
+                                    <div className={cx('d-flex')} style={{ margin: '10px 0' }}>
+                                        <Button onClick={() => setShowEditProfile(true)} leftIcon={<MdEdit />}>
+                                            {t('updateTitle')}
+                                        </Button>
+                                        <Button
+                                            className={cx('ml-8')}
+                                            onClick={() => setShowChangePw(true)}
+                                            leftIcon={<MdLock />}
+                                        >
+                                            {t('passwordTitle')}
+                                        </Button>
                                     </div>
-                                    <div className={cx('profile-wrapper')}>
-                                        <div className={cx('d-flex')} style={{ margin: '10px 0' }}>
-                                            <Button onClick={() => setShowEditProfile(true)} leftIcon={<MdEdit />}>
-                                                {t('updateTitle')}
-                                            </Button>
-                                            <Button
-                                                className={cx('ml-8')}
-                                                onClick={() => setShowChangePw(true)}
-                                                leftIcon={<MdLock />}
-                                            >
-                                                {t('passwordTitle')}
-                                            </Button>
-                                        </div>
-                                        <h4 className={cx('profile-info')}>
-                                            {t('userNameTitle')}: <span>{state.userInfo && state.userInfo.name}</span>
-                                        </h4>
-                                        <h4 className={cx('profile-info')}>
-                                            {t('phoneTitle')}: <span>{state.userInfo && state.userInfo.phone}</span>
-                                        </h4>
-                                        <h4 className={cx('profile-info')}>
-                                            {t('addressTitle')}: <span>{state.userInfo && state.userInfo.address}</span>
-                                        </h4>
-                                    </div>
+                                    <h4 className={cx('profile-info')}>
+                                        {t('userNameTitle')}: <span>{state.userInfo && state.userInfo.name}</span>
+                                    </h4>
+                                    <h4 className={cx('profile-info')}>
+                                        {t('phoneTitle')}: <span>{state.userInfo && state.userInfo.phone}</span>
+                                    </h4>
+                                    <h4
+                                        className={cx('profile-info')}
+                                        style={{ padding: '0 40px', textAlign: 'center' }}
+                                    >
+                                        {t('addressTitle')}: <span>{state.userInfo && state.userInfo.address}</span>
+                                    </h4>
                                 </div>
                             </div>
-                        </Col>
-                        <Col xs={24} lg={12}>
-                            <div className={cx('card')}>
-                                <div className={cx('title')}>
-                                    <BsFillClipboard2Fill className={cx('title-icon')} />
-                                    {t('history.orderHistory')}
+                        </div>
+                    </Col>
+                    <Col xs={24} lg={12}>
+                        <div className={cx('card')}>
+                            <div className={cx('title')}>
+                                <BsFillClipboard2Fill className={cx('title-icon')} />
+                                {t('history.orderHistory')}
+                            </div>
+                            {loading ? (
+                                <div className={cx('loader')}>
+                                    <span></span>
+                                    <span></span>
                                 </div>
+                            ) : (
                                 <div className={cx('body', 'invoice-list')}>
                                     {listInvoice && listInvoice.length !== 0 ? (
                                         listInvoice.map((item, index) => (
@@ -188,10 +191,10 @@ function HistoryPage() {
                                         <Alert message={t('emptyOrder')} showIcon type="info" />
                                     )}
                                 </div>
-                            </div>
-                        </Col>
-                    </Row>
-                )}
+                            )}
+                        </div>
+                    </Col>
+                </Row>
             </div>
         </>
     );

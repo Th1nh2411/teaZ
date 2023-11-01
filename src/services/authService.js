@@ -3,6 +3,8 @@ import * as httpRequest from '../utils/httpRequest';
 import { authentication } from '../utils/firebase';
 import { phoneFormat } from '../utils/format';
 import { notification } from 'antd';
+import { useTranslation } from 'react-i18next';
+import i18n from '../locales/translation/i18n';
 
 export const login = async (phone, password) => {
     // const config = {
@@ -126,8 +128,7 @@ export const sendOTP = async (phone) => {
         window.confirmationResult = confirmationResult;
 
         notification.open({
-            description: 'Đã gửi mã OTP đến SĐT đăng ký',
-            message: 'Gửi SMS',
+            message: i18n.t('sendOTPSuccess'),
             placement: 'bottomLeft',
             type: 'success',
         });
@@ -135,7 +136,7 @@ export const sendOTP = async (phone) => {
         return true;
     } catch (error) {
         notification.open({
-            description: error.message ? error.message.replace('_', ' ') : 'Lỗi hệ thống',
+            description: error.message ? error.message.replace('_', ' ') : 'Server Error',
             message: 'Send SMS',
             placement: 'bottomLeft',
             type: 'error',
@@ -151,8 +152,7 @@ export const ValidateOTP = async (otp) => {
 
         // User signed in successfully.
         notification.open({
-            description: 'Xác thực số điện thoại thành công',
-            message: 'Xác thực',
+            message: i18n.t('authenOTPSuccess'),
             placement: 'bottomLeft',
             type: 'success',
         });
