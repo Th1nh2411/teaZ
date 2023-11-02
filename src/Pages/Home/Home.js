@@ -2,13 +2,13 @@ import styles from './Home.module.scss';
 import classNames from 'classnames/bind';
 import Image from '../../components/Image';
 import images from '../../assets/images';
-import { Col, Row } from 'react-bootstrap';
 import Slider from '../../components/Slider/Slider';
 import OrderItem from '../../components/OrderItem/OrderItem';
 import { useContext, useEffect, useState } from 'react';
 import * as shopService from '../../services/shopService';
 import { StoreContext, actions } from '../../store';
 import { useTranslation } from 'react-i18next';
+import { Col, Row } from 'antd';
 const cx = classNames.bind(styles);
 
 function Home() {
@@ -38,19 +38,23 @@ function Home() {
         <div className={cx('wrapper')}>
             <Slider />
             <section className={cx('order-section')}>
-                <div className={cx('type-list')}>
-                    {orderTypes.map((type, index) => (
-                        <div
-                            key={index + 1}
-                            onClick={() => setOrderType(index + 1)}
-                            className={cx('type-item', { active: orderType === index + 1 })}
-                        >
-                            <div className={cx('type-img-wrapper')}>
-                                <Image src={type.img} className={cx('type-img')} />
-                            </div>
-                            <div className={cx('type-name')}>{type.name}</div>
-                        </div>
-                    ))}
+                <div style={{ width: '60vw', margin: 'auto' }}>
+                    <Row gutter={[15]} style={{ marginBottom: 20 }}>
+                        {orderTypes.map((type, index) => (
+                            <Col xs={12} md={6}>
+                                <div
+                                    key={index + 1}
+                                    onClick={() => setOrderType(index + 1)}
+                                    className={cx('type-item', { active: orderType === index + 1 })}
+                                >
+                                    <div className={cx('type-img-wrapper')}>
+                                        <Image src={type.img} className={cx('type-img')} />
+                                    </div>
+                                    <div className={cx('type-name')}>{type.name}</div>
+                                </div>
+                            </Col>
+                        ))}
+                    </Row>
                 </div>
                 <div className={cx('order-subtitle')}>{t('shopSlogan')}</div>
                 {loading ? (
@@ -59,12 +63,14 @@ function Home() {
                         <span></span>
                     </div>
                 ) : (
-                    <Row className={cx('order-list')}>
+                    <Row gutter={[15]} className={cx('order-list')}>
                         {menu &&
                             menu.map((item, index) => (
                                 <Col
                                     key={index}
-                                    md="3"
+                                    xs={24}
+                                    md={8}
+                                    lg={6}
                                     onClick={() => {
                                         if (item.isActive === 1) {
                                             dispatch(actions.setDetailItem({ show: true, data: item }));

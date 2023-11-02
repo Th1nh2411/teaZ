@@ -23,7 +23,7 @@
     "favorite": "Add to wishlist",
     "unfavorite": "Remove from wishlist",
     "addToCart": "Add to cart",
-    "updateCartItem": "update item",
+    "updateCartItem": "Update item",
     "chooseSize": "Select size (Required)",
     "smallSize": "Small",
     "largeSize": "Large",
@@ -66,7 +66,7 @@
     "delivery": "Delivery",
     "orderConfirm": "Order confirmation",
     "paymentMethods": "Payment methods",
-    "paymentVNPAY": "Payment on delivery",
+    "paymentVNPAY": "VNPAY payment",
     "paymentOnDelivery": "Payment on delivery",
     "note": "Note",
     "billDesc": "Bill description",
@@ -75,6 +75,8 @@
     "locationPermission": "You need to give the website permission to get the current location",
     "completedOrderNoti": "The order has been completed or canceled",
     "cancelOrderNoti": "The customer has canceled the transaction",
+    "sendOTPSuccess": "OTP code sent to registered phone number",
+    "authenOTPSuccess": "Phone number verification successful",
     "header": {
         "searchInput": "Order something?",
         "chooseAddress": "Select your delivery address to view the shipping distance",
@@ -114,6 +116,7 @@
         "status0Title": "Order is awaiting confirmation",
         "status1Title": "Order is being prepared",
         "status2Title": "Orders are being delivered",
-        "cancelInvoice": "Cancel order"
+        "cancelInvoice": "Cancel order",
+        "cancelInvoiceQuestion": "Are you sure you want to cancel your order?"
     }
 }

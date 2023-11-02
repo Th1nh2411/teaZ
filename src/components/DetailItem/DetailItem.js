@@ -268,7 +268,7 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
                 }}
                 className={cx('order-add-btn', { disable: isReachMax })}
             >
-                {priceFormat(total)}₫ - {editing ? t('editCartItem') : t('addToCart')}
+                {priceFormat(total)}₫ - {editing ? t('updateCartItem') : t('addToCart')}
                 <MdOutlineAddShoppingCart className={cx('add-icon')} />
             </div>
         </Modal>

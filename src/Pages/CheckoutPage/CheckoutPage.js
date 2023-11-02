@@ -25,7 +25,7 @@ function CheckoutPage() {
     const [checkPolicy, setCheckPolicy] = useState(false);
     const [shippingCompanyId, setIdShippingCompany] = useState(1);
     const [listCompany, setListCompany] = useState([]);
-    const [paymentMethod, setPayment] = useState(0);
+    const [paymentMethod, setPayment] = useState(1);
     const [description, setDescription] = useState('');
     const [state, dispatch] = useContext(StoreContext);
     const [shippingFee, setShippingFee] = useState(15);
@@ -165,6 +165,7 @@ function CheckoutPage() {
                         <Form.Select
                             className={cx('payment-select')}
                             size="lg"
+                            value={paymentMethod}
                             onChange={(e) => setPayment(Number(e.target.value))}
                         >
                             <option value={1}>{t('paymentVNPAY')}</option>

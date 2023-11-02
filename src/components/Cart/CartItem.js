@@ -38,7 +38,7 @@ function CartItem({ data = {}, onDelItem = () => {} }) {
                         {data.toppings.length !== 0 && <span>Topping :</span>}{' '}
                         {data.toppings.map((topping) => topping.name).join(', ')}
                     </div>
-                    <div className={cx('item-price')}>{priceFormat(data.price)}đ</div>
+                    <div className={cx('item-price')}>{priceFormat((data.price * data.discount) / 100)}đ</div>
                     {/* <div className={cx('item-price')}></div> */}
                 </div>
             </div>

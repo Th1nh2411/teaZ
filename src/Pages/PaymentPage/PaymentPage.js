@@ -21,6 +21,7 @@ import { RiRefund2Line } from 'react-icons/ri';
 import images from '../../assets/images';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Col, Row } from 'antd';
 const cx = classNames.bind(styles);
 
 function CheckoutPage() {
@@ -76,11 +77,11 @@ function CheckoutPage() {
         <>
             {showConfirmCancelInvoice && (
                 <Modal handleClickOutside={() => setShowConfirmCancelInvoice(false)} className={cx('confirm-wrapper')}>
-                    <div className={cx('confirm-title')}>Bạn chắc chắn muốn hủy đơn ?</div>
+                    <div className={cx('confirm-title')}>{t('payment.cancelInvoiceQuestion')}</div>
                     <div className={cx('confirm-actions')}>
                         <Button onClick={() => setShowConfirmCancelInvoice(false)}>{t('return')}</Button>
                         <Button onClick={handleCancelInvoice} primary>
-                            Xác nhận
+                            {t('confirm')}
                         </Button>
                     </div>
                 </Modal>
@@ -90,93 +91,77 @@ function CheckoutPage() {
                     <BillIcon className={cx('title-icon')} />
                     {t('payment.currentInvoice')}
                 </div>
-                <div className={cx('body')}>
-                    <div className={cx('delivery-section')}>
-                        <div className={cx('cart-list-wrapper')}>
-                            <div className={cx('body-title')}>{t('itemInOrder')}</div>
-                            <div className={cx('cart-list')}>
-                                {products &&
-                                    products.map((item, index) => (
-                                        <div key={index} className={cx('cart-item')}>
+                <Row gutter={[20, 20]} className={cx('body')}>
+                    <Col xs={24} md={12}>
+                        <div className={cx('delivery-section')}>
+                            <div className={cx('cart-list-wrapper')}>
+                                <div className={cx('body-title')}>{t('itemInOrder')}</div>
+                                <div className={cx('cart-list')}>
+                                    {products &&
+                                        products.map((item, index) => (
+                                            <div key={index} className={cx('cart-item')}>
+                                                <div>
+                                                    <div className={cx('item-name')}>
+                                                        {item.name}({item.size ? 'L' : 'M'}) x{item.quantity}
+                                                    </div>
+                                                    <div className={cx('item-topping')}>
+                                                        {item.toppings.map((item) => item.name).join(', ')}
+                                                    </div>
+                                                </div>
+                                                {item.total && (
+                                                    <div className={cx('item-price')}>{priceFormat(item.total)}đ</div>
+                                                )}
+                                            </div>
+                                        ))}
+                                </div>
+                            </div>
+                            <div className={cx('delivery-wrapper')}>
+                                <div className={cx('body-title')}>
+                                    {t('delivery')}{' '}
+                                    <Image
+                                        src={invoice && invoice.shippingCompany && invoice.shippingCompany.image}
+                                        className={cx('delivery-company-img')}
+                                    />
+                                </div>
+                                <div className={cx('info')}>
+                                    <div className={cx('info-body')}>
+                                        <IoLocationSharp className={cx('info-icon')} />
+                                        <div className={cx('info-detail')}>{user && user.address}</div>
+                                    </div>
+                                </div>
+                                <div className={cx('info')}>
+                                    <div className={cx('info-body')}>
+                                        <BsFillPhoneFill className={cx('info-icon')} />
+                                        {state.userInfo && (
                                             <div>
-                                                <div className={cx('item-name')}>
-                                                    {item.name}({item.size ? 'L' : 'M'}) x{item.quantity}
-                                                </div>
-                                                <div className={cx('item-topping')}>
-                                                    {item.toppings.map((item) => item.name).join(', ')}
+                                                <div className={cx('info-title')}>{user && user.name}</div>
+                                                <div className={cx('info-detail')}>
+                                                    {t('phoneTitle')} : {(user && user.phone) || '09999999'}
                                                 </div>
                                             </div>
-                                            {item.total && (
-                                                <div className={cx('item-price')}>{priceFormat(item.total)}đ</div>
-                                            )}
-                                        </div>
-                                    ))}
-                            </div>
-                        </div>
-                        <div className={cx('delivery-wrapper')}>
-                            <div className={cx('body-title')}>
-                                {t('delivery')}{' '}
-                                <Image
-                                    src={invoice && invoice.shippingCompany && invoice.shippingCompany.image}
-                                    className={cx('delivery-company-img')}
-                                />
-                            </div>
-                            <div className={cx('info')}>
-                                <div className={cx('info-body')}>
-                                    <IoLocationSharp className={cx('info-icon')} />
-                                    <div className={cx('info-detail')}>{user && user.address}</div>
-                                </div>
-                            </div>
-                            <div className={cx('info')}>
-                                <div className={cx('info-body')}>
-                                    <BsFillPhoneFill className={cx('info-icon')} />
-                                    {state.userInfo && (
-                                        <div>
-                                            <div className={cx('info-title')}>{user && user.name}</div>
-                                            <div className={cx('info-detail')}>
-                                                {t('phoneTitle')} : {(user && user.phone) || '09999999'}
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                            <div className={cx('delivery-subtitle')}>
-                                {t('orderTime')} : <span>{invoice && dayjs(invoice.date).format('HH:mm DD/MM')}</span>
-                            </div>
-                            <div className={cx('delivery-subtitle')}>
-                                {t('shippingFee')} : <span>{invoice && priceFormat(invoice.shippingFee)}đ</span>
-                            </div>
-                            <div className={cx('delivery-subtitle')}>
-                                {t('totalTitle')} :{' '}
-                                <span>{invoice && priceFormat(invoice.total + invoice.shippingFee)}đ</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div className={cx('qr-scan-wrapper')}>
-                        {invoice && invoice.isPaid === 0 && invoice.paymentMethod === 'Vnpay' ? (
-                            <>
-                                <div className={cx('qr-scan-title')}>{t('payment.unpaidTitle')}</div>
-                                <Image src={images.payment} className={cx('qr-img')} />
-                                <div className={cx('actions-wrapper')}>
-                                    <div
-                                        onClick={() => setShowConfirmCancelInvoice(true)}
-                                        className={cx('actions-back')}
-                                    >
-                                        <RiRefund2Line className={cx('refund-icon')} />
-                                        {t('payment.cancelInvoice')}
-                                    </div>
-                                    <div onClick={() => paymentVNPay()} className={cx('actions-paid')}>
-                                        {t('checkout')}
+                                        )}
                                     </div>
                                 </div>
-                            </>
-                        ) : invoice && invoice.status < 2 ? (
-                            <>
-                                <div className={cx('qr-scan-title')}>
-                                    {!invoice.status ? t('payment.status0Title') : t('payment.status1Title')}
+                                <div className={cx('delivery-subtitle')}>
+                                    {t('orderTime')} :{' '}
+                                    <span>{invoice && dayjs(invoice.date).format('HH:mm DD/MM')}</span>
                                 </div>
-                                <Image src={images.barista} className={cx('qr-img')} />
-                                {invoice.status === 0 && (
+                                <div className={cx('delivery-subtitle')}>
+                                    {t('shippingFee')} : <span>{invoice && priceFormat(invoice.shippingFee)}đ</span>
+                                </div>
+                                <div className={cx('delivery-subtitle')}>
+                                    {t('totalTitle')} :{' '}
+                                    <span>{invoice && priceFormat(invoice.total + invoice.shippingFee)}đ</span>
+                                </div>
+                            </div>
+                        </div>
+                    </Col>
+                    <Col xs={24} md={12}>
+                        <div className={cx('qr-scan-wrapper')}>
+                            {invoice && invoice.isPaid === 0 && invoice.paymentMethod === 'Vnpay' ? (
+                                <>
+                                    <div className={cx('qr-scan-title')}>{t('payment.unpaidTitle')}</div>
+                                    <Image src={images.payment} className={cx('qr-img')} />
                                     <div className={cx('actions-wrapper')}>
                                         <div
                                             onClick={() => setShowConfirmCancelInvoice(true)}
@@ -185,22 +170,46 @@ function CheckoutPage() {
                                             <RiRefund2Line className={cx('refund-icon')} />
                                             {t('payment.cancelInvoice')}
                                         </div>
+                                        <div onClick={() => paymentVNPay()} className={cx('actions-paid')}>
+                                            {t('checkout')}
+                                        </div>
                                     </div>
-                                )}
-                            </>
-                        ) : (
-                            <>
-                                <div className={cx('qr-scan-title')}>{t('payment.status2Title')}</div>
-                                <Image
-                                    src={
-                                        'https://order.phuclong.com.vn/_next/static/images/delivery-686d7142750173aa8bc5f1d11ea195e4.png'
-                                    }
-                                    className={cx('qr-img')}
-                                />
-                            </>
-                        )}
-                    </div>
-                </div>
+                                </>
+                            ) : invoice && invoice.status < 2 ? (
+                                <>
+                                    <div className={cx('qr-scan-title')}>
+                                        {!invoice.status ? t('payment.status0Title') : t('payment.status1Title')}
+                                    </div>
+                                    <Image
+                                        src={!invoice.status ? images.checkStatus : images.barista}
+                                        className={cx('qr-img')}
+                                    />
+                                    {invoice.status === 0 && (
+                                        <div className={cx('actions-wrapper')}>
+                                            <div
+                                                onClick={() => setShowConfirmCancelInvoice(true)}
+                                                className={cx('actions-back')}
+                                            >
+                                                <RiRefund2Line className={cx('refund-icon')} />
+                                                {t('payment.cancelInvoice')}
+                                            </div>
+                                        </div>
+                                    )}
+                                </>
+                            ) : (
+                                <>
+                                    <div className={cx('qr-scan-title')}>{t('payment.status2Title')}</div>
+                                    <Image
+                                        src={
+                                            'https://order.phuclong.com.vn/_next/static/images/delivery-686d7142750173aa8bc5f1d11ea195e4.png'
+                                        }
+                                        className={cx('qr-img')}
+                                    />
+                                </>
+                            )}
+                        </div>
+                    </Col>
+                </Row>
             </div>
         </>
     );

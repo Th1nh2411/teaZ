@@ -116,6 +116,7 @@
         "status0Title": "Đơn hàng đang chờ xác nhận",
         "status1Title": "Đơn hàng đang được chuẩn bị",
         "status2Title": "Đơn hàng đang được giao đến",
-        "cancelInvoice": "Huỷ đơn"
+        "cancelInvoice": "Huỷ đơn",
+        "cancelInvoiceQuestion": "Bạn chắc chắn muốn huỷ đơn?"
     }
 }

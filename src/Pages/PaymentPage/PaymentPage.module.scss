@@ -15,8 +15,6 @@
 }
 .body {
     margin-top: 20px;
-    display: flex;
-    justify-content: center;
 }
 .body-title {
     font-size: 2rem;
@@ -27,7 +25,6 @@
     width: max-content;
 }
 .delivery-section {
-    margin-right: 20px;
     padding: 20px 24px;
     border: 1px solid #ccc;
     border-radius: 10px;
@@ -108,8 +105,6 @@
     border-radius: 10px;
     background-color: var(--primary-color);
     padding: 20px 0;
-    width: 50vw;
-    min-width: 500px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -185,5 +180,6 @@
 }
 .confirm-actions {
     display: flex;
-    justify-content: space-around;
+    justify-content: end;
+    gap: 15px;
 }
