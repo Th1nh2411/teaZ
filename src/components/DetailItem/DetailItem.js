@@ -18,25 +18,35 @@ import { useTranslation } from 'react-i18next';
 const cx = classNames.bind(styles);
 
 function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false }) {
-    const detailItem = data;
+    const [state, dispatch] = useContext(StoreContext);
+    const itemId = state.detailItem.id;
     const [toppings, setToppings] = useState([]);
+    const [detail, setDetail] = useState({});
     const [quantity, setQuantity] = useState(data.quantity || 1);
     const [size, setSize] = useState(data.size || 0);
-    const [isLiked, setIsLiked] = useState(data.isLiked || false);
+    const [isLiked, setIsLiked] = useState(false);
     const [checkedToppings, setCheckedToppings] = useState(data.toppings ? data.toppings.map((item) => item.id) : []);
-    const [state, dispatch] = useContext(StoreContext);
     const { t } = useTranslation();
     const sizeOrders = [
         { price: 0, name: t('smallSize') },
         { price: 10, name: t('largeSize') },
     ];
+    const getDetailItem = async (e) => {
+        const results = await shopService.getDetailItem(itemId, state.userInfo && state.userInfo.userId);
+        if (results) {
+            setDetail(results.data);
+            setIsLiked(results.data.isLiked);
+        }
+    };
+
     const getToppingList = async (e) => {
-        const results = await shopService.getToppingList(data.id);
+        const results = await shopService.getToppingList(itemId);
         if (results) {
             setToppings(results.data);
         }
     };
     useEffect(() => {
+        getDetailItem();
         getToppingList();
     }, []);
     const handleChangeToppingCheckBox = (e) => {
@@ -56,15 +66,15 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
                     return toppingPrice.price + total;
                 }
             }, 0) || 0;
-        return ((detailItem.price * data.discount) / 100 + size + checkedToppingPrice) * quantity;
-    }, [quantity, size, checkedToppings, toppings]);
+        return ((detail.price * detail.discount) / 100 + size + checkedToppingPrice) * quantity;
+    }, [quantity, size, checkedToppings, toppings, detail]);
 
     const cart = document.querySelector('#show-cart-btn');
     const cartNum = document.querySelector('#num-item-cart');
     const imageRef = useRef(null);
     const handleEditItemCart = async () => {
-        const productString = [detailItem.id, ...checkedToppings].join(',');
-        const results = await cartService.editCartItem(detailItem.productId, { productString, quantity, size });
+        const productString = [itemId, ...checkedToppings].join(',');
+        const results = await cartService.editCartItem(data.productId, { productString, quantity, size });
         if (results) {
             state.showToast(results.message);
         }
@@ -108,7 +118,7 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
     };
 
     const storeItems = async () => {
-        const recipesID = [detailItem.id, ...checkedToppings].join(',');
+        const recipesID = [itemId, ...checkedToppings].join(',');
         const results = await cartService.addItemToCart(recipesID, quantity, size);
         if (results) {
             state.showToast(results.message);
@@ -119,7 +129,7 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
     };
     const handleClickFavor = async () => {
         setIsLiked(!isLiked);
-        const results = await authService.updateFavor(detailItem.id);
+        const results = await authService.updateFavor(itemId);
         if (results) {
             state.showToast(results.message);
         }
@@ -145,7 +155,7 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
             <Row className={cx('detail-body')}>
                 <Col>
                     <div className={cx('order-img-wrapper')}>
-                        <Image ref={imageRef} src={detailItem.image} className={cx('order-img')} />
+                        <Image ref={imageRef} src={detail.image} className={cx('order-img')} />
                         {isLiked ? (
                             <Tooltip title={t('unfavorite')}>
                                 <RiHeartFill className={cx('heart-icon')} onClick={handleClickFavor} />
@@ -156,22 +166,22 @@ function DetailItem({ data = {}, onCloseModal = async () => {}, editing = false 
                             </Tooltip>
                         )}
 
-                        {detailItem.discount !== 100 && (
+                        {detail.discount !== 100 && (
                             <div className={cx('sale-off')}>
-                                <span className={cx('sale-off-percent')}>{100 - detailItem.discount}% OFF</span>
+                                <span className={cx('sale-off-percent')}>{100 - detail.discount}% OFF</span>
                             </div>
                         )}
                     </div>
                 </Col>
                 <Col>
                     <div className={cx('order-content-wrapper')}>
-                        <div className={cx('order-name')}>{detailItem.name}</div>
-                        <div className={cx('order-info')}>{detailItem.info}</div>
+                        <div className={cx('order-name')}>{detail.name}</div>
+                        <div className={cx('order-info')}>{detail.info}</div>
                         <div className={cx('order-price-wrapper')}>
                             <div className={cx('order-price-wrapper')}>
-                                <div className={cx('order-price')}>{priceFormat(detailItem.price)}₫</div>
+                                <div className={cx('order-price')}>{priceFormat(detail.price)}₫</div>
                                 <div className={cx('order-price-discounted')}>
-                                    {priceFormat((detailItem.price * detailItem.discount) / 100)}₫
+                                    {priceFormat((detail.price * detail.discount) / 100)}₫
                                 </div>
                             </div>
                             <div className={cx('order-quantity-wrapper')}>

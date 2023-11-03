@@ -15,7 +15,7 @@ function CartItem({ data = {}, onDelItem = () => {} }) {
     const [state, dispatch] = useContext(StoreContext);
     const { t } = useTranslation();
     const handleEditItem = () => {
-        dispatch(actions.setDetailItem({ show: true, data, editing: true }));
+        dispatch(actions.setDetailItem({ show: true, id: data.id, data, editing: true }));
     };
     const handleDelItem = async () => {
         const results = await cartService.delCartItem(data.productId);
@@ -38,7 +38,7 @@ function CartItem({ data = {}, onDelItem = () => {} }) {
                         {data.toppings.length !== 0 && <span>Topping :</span>}{' '}
                         {data.toppings.map((topping) => topping.name).join(', ')}
                     </div>
-                    <div className={cx('item-price')}>{priceFormat((data.price * data.discount) / 100)}đ</div>
+                    <div className={cx('item-price')}>{priceFormat(data.price)}đ</div>
                     {/* <div className={cx('item-price')}></div> */}
                 </div>
             </div>

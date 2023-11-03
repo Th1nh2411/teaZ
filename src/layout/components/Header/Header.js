@@ -121,9 +121,9 @@ function Header() {
                             style={{
                                 minWidth: 125,
                             }}
-                            className="header-select"
+                            className={cx('language-select', 'header-select')}
                         />
-                        <Divider type="vertical" style={{ backgroundColor: '#ffffff80', height: 30, top: 0 }} />
+                        <Divider className={cx('divider')} type="vertical" />
                         <div
                             onClick={() => {
                                 if (currentPath !== config.routes.payment) {

@@ -5,7 +5,11 @@
 .order-section {
     margin: 50px 0 80px;
 }
-
+.type-wrapper {
+    width: 800px;
+    max-width: 100%;
+    margin: auto;
+}
 .type-item {
     display: flex;
     justify-content: center;

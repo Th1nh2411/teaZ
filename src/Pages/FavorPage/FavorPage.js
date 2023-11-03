@@ -49,7 +49,7 @@ function FavorPage() {
                                 md="3"
                                 onClick={() => {
                                     if (item.isActive === 1) {
-                                        dispatch(actions.setDetailItem({ show: true, data: item }));
+                                        dispatch(actions.setDetailItem({ show: true, id: item.id }));
                                     }
                                 }}
                             >

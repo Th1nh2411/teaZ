@@ -18,6 +18,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 10px;
 }
 .side-group {
     display: flex;
@@ -36,7 +37,7 @@
     margin-right: 8px;
 }
 .logo-wrapper {
-    width: 150px;
+    width: 100px;
     display: flex;
 }
 .logo {
@@ -105,9 +106,20 @@
     margin-left: 10px;
     flex-shrink: 0;
 }
-@media (max-width: 900px) {
+.divider {
+    background-color: #fff;
+    height: 28px;
+    top: 0;
+}
+@media (max-width: 1024px) {
     .logo-wrapper {
-        width: auto;
+        width: 80px;
+    }
+}
+@media (max-width: 600px) {
+    .divider,
+    .language-select {
+        display: none;
     }
 }
 //Sidebar

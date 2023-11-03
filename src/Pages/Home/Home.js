@@ -38,7 +38,7 @@ function Home() {
         <div className={cx('wrapper')}>
             <Slider />
             <section className={cx('order-section')}>
-                <div style={{ width: '60vw', margin: 'auto' }}>
+                <div className={cx('type-wrapper')}>
                     <Row gutter={[15]} style={{ marginBottom: 20 }}>
                         {orderTypes.map((type, index) => (
                             <Col xs={12} md={6}>
@@ -73,7 +73,7 @@ function Home() {
                                     lg={6}
                                     onClick={() => {
                                         if (item.isActive === 1) {
-                                            dispatch(actions.setDetailItem({ show: true, data: item }));
+                                            dispatch(actions.setDetailItem({ show: true, id: item.id }));
                                         }
                                     }}
                                 >

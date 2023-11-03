@@ -73,7 +73,7 @@ function Search() {
                                 {searchResult.map((item, index) => (
                                     <div
                                         key={index}
-                                        onClick={() => dispatch(actions.setDetailItem({ show: true, data: item }))}
+                                        onClick={() => dispatch(actions.setDetailItem({ show: true, id: item.id }))}
                                     >
                                         <div className={cx('item-wrapper')}>
                                             <div className={cx('d-flex')}>

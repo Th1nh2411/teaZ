@@ -121,7 +121,7 @@ function DefaultLayout({ children }) {
                 <DetailItem
                     data={state.detailItem.data}
                     onCloseModal={async (editing) => {
-                        dispatch(actions.setDetailItem({ show: false, data: {} }));
+                        dispatch(actions.setDetailItem({ show: false, id: null }));
                         if (editing) {
                             setTimeout(async () => {
                                 await state.getCurrentCart();
