@@ -15,6 +15,7 @@ const images = {
     drinkEx2: require('./drinkEx2.png'),
     tick: require('./tick.png'),
     emptyCart: require('./emptyCart.png'),
+    checkStatus: require('./checkStatus.png'),
     barista: require('./barista.png'),
     payment: require('./payment-method-png-26078.png'),
 };

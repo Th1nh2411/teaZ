@@ -8,12 +8,14 @@ import { Button, Checkbox, Col, Form, Input, InputNumber, Modal, Row, Slider, Sp
 import { BsUpload } from 'react-icons/bs';
 import { StoreContext, actions } from '../../store';
 import AvatarEditor from 'react-avatar-editor';
+import { useTranslation } from 'react-i18next';
 const cx = classNames.bind(styles);
 
 const CropperImage = ({ src, modalOpen, onModalClose = () => {} }) => {
     const [state, dispatch] = useContext(StoreContext);
     const [slideValue, setSlideValue] = useState(10);
     const [loading, setLoading] = useState(false);
+    const { t } = useTranslation();
     const cropRef = useRef(null);
 
     const editProfile = async (values) => {
@@ -42,7 +44,7 @@ const CropperImage = ({ src, modalOpen, onModalClose = () => {} }) => {
     return (
         <Modal onCancel={onModalClose} open={modalOpen} footer={false}>
             <div style={{ width: '100%', padding: '0 20px' }} align="center">
-                <h1 style={{ marginBottom: 15 }}>Cập nhật ảnh đại diện</h1>
+                <h1 style={{ marginBottom: 15 }}>{t('history.updateAvatarTitle')}</h1>
                 <AvatarEditor
                     ref={cropRef}
                     image={src}
@@ -64,10 +66,10 @@ const CropperImage = ({ src, modalOpen, onModalClose = () => {} }) => {
                 />
                 <Space>
                     <Button size="middle" onClick={onModalClose}>
-                        Huỷ bỏ
+                        {t('cancel')}
                     </Button>
                     <Button loading={loading} type="primary" size="middle" onClick={handleSave}>
-                        Cập nhật
+                        {t('confirm')}
                     </Button>
                 </Space>
             </div>

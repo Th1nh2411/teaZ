@@ -18,6 +18,7 @@ import config from '../../config';
 import TextArea from 'antd/es/input/TextArea';
 import Cookies from 'js-cookie';
 import { Alert } from 'antd';
+import { useTranslation } from 'react-i18next';
 const cx = classNames.bind(styles);
 
 function CheckoutPage() {
@@ -29,6 +30,7 @@ function CheckoutPage() {
     const [state, dispatch] = useContext(StoreContext);
     const [shippingFee, setShippingFee] = useState(15);
     const location = state.detailAddress.location || {};
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const getShippingCompany = async () => {
         const results = await invoiceService.getShippingCompany();
@@ -47,8 +49,10 @@ function CheckoutPage() {
     };
 
     useEffect(() => {
-        getShippingFee();
-    }, [shippingCompanyId]);
+        if (shippingCompanyId && location) {
+            getShippingFee();
+        }
+    }, [shippingCompanyId, location]);
     const handleCheckBoxPolicy = (e) => {
         if (e.target.checked) {
             setCheckPolicy(true);
@@ -84,12 +88,12 @@ function CheckoutPage() {
     return (
         <div className={cx('wrapper')}>
             <div className={cx('title')}>
-                <BsFillClipboard2Fill className={cx('title-icon')} /> Xác nhận đơn hàng
+                <BsFillClipboard2Fill className={cx('title-icon')} /> {t('orderConfirm')}
             </div>
             <div className={cx('body')}>
                 <div className={cx('delivery-section')}>
                     <div className={cx('cart-list-wrapper')}>
-                        <div className={cx('body-title')}>Các món đã chọn</div>
+                        <div className={cx('body-title')}>{t('itemInOrder')}</div>
                         <div className={cx('cart-list')}>
                             {state.cartData &&
                                 state.cartData.data &&
@@ -109,14 +113,14 @@ function CheckoutPage() {
                         </div>
                     </div>
                     <div className={cx('delivery-wrapper')}>
-                        <div className={cx('body-title')}>Giao hàng</div>
+                        <div className={cx('body-title')}>{t('delivery')}</div>
                         <div onClick={() => dispatch(actions.setDetailAddress({ show: true }))} className={cx('info')}>
                             <div className={cx('info-body')}>
                                 <IoLocationSharp className={cx('info-icon')} />
                                 {state.detailAddress.address ? (
                                     <div className={cx('info-detail')}>{state.detailAddress.address}</div>
                                 ) : (
-                                    <Alert showIcon type="error" message="Bạn cần phải điền địa chỉ để đặt hàng" />
+                                    <Alert showIcon type="error" message={t('addressValidate')} />
                                 )}
                             </div>
                             <AiOutlineRight className={cx('info-actions')} />
@@ -128,7 +132,7 @@ function CheckoutPage() {
                                     <div>
                                         <div className={cx('info-title')}>{state.userInfo.name}</div>
                                         <div className={cx('info-detail')}>
-                                            Số điện thoại : {state.userInfo.phone || '09999999'}
+                                            {t('phoneTitle')} : {state.userInfo.phone || '09999999'}
                                         </div>
                                     </div>
                                 )}
@@ -147,7 +151,8 @@ function CheckoutPage() {
                                         onChange={(e) => setIdShippingCompany(Number(e.target.value))}
                                     ></Form.Check>
                                     <label htmlFor={`com-${index}`}>
-                                        Giao hàng <Image src={item.image} className={cx('delivery-company-img')} />
+                                        {t('delivery')}{' '}
+                                        <Image src={item.image} className={cx('delivery-company-img')} />
                                     </label>
                                 </label>
                             ))}
@@ -156,38 +161,39 @@ function CheckoutPage() {
                 </div>
                 <div className={cx('checkout-section')}>
                     <div className={cx('payment-wrapper')}>
-                        <div className={cx('body-title')}>Phương thức thanh toán</div>
+                        <div className={cx('body-title')}>{t('paymentMethods')}</div>
                         <Form.Select
                             className={cx('payment-select')}
                             size="lg"
+                            value={paymentMethod}
                             onChange={(e) => setPayment(Number(e.target.value))}
                         >
-                            <option value={1}>Thanh toán VNPAY</option>
-                            <option value={0}>Thanh toán khi nhận hàng</option>
+                            <option value={1}>{t('paymentVNPAY')}</option>
+                            <option value={0}>{t('paymentOnDelivery')}</option>
                         </Form.Select>
                     </div>
                     <div className={cx('description-wrapper', 'mt-4')}>
-                        <div className={cx('body-title')}>Ghi chú</div>
+                        <div className={cx('body-title')}>{t('note')}</div>
                         <TextArea
-                            placeholder="Bạn muốn ghi chú gì nhỉ?"
+                            placeholder={t('note')}
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
                         />
                     </div>
                     <div className={cx('checkout-wrapper')}>
-                        <div className={cx('body-title')}>Hóa đơn thanh toán</div>
+                        <div className={cx('body-title')}>{t('billDesc')}</div>
                         <div className={cx('total')}>
-                            <span className={cx('item-name')}>Tổng tiền các món</span>{' '}
+                            <span className={cx('item-name')}>{t('totalProduct')}</span>{' '}
                             <span className={cx('item-price')}>
                                 {state.cartData && priceFormat(state.cartData.total)}đ
                             </span>
                         </div>
                         <div className={cx('total')}>
-                            <span className={cx('item-name')}>Phí vận chuyển</span>{' '}
+                            <span className={cx('item-name')}>{t('shippingFee')}</span>{' '}
                             <span className={cx('item-price')}>{priceFormat(shippingFee)}đ</span>
                         </div>
                         <div className={cx('total')}>
-                            <span className={cx('item-name')}>Thành tiền</span>{' '}
+                            <span className={cx('item-name')}>{t('totalTitle')}</span>{' '}
                             <span className={cx('item-price-final')}>
                                 {state.cartData && priceFormat(state.cartData.total + shippingFee)}đ
                             </span>
@@ -201,8 +207,7 @@ function CheckoutPage() {
                                 onChange={(e) => handleCheckBoxPolicy(e)}
                             />
                             <div className={cx('policy-title')}>
-                                Tôi đã đọc, hiểu và đồng ý với tất cả các{' '}
-                                <span>điều khoản, điều kiện và chính sách</span> liên quan
+                                {t('policyAgree')} <span>{t('policyTitle')}</span>
                             </div>
                         </div>
                         <Button
@@ -211,7 +216,7 @@ function CheckoutPage() {
                             disable={!checkPolicy || !state.detailAddress.address}
                             primary
                         >
-                            Tiến hành thanh toán
+                            {t('checkout')}
                         </Button>
                     </div>
                 </div>

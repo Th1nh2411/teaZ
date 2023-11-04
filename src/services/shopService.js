@@ -63,3 +63,13 @@ export const getListItem = async (keyword, limit = 5) => {
         return error.response && error.response.data;
     }
 };
+export const getDetailItem = async (idRecipe, idUser) => {
+    const config = { params: { id: idUser } };
+    try {
+        const res = await httpRequest.get(`recipe/${idRecipe}`, config);
+        return res;
+    } catch (error) {
+        console.log(error);
+        return error.response && error.response.data;
+    }
+};

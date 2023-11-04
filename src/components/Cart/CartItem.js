@@ -15,7 +15,7 @@ function CartItem({ data = {}, onDelItem = () => {} }) {
     const [state, dispatch] = useContext(StoreContext);
     const { t } = useTranslation();
     const handleEditItem = () => {
-        dispatch(actions.setDetailItem({ show: true, data, editing: true }));
+        dispatch(actions.setDetailItem({ show: true, id: data.id, data, editing: true }));
     };
     const handleDelItem = async () => {
         const results = await cartService.delCartItem(data.productId);
