@@ -2,7 +2,6 @@ import styles from './FavorPage.module.scss';
 import classNames from 'classnames/bind';
 import Image from '../../components/Image';
 import images from '../../assets/images';
-import { Col, Row } from 'react-bootstrap';
 import Slider from '../../components/Slider/Slider';
 import OrderItem from '../../components/OrderItem/OrderItem';
 import { useContext, useEffect, useState } from 'react';
@@ -10,6 +9,7 @@ import * as authService from '../../services/authService';
 import { StoreContext, actions } from '../../store';
 import { BiBookHeart } from 'react-icons/bi';
 import { useTranslation } from 'react-i18next';
+import { Col, Row } from 'antd';
 const cx = classNames.bind(styles);
 
 function FavorPage() {
@@ -42,11 +42,14 @@ function FavorPage() {
                         <span></span>
                     </div>
                 ) : (
-                    <Row className={cx('wish-list')}>
+                    <Row gutter={[15]} className={cx('wish-list')}>
                         {favorItems.map((item, index) => (
                             <Col
                                 key={index}
-                                md="3"
+                                xs={24}
+                                sm={12}
+                                md={8}
+                                lg={6}
                                 onClick={() => {
                                     if (item.isActive === 1) {
                                         dispatch(actions.setDetailItem({ show: true, id: item.id }));

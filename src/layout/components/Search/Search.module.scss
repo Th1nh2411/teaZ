@@ -1,6 +1,6 @@
 .search-result,
 .search {
-    min-width: 400px;
+    width: 100%;
 }
 .search-result {
     // padding: 12px 20px;
@@ -147,14 +147,14 @@
     }
 }
 
-@media (max-width: 1023.98px) {
+@media (min-width: 950px) and (max-width: 1140px) {
     .search {
         max-width: 250px;
         min-width: 0;
     }
 }
-@media (max-width: 867.98px) {
-    .search {
-        display: none;
-    }
-}
+// @media (max-width: 967.98px) {
+//     .search {
+//         display: none;
+//     }
+// }

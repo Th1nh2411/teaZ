@@ -69,6 +69,7 @@ function Home() {
                                 <Col
                                     key={index}
                                     xs={24}
+                                    sm={12}
                                     md={8}
                                     lg={6}
                                     onClick={() => {
