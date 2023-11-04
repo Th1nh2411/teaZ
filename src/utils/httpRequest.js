@@ -4,7 +4,7 @@ import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router';
 import i18n from '../locales/translation/i18n';
 const httpRequest = axios.create({
-    baseURL: 'https://milktea-nestjs.onrender.com/api/v1',
+    baseURL: 'https://tea-z.vercel.app/api/v1',
     withCredentials: true,
     headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' },
     credentials: 'include',
